@@ -10,6 +10,7 @@ npm install && npm run dev
 
 ## TODO:
 
+- Add loading... spinner when generating new recipe
 - Handle `\n`'s in GPT responses
 - Create generated recipes UI
 - Implement Auth
