@@ -53,7 +53,7 @@ export default function IngredientsForm() {
     const pb = new PocketBase("http://127.0.0.1:8090")
 
     const newRecipeRecord = await pb.collection("recipes").create({
-      content: "",
+      data: {},
       ready: false,
       ingredients: String(data.selectedIngredients),
     })
