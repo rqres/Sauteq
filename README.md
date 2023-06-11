@@ -1,6 +1,6 @@
 # recipe-ai
 
-A recipe generator built with the OpenAI API, Next.js 13, PocketBase and Tailwind CSS.
+A recipe generator built with the OpenAI API, Next.js 13, PocketBase, Tailwind CSS and Fuse.js (for fuzzy searching).
 
 ## Usage
 
