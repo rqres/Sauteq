@@ -1,10 +1,4 @@
-async function getRecipe(recipeId: string) {
-  const res = await fetch(
-    `http://127.0.0.1:8090/api/collections/recipes/records/${recipeId}`
-  )
-  const recipe = await res.json()
-  return recipe
-}
+import { getRecipe } from "./actions"
 
 export default async function RecipePage({
   params,

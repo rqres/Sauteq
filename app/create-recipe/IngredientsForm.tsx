@@ -50,35 +50,13 @@ export default function IngredientsForm() {
   })
 
   const createRecipe = async (data: z.infer<typeof FormSchema>) => {
-    const getGPTResponse = async () => {
-      const res = await fetch("/api/openai", {
-        method: "POST",
-        headers: {
-          Accept: "application.json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ promptIngredients: data.selectedIngredients }),
-      })
-
-      if (!res.ok) {
-        console.log(res)
-        // This will activate the closest `error.js` Error Boundary
-        throw new Error("Failed to fetch data")
-      }
-      return res
-    }
-
-    const recipe = await getGPTResponse()
-
     const pb = new PocketBase("http://127.0.0.1:8090")
 
-    const recipeContent = await recipe.json()
-    const newRecipeData = {
-      content: JSON.stringify(recipeContent),
-    }
-
-    const newRecipeRecord = await pb.collection("recipes").create(newRecipeData)
-    console.log(newRecipeRecord.id)
+    const newRecipeRecord = await pb.collection("recipes").create({
+      content: "",
+      ready: false,
+      ingredients: String(data.selectedIngredients),
+    })
     // TODO: use redirect instead of router
     // redirect(`/recipes/${newRecipeRecord.id}`)
     router.push(`/recipes/${newRecipeRecord.id}`)
@@ -104,17 +82,22 @@ export default function IngredientsForm() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <div className="space-y-2">
-                {results.length
-                  ? results.map((result) => (
-                      <CheckboxEntry
-                        key={result.UsdaId}
-                        item={result}
-                        form={form}
-                      />
-                    ))
-                  : defaultIngredients.map((ing) => (
-                      <CheckboxEntry key={ing.UsdaId} item={ing} form={form} />
-                    ))}
+                {results.length ? (
+                  results.map((result) => (
+                    <CheckboxEntry
+                      key={result.UsdaId}
+                      item={result}
+                      form={form}
+                    />
+                  ))
+                ) : searchQuery === "" ? (
+                  defaultIngredients.map((ing) => (
+                    <CheckboxEntry key={ing.UsdaId} item={ing} form={form} />
+                  ))
+                ) : (
+                  // TODO: ADD INGREDIENT TO DB?
+                  <p>No Results</p>
+                )}
               </div>
               <FormMessage />
             </FormItem>
