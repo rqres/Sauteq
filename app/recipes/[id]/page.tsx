@@ -19,7 +19,7 @@ export default async function RecipePage({
 }) {
   const recipe = await getRecipe(params.id)
   return (
-    <Card className="m-auto w-[680px]">
+    <Card className="mx-auto my-12 w-[680px]">
       <CardHeader>
         <CardTitle className="mb-6">
           <span className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
@@ -60,7 +60,7 @@ export default async function RecipePage({
         {recipe.data.optional.length && (
           <>
             <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-              OPTIONAL
+              Optional
             </h4>
             <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
               {recipe.data.optional.map((optionalStep) => (

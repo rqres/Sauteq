@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export default function LoadingPage() {
   return (
-    <Card className="m-auto w-[680px]">
+    <Card className="absolute left-1/2 top-1/2 mr-[-50%] w-[680px] -translate-x-1/2 -translate-y-1/2">
       <CardHeader>
         <Skeleton className="h-8 w-full" />
         <Skeleton className="h-5 w-2/3" />
