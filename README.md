@@ -14,6 +14,8 @@ npm i && npm run dev
 - [ ] Display selected ingredients in generated recipe document differently (maybe somewhere on the side)
 - [ ] Add functionality for adding new items to the ingredient DB if the search misses
 - [ ] Change default ingredients displayed
+- [ ] time of day ?
+- [ ] ask user how many servings
 - [x] ~~Handle `\n`'s in GPT responses~~
 - [x] ~~Create generated recipes UI~~
 - [x] ~~Update loading skeleton when generating new recipe~~
