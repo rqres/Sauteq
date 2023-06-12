@@ -48,6 +48,7 @@ export default async function RecipePage({
             <li>{ingredient}</li>
           ))}
         </ul>
+        <hr className="my-4" />
         <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
           Directions
         </h4>
@@ -70,30 +71,10 @@ export default async function RecipePage({
         )}
       </CardContent>
       <CardFooter>
-        {/* <Button form="ingredients-form" className="w-full" type="submit">
-          <Check className="mr-2 h-4 w-4" /> Generate recipe
-        </Button> */}
         <Link href="/" className={buttonVariants()}>
           Back to home
         </Link>
       </CardFooter>
     </Card>
-    //     <div>
-    //       <h2
-    //         className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0
-    // "
-    //       >
-    //         {recipe.data["recipe-name"]}
-    //       </h2>
-    //       <p className="leading-7 [&:not(:first-child)]:mt-6">
-    //         Prep Time: {recipe.data["prep-time"]}
-    //       </p>
-    //       <p className="leading-7 [&:not(:first-child)]:mt-6">
-    //         Cook Time: {recipe.data["cook-time"]}
-    //       </p>
-    //       <p className="leading-7 [&:not(:first-child)]:mt-6">
-    //         Serves: {recipe.data["serves"]}
-    //       </p>
-    //     </div>
   )
 }
