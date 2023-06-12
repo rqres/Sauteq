@@ -5,6 +5,9 @@ export default function LoadingPage() {
   return (
     <Card className="absolute left-1/2 top-1/2 mr-[-50%] w-[680px] -translate-x-1/2 -translate-y-1/2">
       <CardHeader>
+        <span className="scroll-m-20 text-2xl font-semibold tracking-tight">
+          Generating Recipe...
+        </span>
         <Skeleton className="h-8 w-full" />
         <Skeleton className="h-5 w-2/3" />
       </CardHeader>
