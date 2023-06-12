@@ -1,26 +1,31 @@
-interface RecipeRecord {
+interface DBRecipeRecord {
   id: string
-  data: ParsedRecipe
+  data: ParsedRecipe["text"]
   rawData: string
   ready: boolean
   ingredients: string
+  imageUrl: string
 }
+
 interface ParsedRecipe {
-  "recipe-name": string
-  description: string
-  "prep-time": string
-  "cook-time": string
-  serves: number
-  ingredients: string[]
-  directions: string[]
-  optional: string[]
+  text: {
+    "recipe-name": string
+    description: string
+    "prep-time": string
+    "cook-time": string
+    serves: number
+    ingredients: string[]
+    directions: string[]
+    optional: string[]
+  }
+  image: string
 }
 
 async function getRecipe(recipeId: string) {
   const res = await fetch(
     `http://127.0.0.1:8090/api/collections/recipes/records/${recipeId}`
   )
-  const recipe: RecipeRecord = await res.json()
+  const recipe: DBRecipeRecord = await res.json()
   if (!recipe.ready) {
     const res = await generateRecipe(recipe)
     return res
@@ -47,7 +52,7 @@ function sanitizeAndParseGPTResponse(recipeContent: string) {
 
     try {
       // Step 4: Validate the JSON object
-      const jsonObject: ParsedRecipe = JSON.parse(sanitizedObject)
+      const jsonObject = JSON.parse(sanitizedObject)
       console.log("Valid JSON object:", jsonObject)
       // Use the parsed JSON object as needed
       return jsonObject
@@ -59,20 +64,30 @@ function sanitizeAndParseGPTResponse(recipeContent: string) {
   }
 }
 
-async function generateRecipe(recipe: RecipeRecord) {
-  const gptResponse = await getGPTResponse(recipe.ingredients)
-  const recipeContent: string = await gptResponse.json()
-  const parsedRecipeContent = sanitizeAndParseGPTResponse(recipeContent)
+async function generateRecipe(recipe: DBRecipeRecord) {
+  const gptTextResponse = await getGPTTextResponse(recipe.ingredients)
+  // recipeContent, unparsed json (stringified)
+  const recipeContent: string = await gptTextResponse.json()
+  const parsedRecipeContent: ParsedRecipe["text"] =
+    sanitizeAndParseGPTResponse(recipeContent)
+
+  // --- image vv
+  const gptImageResponse = await getGPTImageResponse(
+    parsedRecipeContent["recipe-name"]
+  )
+  const recipeImageURL: string = await gptImageResponse.json()
+
   const generatedRecipe = await updateRecipeRecord(
     recipe.id,
     recipeContent,
-    parsedRecipeContent
+    parsedRecipeContent,
+    recipeImageURL
   )
   return generatedRecipe
 }
 
-async function getGPTResponse(recipeIngredients: string) {
-  const res = await fetch("http://localhost:3000/api/openai", {
+async function getGPTTextResponse(recipeIngredients: string) {
+  const res = await fetch("http://localhost:3000/api/openai/text", {
     method: "POST",
     headers: {
       Accept: "application.json",
@@ -83,7 +98,24 @@ async function getGPTResponse(recipeIngredients: string) {
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch data")
+    throw new Error("Failed to fetch OpenAI data")
+  }
+  return res
+}
+
+async function getGPTImageResponse(recipeTitle: string) {
+  const res = await fetch("http://localhost:3000/api/openai/image", {
+    method: "POST",
+    headers: {
+      Accept: "application.json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ title: recipeTitle }),
+  })
+
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error("Failed to fetch OpenAI data")
   }
   return res
 }
@@ -91,7 +123,8 @@ async function getGPTResponse(recipeIngredients: string) {
 async function updateRecipeRecord(
   recipeId: string,
   rawRecipeContent: string,
-  recipeContent: ParsedRecipe
+  recipeContent: ParsedRecipe["text"],
+  recipeImageURL: ParsedRecipe["image"]
 ) {
   const dbUpdateRes = await fetch(
     `http://127.0.0.1:8090/api/collections/recipes/records/${recipeId}`,
@@ -103,6 +136,7 @@ async function updateRecipeRecord(
       body: JSON.stringify({
         data: recipeContent,
         rawData: rawRecipeContent,
+        imageUrl: recipeImageURL,
         ready: true,
       }),
     }
@@ -113,7 +147,7 @@ async function updateRecipeRecord(
     throw new Error("Failed to fetch data")
   }
 
-  const updatedRecipe: RecipeRecord = await dbUpdateRes.json()
+  const updatedRecipe: DBRecipeRecord = await dbUpdateRes.json()
   return updatedRecipe
 }
 

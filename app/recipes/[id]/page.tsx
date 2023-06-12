@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 
 import { buttonVariants } from "@/components/ui/button"
@@ -33,6 +34,12 @@ export default async function RecipePage({
             <span>{recipe.ingredients}</span>
           </span>
         </CardDescription>
+        <Image
+          src={recipe.imageUrl}
+          width={500}
+          height={500}
+          alt={"image"}
+        ></Image>
       </CardHeader>
       <CardContent>
         <section className="mb-4">

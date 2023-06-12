@@ -10,6 +10,8 @@ npm i && npm run dev
 
 ## TODO:
 
+- [ ] Add separate loading skeletons when generating a recipe (for images and other parts of the recipe)
+- [ ] Only generate images on user demand (checkbox?)
 - [ ] Implement Auth
 - [ ] Display selected ingredients in generated recipe document differently (maybe somewhere on the side)
 - [ ] Add functionality for adding new items to the ingredient DB if the search misses
@@ -19,4 +21,3 @@ npm i && npm run dev
 - [x] ~~Handle `\n`'s in GPT responses~~
 - [x] ~~Create generated recipes UI~~
 - [x] ~~Update loading skeleton when generating new recipe~~
-

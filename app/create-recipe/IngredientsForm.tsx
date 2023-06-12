@@ -64,11 +64,7 @@ export default function IngredientsForm() {
 
   return (
     <Form {...form}>
-      <form
-        id="ingredients-form"
-        onSubmit={form.handleSubmit(createRecipe)}
-        // className="space-y-8"
-      >
+      <form id="ingredients-form" onSubmit={form.handleSubmit(createRecipe)}>
         <FormField
           control={form.control}
           name="selectedIngredients"
@@ -103,7 +99,6 @@ export default function IngredientsForm() {
             </FormItem>
           )}
         />
-        {/* <Button type="submit">Submit</Button> */}
       </form>
     </Form>
   )
