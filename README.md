@@ -10,7 +10,7 @@ npm i && npm run dev
 
 ## TODO:
 
-- [ ] Update loading skeleton when generating new recipe
+- [x] Update loading skeleton when generating new recipe
 - [ ] Display selected ingredients in generated recipe document differently (maybe somewhere on the side)
 - [ ] Add functionality for adding new items to the ingredient DB if the search misses
 - [ ] Change default ingredients displayed
