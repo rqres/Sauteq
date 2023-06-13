@@ -23,17 +23,22 @@ interface ParsedRecipe {
 
 async function getRecipe(recipeId: string) {
   const res = await fetch(
-    `http://127.0.0.1:8090/api/collections/recipes/records/${recipeId}`
+    `http://127.0.0.1:8090/api/collections/recipes/records/${recipeId}`,
+    { cache: "no-store" }
   )
   const recipe: DBRecipeRecord = await res.json()
-  if (!recipe.ready) {
-    const res = await generateRecipe(recipe)
-    return res
+  if (recipe.ready) {
+    console.log(">> Recipe already in DB, skipping generation...")
+    return recipe
   }
-  return recipe
+
+  const generatedRecipe = await generateRecipe(recipe)
+  return generatedRecipe
 }
 
-function sanitizeAndParseGPTResponse(recipeContent: string) {
+function sanitizeAndParseGPTResponse(
+  recipeContent: string
+): ParsedRecipe["text"] {
   const startIndex = recipeContent.indexOf("{")
 
   // Find the last occurrence of }
@@ -41,11 +46,10 @@ function sanitizeAndParseGPTResponse(recipeContent: string) {
 
   // Check if { and } are found
   if (startIndex === -1 || endIndex === -1) {
-    console.log(
-      "Invalid JSON string. It should start and end with curly braces."
-    )
     // Handle the invalid string as needed
-    throw new Error("invalid response from gpt")
+    throw new Error(
+      "Invalid text response from GPT, no JSON object detected (missing `{`, `}`)"
+    )
   } else {
     // Step 3: Extract the JSON object
     const sanitizedObject = recipeContent.substring(startIndex, endIndex + 1)
@@ -59,7 +63,7 @@ function sanitizeAndParseGPTResponse(recipeContent: string) {
     } catch (error) {
       console.log("Invalid JSON object:", error)
       // Handle the invalid JSON object as needed
-      throw new Error("error parsing GPT response")
+      throw new Error("Error parsing GPT response")
     }
   }
 }
@@ -68,8 +72,7 @@ async function generateRecipe(recipe: DBRecipeRecord) {
   const gptTextResponse = await getGPTTextResponse(recipe.ingredients)
   // recipeContent, unparsed json (stringified)
   const recipeContent: string = await gptTextResponse.json()
-  const parsedRecipeContent: ParsedRecipe["text"] =
-    sanitizeAndParseGPTResponse(recipeContent)
+  const parsedRecipeContent = sanitizeAndParseGPTResponse(recipeContent)
 
   // --- image vv
   const gptImageResponse = await getGPTImageResponse(
@@ -98,7 +101,7 @@ async function getGPTTextResponse(recipeIngredients: string) {
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch OpenAI data")
+    throw new Error("Failed to connect to OpenAI/text" + res.statusText)
   }
   return res
 }
@@ -115,7 +118,7 @@ async function getGPTImageResponse(recipeTitle: string) {
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch OpenAI data")
+    throw new Error("Failed to connect to OpenAI/image" + res.statusText)
   }
   return res
 }
@@ -144,7 +147,7 @@ async function updateRecipeRecord(
 
   if (!dbUpdateRes.ok) {
     // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch data")
+    throw new Error("Failed to connect to PocketBase" + dbUpdateRes.statusText)
   }
 
   const updatedRecipe: DBRecipeRecord = await dbUpdateRes.json()

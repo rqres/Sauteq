@@ -18,10 +18,13 @@ export async function POST(req: NextRequest) {
 
   const aiImageResult = await openai.createImage({
     prompt:
-      "A realistic image of this recipe, close up on a platter: " + recipeTitle,
+      "An image that you would find in a cookbook, of this recipe: " +
+      recipeTitle,
   })
 
   const imageResponse = aiImageResult.data.data[0].url?.trim() || "Problem!"
+
+  console.log("%cIMAGE API CALLED!", "color: red; font-size: larger")
 
   return NextResponse.json(imageResponse, {
     status: 200,
