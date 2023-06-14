@@ -3,6 +3,7 @@ import Link from "next/link"
 
 import { buttonVariants } from "@/components/ui/button"
 import { Card, CardFooter } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 
 import RecipeContent from "./RecipeContent"
@@ -18,7 +19,7 @@ export default async function RecipePage({
   const recipeText = await getRecipeText(params.id)
   const recipeRecord = await getRecipeRecord(params.id)
   return (
-    <Card className="mx-auto my-12 w-[680px]">
+    <Card className="mx-auto my-12 w-[780px] space-y-8">
       <RecipeHeader
         recipe={recipeText}
         userIngredients={recipeRecord.ingredients}
@@ -27,6 +28,8 @@ export default async function RecipePage({
           {recipeText && <RecipeImage recipeId={params.id} />}
         </Suspense>
       </RecipeHeader>
+
+      <Separator />
 
       <RecipeContent recipe={recipeText} />
 

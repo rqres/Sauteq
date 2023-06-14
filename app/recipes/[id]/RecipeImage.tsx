@@ -11,8 +11,8 @@ export default async function RecipeImage({ recipeId }: { recipeId: string }) {
   return (
     <Image
       src={recipeImage}
-      width={500}
-      height={500}
+      width={350}
+      height={300}
       alt={"Recipe Image"}
       style={imageStyle}
     />
