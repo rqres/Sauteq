@@ -30,7 +30,15 @@ export default function RecipeHeader({
           </CardDescription>
         </div>
         <div className="relative row-span-2">
-          <span className="absolute bottom-0">{userIngredients}</span>
+          <span className="absolute bottom-0">
+            <span className="text-lg font-semibold text-muted-foreground">
+              Your Ingredients:
+            </span>
+            <br className="hidden sm:inline" />{" "}
+            <span className="text-sm text-muted-foreground">
+              {userIngredients}
+            </span>
+          </span>
         </div>
         <div className="col-span-4 row-span-4">{children}</div>
       </div>
