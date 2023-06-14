@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function LoadingPage() {
@@ -21,31 +22,31 @@ export default function LoadingPage() {
           Ingredients
         </h4>
         <ul className="my-4 ml-6 list-none [&>li]:mt-2">
-          <li>
+          <li key={0}>
             <Skeleton className="h-3 w-1/5" />
           </li>
-          <li>
+          <li key={1}>
             <Skeleton className="h-3 w-1/5" />
           </li>
-          <li>
+          <li key={2}>
             <Skeleton className="h-3 w-1/5" />
           </li>
         </ul>
-        <hr className="my-4" />
+        <Separator className="my-4" />
         <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
           Directions
         </h4>
         <ul className="my-4 ml-6 list-none [&>li]:mt-2">
-          <li>
+          <li key={3}>
             <Skeleton className="h-3 w-11/12" />
           </li>
-          <li>
+          <li key={4}>
             <Skeleton className="h-3 w-11/12" />
           </li>
-          <li>
+          <li key={5}>
             <Skeleton className="h-3 w-11/12" />
           </li>
-          <li>
+          <li key={6}>
             <Skeleton className="h-3 w-11/12" />
           </li>
         </ul>

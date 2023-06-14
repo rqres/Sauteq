@@ -1,5 +1,6 @@
 interface DBRecipeRecord {
   id: string
+  title: string
   data: ParsedRecipe["text"]
   rawData: string
   ready: boolean
@@ -21,19 +22,70 @@ interface ParsedRecipe {
   image: string
 }
 
-async function getRecipe(recipeId: string) {
+async function getRecipeRecord(recipeId: string) {
   const res = await fetch(
     `http://127.0.0.1:8090/api/collections/recipes/records/${recipeId}`,
     { cache: "no-store" }
   )
   const recipe: DBRecipeRecord = await res.json()
-  if (recipe.ready) {
+
+  return recipe
+}
+
+async function getRecipeTextData(recipeId: string) {
+  const recipe = await getRecipeRecord(recipeId)
+
+  if (recipe.ready && Object.keys(recipe.data).length) {
     console.log(">> Recipe already in DB, skipping generation...")
-    return recipe
+    return recipe.data
   }
 
-  const generatedRecipe = await generateRecipe(recipe)
-  return generatedRecipe
+  const [rawGeneratedRecipeText, parsedGeneratedRecipeText] =
+    await getParsedRecipeText(recipe.ingredients)
+
+  console.log(parsedGeneratedRecipeText["recipe-name"])
+
+  // push updates to DB
+  const updateResponse = await updateRecipeRecord(recipeId, {
+    title: parsedGeneratedRecipeText["recipe-name"],
+    rawRecipeContent: rawGeneratedRecipeText,
+    recipeContent: parsedGeneratedRecipeText,
+  })
+
+  if (!updateResponse.ok) {
+    throw new Error("Unable to update Database with generated recipe text")
+  }
+
+  return parsedGeneratedRecipeText
+}
+
+async function getRecipeImageData(recipeId: string) {
+  console.log("called getRecipeImage")
+
+  const recipe = await getRecipeRecord(recipeId)
+
+  if (recipe.ready && recipe.imageUrl) {
+    console.log(">> Image already generated, skipping...")
+    return recipe.imageUrl
+  }
+
+  if (!recipe.title)
+    throw new Error(
+      "getRecipeImage should be called after determining the title of the recipe!"
+    )
+  console.log(">> GPT Image not generated yet, generating...")
+  const gptImageResponse = await getGPTImageResponse(recipe.title)
+  const recipeImageURL: string = await gptImageResponse.json()
+
+  const updateResponse = await updateRecipeRecord(recipeId, {
+    recipeImageURL: recipeImageURL,
+  })
+
+  if (!updateResponse.ok) {
+    throw new Error("Unable to update Database with generated recipe image")
+  }
+
+  return recipeImageURL
 }
 
 function sanitizeAndParseGPTResponse(
@@ -68,28 +120,19 @@ function sanitizeAndParseGPTResponse(
   }
 }
 
-async function generateRecipe(recipe: DBRecipeRecord) {
-  const gptTextResponse = await getGPTTextResponse(recipe.ingredients)
+async function getParsedRecipeText(
+  recipeIngredients: string
+): Promise<[string, ParsedRecipe["text"]]> {
+  const gptTextResponse = await getGPTTextResponse(recipeIngredients)
   // recipeContent, unparsed json (stringified)
   const recipeContent: string = await gptTextResponse.json()
   const parsedRecipeContent = sanitizeAndParseGPTResponse(recipeContent)
 
-  // --- image vv
-  const gptImageResponse = await getGPTImageResponse(
-    parsedRecipeContent["recipe-name"]
-  )
-  const recipeImageURL: string = await gptImageResponse.json()
-
-  const generatedRecipe = await updateRecipeRecord(
-    recipe.id,
-    recipeContent,
-    parsedRecipeContent,
-    recipeImageURL
-  )
-  return generatedRecipe
+  return [recipeContent, parsedRecipeContent]
 }
 
 async function getGPTTextResponse(recipeIngredients: string) {
+  console.warn("Connecting to GPT text")
   const res = await fetch("http://localhost:3000/api/openai/text", {
     method: "POST",
     headers: {
@@ -107,6 +150,7 @@ async function getGPTTextResponse(recipeIngredients: string) {
 }
 
 async function getGPTImageResponse(recipeTitle: string) {
+  console.warn("Connecting to GPT image")
   const res = await fetch("http://localhost:3000/api/openai/image", {
     method: "POST",
     headers: {
@@ -125,10 +169,14 @@ async function getGPTImageResponse(recipeTitle: string) {
 
 async function updateRecipeRecord(
   recipeId: string,
-  rawRecipeContent: string,
-  recipeContent: ParsedRecipe["text"],
-  recipeImageURL: ParsedRecipe["image"]
+  fields: {
+    title?: string
+    rawRecipeContent?: string
+    recipeContent?: ParsedRecipe["text"]
+    recipeImageURL?: ParsedRecipe["image"]
+  }
 ) {
+  const prevRecordData = await getRecipeRecord(recipeId)
   const dbUpdateRes = await fetch(
     `http://127.0.0.1:8090/api/collections/recipes/records/${recipeId}`,
     {
@@ -137,10 +185,11 @@ async function updateRecipeRecord(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        data: recipeContent,
-        rawData: rawRecipeContent,
-        imageUrl: recipeImageURL,
+        data: fields.recipeContent || prevRecordData.data,
+        rawData: fields.rawRecipeContent || prevRecordData.rawData,
+        imageUrl: fields.recipeImageURL || prevRecordData.imageUrl,
         ready: true,
+        title: fields.title || prevRecordData.title,
       }),
     }
   )
@@ -150,8 +199,13 @@ async function updateRecipeRecord(
     throw new Error("Failed to connect to PocketBase" + dbUpdateRes.statusText)
   }
 
-  const updatedRecipe: DBRecipeRecord = await dbUpdateRes.json()
-  return updatedRecipe
+  return dbUpdateRes
 }
 
-export { getRecipe }
+export {
+  getRecipeTextData as getRecipeText,
+  getRecipeImageData as getRecipeImage,
+  getRecipeRecord,
+}
+
+export type { DBRecipeRecord }
