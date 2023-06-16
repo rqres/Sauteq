@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
     prompt:
       "An image that you would find in a cookbook, of this recipe: " +
       recipeTitle,
+    size: "512x512",
   })
 
   const imageResponse = aiImageResult.data.data[0].url?.trim() || "Problem!"

@@ -1,3 +1,6 @@
+"use client"
+
+import { useRouter } from "next/navigation"
 import { Bookmark, RefreshCcw, Share } from "lucide-react"
 
 import {
@@ -10,7 +13,18 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar"
 
-export default function RecipeMenubar() {
+import { clearRecipeRecord } from "./actions"
+
+export default function RecipeMenubar({ recipeId }: { recipeId: string }) {
+  const router = useRouter()
+  const regenerateRecipe = async () => {
+    // clear recipeText, recipeImageURL, and title
+    await clearRecipeRecord(recipeId)
+    //TODO: show skeleton again
+    router.push(`/recipes/${recipeId}`)
+    // router.refresh()
+  }
+
   return (
     <Menubar className="mr-4 mt-6 justify-end">
       <MenubarMenu>
@@ -19,7 +33,7 @@ export default function RecipeMenubar() {
         </MenubarTrigger>
       </MenubarMenu>
       <MenubarMenu>
-        <MenubarTrigger>
+        <MenubarTrigger onClick={regenerateRecipe}>
           <RefreshCcw />
         </MenubarTrigger>
       </MenubarMenu>

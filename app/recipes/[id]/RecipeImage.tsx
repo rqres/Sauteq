@@ -25,6 +25,7 @@ export default async function RecipeImage({
       height={300}
       alt={"Recipe Image"}
       style={imageStyle}
+      priority={true}
     />
   )
 }

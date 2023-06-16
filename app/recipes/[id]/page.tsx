@@ -23,17 +23,19 @@ export default async function RecipePage({
     const recipeText = await getRecipeText(recipe.ingredients)
     recipe = await updateRecipeRecord(params.id, {
       recipeText: recipeText,
+      title: recipeText["recipe-name"],
     })
   }
 
   return (
     <Card className="mx-auto my-12 w-[780px] ">
-      <RecipeMenubar />
+      <RecipeMenubar recipeId={recipe.id} />
       <RecipeHeader
         recipeText={recipe.data}
         userIngredients={recipe.ingredients}
       >
-        <Suspense fallback={<Skeleton className="h-[300px] w-[350px]" />}>
+        <Suspense fallback={<Skeleton className="h-[350px] w-[350px]" />}>
+          {/* @ts-expect-error Server Component */}
           {recipe.data && <RecipeImage recipe={recipe} />}
         </Suspense>
       </RecipeHeader>

@@ -48,7 +48,7 @@ async function getRecipeText(
   })
 
   if (!res.ok) {
-    throw new Error("Failed to connect to OpenAI/text" + res.statusText)
+    throw new Error("Failed to connect to OpenAI/text " + res.statusText)
   }
 
   const GPTText: string = await res.json()
@@ -69,7 +69,7 @@ async function getRecipeImage(recipeTitle: string): Promise<string> {
   })
 
   if (!res.ok) {
-    throw new Error("Failed to connect to OpenAI/image" + res.statusText)
+    throw new Error("Failed to connect to OpenAI/image " + res.statusText)
   }
 
   const recipeImageURL: string = await res.json()
@@ -83,6 +83,7 @@ async function updateRecipeRecord(
     rawRecipeContent?: string
     recipeText?: DBRecipeRecord["data"]
     recipeImageURL?: DBRecipeRecord["imageUrl"]
+    title?: string
   }
 ): Promise<DBRecipeRecord> {
   console.log(">> Updating recipe...")
@@ -99,7 +100,7 @@ async function updateRecipeRecord(
         rawData: fields.rawRecipeContent || oldRecord.rawData,
         imageUrl: fields.recipeImageURL || oldRecord.imageUrl,
         ready: true,
-        title: fields.recipeText?.["recipe-name"] || oldRecord.title,
+        title: fields.title || oldRecord.title,
       }),
     }
   )
@@ -110,6 +111,28 @@ async function updateRecipeRecord(
 
   const updatedRecord: DBRecipeRecord = await dbUpdateRes.json()
   return updatedRecord
+}
+
+async function clearRecipeRecord(recipeId: string): Promise<void> {
+  console.log(">> Clearing recipe...")
+  const dbClearRes = await fetch(
+    `http://127.0.0.1:8090/api/collections/recipes/records/${recipeId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data: {},
+        imageUrl: "",
+        title: "",
+      }),
+    }
+  )
+
+  if (!dbClearRes.ok) {
+    throw new Error("Failed to clear Recipe Record" + dbClearRes.statusText)
+  }
 }
 
 function sanitizeAndParseGPTText(
@@ -139,6 +162,12 @@ function sanitizeAndParseGPTText(
     throw new Error("Error parsing GPT response")
   }
 }
-export { getRecipeRecord, getRecipeText, getRecipeImage, updateRecipeRecord }
+export {
+  getRecipeRecord,
+  getRecipeText,
+  getRecipeImage,
+  updateRecipeRecord,
+  clearRecipeRecord,
+}
 
 export type { DBRecipeRecord }
