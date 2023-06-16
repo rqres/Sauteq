@@ -4,22 +4,22 @@ import { Separator } from "@/components/ui/separator"
 import { DBRecipeRecord } from "./actions"
 
 export default function RecipeContent({
-  recipe,
+  recipeText,
 }: {
-  recipe: DBRecipeRecord["data"]
+  recipeText: DBRecipeRecord["data"]
 }) {
   return (
     <CardContent>
       <section className="mb-4">
-        <p className=" ">Prep Time: {recipe["prep-time"]}</p>
-        <p className=" ">Cook Time: {recipe["cook-time"]}</p>
-        <p className=" ">Serves: {recipe["serves"]}</p>
+        <p className=" ">Prep Time: {recipeText["prep-time"]}</p>
+        <p className=" ">Cook Time: {recipeText["cook-time"]}</p>
+        <p className=" ">Serves: {recipeText["serves"]}</p>
       </section>
       <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
         Ingredients
       </h4>
       <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
-        {recipe.ingredients.map((ingredient) => (
+        {recipeText.ingredients.map((ingredient) => (
           <li key={ingredient}>{ingredient}</li>
         ))}
       </ul>
@@ -28,17 +28,17 @@ export default function RecipeContent({
         Directions
       </h4>
       <ol className="my-6 ml-6 list-decimal [&>li]:mt-2">
-        {recipe.directions.map((direction) => (
+        {recipeText.directions.map((direction) => (
           <li key={direction}>{direction}</li>
         ))}
       </ol>
-      {recipe.optional.length > 0 && (
+      {recipeText.optional.length > 0 && (
         <>
           <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
             Optional
           </h4>
           <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
-            {recipe.optional.map((optionalStep) => (
+            {recipeText.optional.map((optionalStep) => (
               <li key={optionalStep}>{optionalStep}</li>
             ))}
           </ul>

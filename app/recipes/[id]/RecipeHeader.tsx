@@ -5,11 +5,11 @@ import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import type { DBRecipeRecord } from "./actions"
 
 export default function RecipeHeader({
-  recipe,
+  recipeText,
   userIngredients,
   children,
 }: {
-  recipe: DBRecipeRecord["data"]
+  recipeText: DBRecipeRecord["data"]
   userIngredients: string
   children?: ReactNode
 }) {
@@ -19,12 +19,12 @@ export default function RecipeHeader({
         <div className="row-span-2">
           <CardTitle className="row-span-2 mb-6">
             <span className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-              {recipe["recipe-name"]}
+              {recipeText["recipe-name"]}
             </span>
           </CardTitle>
           <CardDescription>
             <span>
-              {recipe.description}
+              {recipeText.description}
               {/* TODO: display this differently */}
             </span>
           </CardDescription>

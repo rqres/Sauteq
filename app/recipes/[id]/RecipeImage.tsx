@@ -1,16 +1,26 @@
 import Image from "next/image"
 
-import { getRecipeImage } from "./actions"
+import { DBRecipeRecord, getRecipeImage, updateRecipeRecord } from "./actions"
 
-export default async function RecipeImage({ recipeId }: { recipeId: string }) {
-  const recipeImage = await getRecipeImage(recipeId)
+export default async function RecipeImage({
+  recipe,
+}: {
+  recipe: DBRecipeRecord
+}) {
+  let recipeImageURL = recipe.imageUrl
+  if (recipeImageURL === "") {
+    // not yet generated
+    recipeImageURL = await getRecipeImage(recipe.title)
+    await updateRecipeRecord(recipe.id, { recipeImageURL: recipeImageURL })
+  }
+
   const imageStyle = {
     borderRadius: "1%",
     border: "1px solid #fff",
   }
   return (
     <Image
-      src={recipeImage}
+      src={recipeImageURL}
       width={350}
       height={300}
       alt={"Recipe Image"}

@@ -10,30 +10,37 @@ import RecipeContent from "./RecipeContent"
 import RecipeHeader from "./RecipeHeader"
 import RecipeImage from "./RecipeImage"
 import RecipeMenubar from "./RecipeMenubar"
-import { getRecipeRecord, getRecipeText } from "./actions"
+import { getRecipeRecord, getRecipeText, updateRecipeRecord } from "./actions"
 
 export default async function RecipePage({
   params,
 }: {
   params: { id: string }
 }) {
-  const recipeText = await getRecipeText(params.id)
-  const recipeRecord = await getRecipeRecord(params.id)
+  let recipe = await getRecipeRecord(params.id)
+  if (Object.keys(recipe.data).length === 0) {
+    // not yet generated
+    const recipeText = await getRecipeText(recipe.ingredients)
+    recipe = await updateRecipeRecord(params.id, {
+      recipeText: recipeText,
+    })
+  }
+
   return (
     <Card className="mx-auto my-12 w-[780px] ">
       <RecipeMenubar />
       <RecipeHeader
-        recipe={recipeText}
-        userIngredients={recipeRecord.ingredients}
+        recipeText={recipe.data}
+        userIngredients={recipe.ingredients}
       >
         <Suspense fallback={<Skeleton className="h-[300px] w-[350px]" />}>
-          {recipeText && <RecipeImage recipeId={params.id} />}
+          {recipe.data && <RecipeImage recipe={recipe} />}
         </Suspense>
       </RecipeHeader>
 
       <Separator className="mb-11 mt-7" />
 
-      <RecipeContent recipe={recipeText} />
+      <RecipeContent recipeText={recipe.data} />
 
       <CardFooter>
         <Link href="/" className={buttonVariants()}>
