@@ -1,5 +1,6 @@
 "use client"
 
+import { RefObject, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import PocketBase from "pocketbase"
@@ -34,6 +35,7 @@ interface Ingredient {
 
 export default function IngredientsForm() {
   const router = useRouter()
+  const searchBoxRef = useRef<HTMLInputElement>(null)
   const { results, searchQuery, setSearchQuery } = useSearch<Ingredient>({
     dataSet: ingredients.data,
     keys: ["name"],
@@ -76,6 +78,7 @@ export default function IngredientsForm() {
                 className="h-9"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                ref={searchBoxRef}
               />
               <div className="space-y-2">
                 {results.length ? (
@@ -84,6 +87,7 @@ export default function IngredientsForm() {
                       key={result.UsdaId}
                       item={result}
                       form={form}
+                      searchBoxRef={searchBoxRef}
                     />
                   ))
                 ) : searchQuery === "" ? (
@@ -107,6 +111,7 @@ export default function IngredientsForm() {
 function CheckboxEntry({
   item,
   form,
+  searchBoxRef,
 }: {
   item: Ingredient
   form: UseFormReturn<
@@ -116,6 +121,7 @@ function CheckboxEntry({
     any,
     undefined
   >
+  searchBoxRef?: RefObject<HTMLInputElement>
 }) {
   return (
     <FormField
@@ -132,6 +138,9 @@ function CheckboxEntry({
               <Checkbox
                 checked={field.value?.includes(item.name)}
                 onCheckedChange={(checked) => {
+                  // auto cmd+A search box upon selecting an ingredient
+                  searchBoxRef?.current?.focus()
+                  searchBoxRef?.current?.select()
                   return checked
                     ? field.onChange([...field.value, item.name])
                     : field.onChange(
