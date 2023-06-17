@@ -1,7 +1,5 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Bookmark, RefreshCcw, Share } from "lucide-react"
 
 import {
@@ -17,18 +15,11 @@ import {
 import { clearRecipeRecord } from "./actions"
 
 export default function RecipeMenubar({ recipeId }: { recipeId: string }) {
-  const router = useRouter()
-  const [isRegenerating, setRegenerating] = useState(false)
-
   const regenerateRecipe = async () => {
-    setRegenerating(true)
     // clear recipeText, recipeImageURL, and title
     await clearRecipeRecord(recipeId)
-    router.refresh()
-    // Uncommenting the next line completely disables all animations!!
-    setTimeout(() => {
-      setRegenerating(false)
-    }, 20000)
+    // TODO: change this dirty hack
+    window.location.reload()
   }
 
   return (
@@ -40,9 +31,7 @@ export default function RecipeMenubar({ recipeId }: { recipeId: string }) {
       </MenubarMenu>
       <MenubarMenu>
         <MenubarTrigger onClick={regenerateRecipe}>
-          <RefreshCcw
-            className={isRegenerating ? "animate-spin" : "animate-none"}
-          />
+          <RefreshCcw />
         </MenubarTrigger>
       </MenubarMenu>
       <MenubarMenu>
