@@ -137,14 +137,32 @@ function sanitizeAndParseGPTText(
 
   try {
     // Validate the JSON object
-    const jsonObject = JSON.parse(sanitizedObject)
+    const jsonObject: DBRecipeRecord["data"] = JSON.parse(sanitizedObject)
     console.log("Valid JSON object:", jsonObject)
+    removeListNumbering(jsonObject.directions)
     return jsonObject
   } catch (error) {
     console.log("Invalid JSON object:", error)
     throw new Error("Error parsing GPT response")
   }
 }
+
+function removeListNumbering(
+  recipeDirections: DBRecipeRecord["data"]["directions"]
+): void {
+  const isDigit = (char: string) => {
+    return !isNaN(parseInt(char)) && !isNaN(Number(char))
+  }
+
+  if (!isDigit(recipeDirections[0].charAt(0))) return
+
+  console.log(">> List numbering detected in directions, cleaning up...")
+  for (let i = 0; i < recipeDirections.length; i++) {
+    const direction = recipeDirections[i]
+    if (isDigit(direction.charAt(0))) recipeDirections[i] = direction.slice(3)
+  }
+}
+
 export {
   getRecipeRecord,
   getRecipeText,

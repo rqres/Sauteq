@@ -33,7 +33,7 @@ export default async function RecipePage({
       <RecipeHeader recipeText={recipe.data}>
         <Suspense fallback={<Skeleton className="h-[350px] w-[350px]" />}>
           {/* @ts-expect-error Server Component */}
-          {recipe.data && <RecipeImage recipe={recipe} />}
+          <RecipeImage recipe={recipe} />
         </Suspense>
       </RecipeHeader>
 
