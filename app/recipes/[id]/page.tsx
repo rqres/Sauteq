@@ -28,12 +28,9 @@ export default async function RecipePage({
   }
 
   return (
-    <Card className="mx-auto my-12 w-[780px] ">
+    <Card className="mx-auto my-12 w-[400px] md:w-[750px]">
       <RecipeMenubar recipeId={recipe.id} />
-      <RecipeHeader
-        recipeText={recipe.data}
-        userIngredients={recipe.ingredients}
-      >
+      <RecipeHeader recipeText={recipe.data}>
         <Suspense fallback={<Skeleton className="h-[350px] w-[350px]" />}>
           {/* @ts-expect-error Server Component */}
           {recipe.data && <RecipeImage recipe={recipe} />}

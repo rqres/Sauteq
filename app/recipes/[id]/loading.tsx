@@ -1,35 +1,47 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function LoadingPage() {
   return (
-    <Card className="absolute left-1/2 top-1/2 mr-[-50%] w-[680px] -translate-x-1/2 -translate-y-1/2">
+    <Card className="mx-auto my-12 w-[400px] md:w-[750px]">
       <CardHeader>
-        <span className="scroll-m-20 text-2xl font-semibold tracking-tight">
-          Generating Recipe...
-        </span>
-        <Skeleton className="h-8 w-full" />
-        <Skeleton className="h-5 w-2/3" />
+        <div className="space-y-6 md:flex md:justify-between md:gap-x-4 md:space-y-0">
+          <div>
+            <CardTitle className="mb-6">
+              <span className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+                Generating recipe...
+              </span>
+            </CardTitle>
+            {/* <CardDescription> */}
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+            </div>
+            {/* </CardDescription> */}
+          </div>
+          <Skeleton className="h-60 w-full md:h-60 md:w-1/2" />
+        </div>
       </CardHeader>
+      <Separator className="mb-11 mt-7" />
       <CardContent>
         <section className="mb-4 space-y-2">
-          <Skeleton className="h-3 w-1/3" />
-          <Skeleton className="h-3 w-1/3" />
-          <Skeleton className="h-3 w-1/3" />
+          <Skeleton className="h-3 w-2/3 md:w-1/4" />
+          <Skeleton className="h-3 w-2/3 md:w-1/4" />
+          <Skeleton className="h-3 w-2/3 md:w-1/4" />
         </section>
         <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
           Ingredients
         </h4>
         <ul className="my-4 ml-6 list-none [&>li]:mt-2">
           <li key={0}>
-            <Skeleton className="h-3 w-1/5" />
+            <Skeleton className="h-3 w-1/3 md:w-1/5" />
           </li>
           <li key={1}>
-            <Skeleton className="h-3 w-1/5" />
+            <Skeleton className="h-3 w-1/3 md:w-1/5" />
           </li>
           <li key={2}>
-            <Skeleton className="h-3 w-1/5" />
+            <Skeleton className="h-3 w-1/3 md:w-1/5" />
           </li>
         </ul>
         <Separator className="my-4" />
