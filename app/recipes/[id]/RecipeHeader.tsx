@@ -1,8 +1,7 @@
 import { ReactNode } from "react"
 
+import { DBRecipeRecord } from "@/types/recipe"
 import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-
-import type { DBRecipeRecord } from "./actions"
 
 export default function RecipeHeader({
   recipeText,

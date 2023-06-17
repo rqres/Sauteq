@@ -1,7 +1,6 @@
+import { DBRecipeRecord } from "@/types/recipe"
 import { CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-
-import { DBRecipeRecord } from "./actions"
 
 export default function RecipeContent({
   recipeText,
