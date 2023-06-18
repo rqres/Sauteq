@@ -1,5 +1,6 @@
 "use client"
 
+import { useAuth } from "@clerk/nextjs"
 import { Bookmark, RefreshCcw, Share } from "lucide-react"
 
 import {
@@ -12,16 +13,13 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar"
 
-export default function RecipeMenubar(/*{ recipeId }: { recipeId: string }*/) {
+export default function RecipeMenubar() {
+  const { isLoaded, userId, sessionId, getToken } = useAuth()
   const regenerateRecipe = () => {
-    console.log("regenerated")
-    // revalidate()
-    // clear recipeText, recipeImageURL, and title
-    // await clearRecipeRecord(recipeId)
-    // TODO: change this dirty hack
-    // router.refresh()
     window.location.reload()
   }
+
+  const bookmarkRecipe = () => {}
 
   return (
     <Menubar className="mr-4 mt-6 justify-end">
@@ -36,7 +34,7 @@ export default function RecipeMenubar(/*{ recipeId }: { recipeId: string }*/) {
         </MenubarTrigger>
       </MenubarMenu>
       <MenubarMenu>
-        <MenubarTrigger>
+        <MenubarTrigger onClick={bookmarkRecipe}>
           <Bookmark />
         </MenubarTrigger>
       </MenubarMenu>
