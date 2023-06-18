@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 
 import { getRecipeImage, getRecipeText, getRecipeTitle } from "../actions"
+import RecipeMenubar from "./RecipeMenubar"
 
 export default async function RecipePage({
   searchParams,
@@ -33,7 +34,7 @@ export default async function RecipePage({
 
   return (
     <Card className="mx-auto my-12 w-[400px] md:w-[750px]">
-      {/* <RecipeMenubar recipeId={recipe.id} /> */}
+      <RecipeMenubar />
 
       <CardHeader>
         <div className="space-y-8 md:flex md:gap-x-4 md:space-y-0">

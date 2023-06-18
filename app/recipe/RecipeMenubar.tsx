@@ -1,5 +1,3 @@
-"use client"
-
 import { Bookmark, RefreshCcw, Share } from "lucide-react"
 
 import {
@@ -12,14 +10,12 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar"
 
-import { clearRecipeRecord } from "../../actions"
-
-export default function RecipeMenubar({ recipeId }: { recipeId: string }) {
+export default function RecipeMenubar(/*{ recipeId }: { recipeId: string }*/) {
   const regenerateRecipe = async () => {
     // clear recipeText, recipeImageURL, and title
-    await clearRecipeRecord(recipeId)
+    // await clearRecipeRecord(recipeId)
     // TODO: change this dirty hack
-    window.location.reload()
+    // window.location.reload()
   }
 
   return (
@@ -30,7 +26,7 @@ export default function RecipeMenubar({ recipeId }: { recipeId: string }) {
         </MenubarTrigger>
       </MenubarMenu>
       <MenubarMenu>
-        <MenubarTrigger onClick={regenerateRecipe}>
+        <MenubarTrigger /*onClick={regenerateRecipe}*/>
           <RefreshCcw />
         </MenubarTrigger>
       </MenubarMenu>
