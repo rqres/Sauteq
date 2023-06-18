@@ -14,7 +14,7 @@ const openai = new OpenAIApi(configuration)
 const systemPrompt =
   "You are a talented chef who can come up with exquisite recipes, no matter the ingredients. The user will send you a list of ingredients they have available in their pantry/fridge, and your goal is to think of a recipe they can cook at home using ONLY the given ingredients. Your response should be just the title of this recipe."
 
-export async function POST(req: NextRequest) {
+export const POST = async (req: NextRequest) => {
   const data: Payload = await req.json()
   const ingredients = String(data.promptIngredients)
 
@@ -29,6 +29,8 @@ export async function POST(req: NextRequest) {
       { role: "user", content: ingredients },
     ],
   })
+
+  console.log("CALLED TITLE GPT")
 
   const textResponse =
     aiTextResult.data.choices[0].message?.content.trim() || "Problem!"

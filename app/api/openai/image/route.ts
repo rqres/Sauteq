@@ -11,7 +11,7 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration)
 
-export async function POST(req: NextRequest) {
+export const POST = async (req: NextRequest) => {
   const data: Payload = await req.json()
   const recipeTitle = data.title
   console.log(recipeTitle)

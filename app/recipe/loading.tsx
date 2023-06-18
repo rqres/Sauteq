@@ -2,9 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 
+import RecipeMenubar from "./RecipeMenubar"
+
 export default function LoadingPage() {
   return (
     <Card className="mx-auto my-12 w-[400px] md:w-[750px]">
+      <RecipeMenubar />
       <CardHeader>
         <div className="space-y-6 md:flex md:justify-between md:gap-x-4 md:space-y-0">
           <div>

@@ -23,14 +23,12 @@ export default async function RecipePage({
 }: {
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
-  const queryIngredients = searchParams.ingredients
+  const queryIngredients = searchParams.ingredients as string
+
   // TODO:
   const recipeTitle = await getRecipeTitle(String(queryIngredients))
   const recipeBodyData = getRecipeText(recipeTitle, queryIngredients as string)
   const recipeImageData = getRecipeImage(recipeTitle)
-
-  // const recipeBody = await recipeBodyData
-  // useRef to persist between refresh?
 
   return (
     <Card className="mx-auto my-12 w-[400px] md:w-[750px]">

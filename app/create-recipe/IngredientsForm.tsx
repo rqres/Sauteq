@@ -2,6 +2,7 @@
 
 import { RefObject, useRef } from "react"
 import { useRouter } from "next/navigation"
+import ingredientMap from "@/utils/ingredientData"
 import { zodResolver } from "@hookform/resolvers/zod"
 import PocketBase from "pocketbase"
 import ingredients from "public/english_ingredients.json"
@@ -22,7 +23,7 @@ import {
 
 const FormSchema = z.object({
   selectedIngredients: z
-    .array(z.string())
+    .array(z.number())
     .refine((value) => value.some((item) => item), {
       message: "You have to select at least one item.",
     }),
@@ -42,7 +43,10 @@ export default function IngredientsForm() {
   })
 
   // TODO: use most popular ingredients
-  const defaultIngredients = ingredients.data.slice(0, 6)
+  const defaultIngredients: { [UsdaId: number]: string } = Object.fromEntries(
+    Object.entries(ingredientMap).slice(0, 6)
+  )
+  // const defaultIngredients = ingredientMap
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -52,11 +56,17 @@ export default function IngredientsForm() {
   })
 
   const createRecipe = async (data: z.infer<typeof FormSchema>) => {
+    // sort by id
+    data.selectedIngredients.sort(function (a, b) {
+      return a - b
+    })
+
+    const ingredientsString = data.selectedIngredients.map(
+      (id) => ingredientMap[id]
+    )
+
     router.push(
-      `recipe?${createQueryString(
-        "ingredients",
-        String(data.selectedIngredients)
-      )}`
+      `recipe?${createQueryString("ingredients", String(ingredientsString))}`
     )
 
     // const pb = new PocketBase("http://127.0.0.1:8090")
@@ -98,8 +108,12 @@ export default function IngredientsForm() {
                     />
                   ))
                 ) : searchQuery === "" ? (
-                  defaultIngredients.map((ing) => (
-                    <CheckboxEntry key={ing.UsdaId} item={ing} form={form} />
+                  Object.entries(defaultIngredients).map((ing) => (
+                    <CheckboxEntry
+                      key={ing[0]}
+                      item={{ UsdaId: Number(ing[0]), name: ing[1] }}
+                      form={form}
+                    />
                   ))
                 ) : (
                   // TODO: ADD INGREDIENT TO DB?
@@ -123,7 +137,7 @@ function CheckboxEntry({
   item: Ingredient
   form: UseFormReturn<
     {
-      selectedIngredients: string[]
+      selectedIngredients: number[]
     },
     any,
     undefined
@@ -143,15 +157,15 @@ function CheckboxEntry({
           >
             <FormControl>
               <Checkbox
-                checked={field.value?.includes(item.name)}
+                checked={field.value?.includes(item.UsdaId)}
                 onCheckedChange={(checked) => {
                   // auto cmd+A search box upon selecting an ingredient
                   searchBoxRef?.current?.focus()
                   searchBoxRef?.current?.select()
                   return checked
-                    ? field.onChange([...field.value, item.name])
+                    ? field.onChange([...field.value, item.UsdaId])
                     : field.onChange(
-                        field.value?.filter((value) => value !== item.name)
+                        field.value?.filter((value) => value !== item.UsdaId)
                       )
                 }}
               />

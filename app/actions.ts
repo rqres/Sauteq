@@ -1,5 +1,7 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
+
 import { DBRecipeRecord } from "@/types/recipe"
 
 async function getRecipeRecord(recipeId: string) {
@@ -25,10 +27,10 @@ async function getRecipeRecord(recipeId: string) {
  * @param recipeIngredients The ingredients required for the recipe
  * @returns The recipe parsed as JSON
  */
-async function getRecipeText(
+const getRecipeText = async (
   recipeTitle: string,
   recipeIngredients: string
-): Promise<DBRecipeRecord["data"]> {
+): Promise<DBRecipeRecord["data"]> => {
   console.warn("Connecting to GPT text")
   const res = await fetch("http://localhost:3000/api/openai/text", {
     method: "POST",
@@ -52,7 +54,7 @@ async function getRecipeText(
   return parsedRecipe
 }
 
-async function getRecipeTitle(recipeIngredients: string): Promise<string> {
+const getRecipeTitle = async (recipeIngredients: string): Promise<string> => {
   console.warn("Generating recipe title...")
   const res = await fetch("http://localhost:3000/api/openai/text/recipeTitle", {
     method: "POST",
@@ -74,7 +76,7 @@ async function getRecipeTitle(recipeIngredients: string): Promise<string> {
   return GPTTitle
 }
 
-async function getRecipeImage(recipeTitle: string): Promise<string> {
+const getRecipeImage = async (recipeTitle: string): Promise<string> => {
   console.warn("Connecting to GPT image")
   const res = await fetch("http://localhost:3000/api/openai/image", {
     method: "POST",
@@ -197,11 +199,16 @@ function removeListNumbering(
   }
 }
 
+export async function revalidate() {
+  "use server"
+  revalidatePath("/recipe")
+}
+
 export {
-  getRecipeRecord,
+  // getRecipeRecord,
   getRecipeText,
   getRecipeImage,
   getRecipeTitle,
-  updateRecipeRecord,
-  clearRecipeRecord,
+  // updateRecipeRecord,
+  // clearRecipeRecord,
 }
