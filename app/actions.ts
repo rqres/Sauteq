@@ -1,3 +1,5 @@
+"use server"
+
 import { DBRecipeRecord } from "@/types/recipe"
 
 async function getRecipeRecord(recipeId: string) {
@@ -17,7 +19,14 @@ async function getRecipeRecord(recipeId: string) {
   return recipe
 }
 
+/**
+ * Gets recipe body from GPT API
+ *
+ * @param recipeIngredients The ingredients required for the recipe
+ * @returns The recipe parsed as JSON
+ */
 async function getRecipeText(
+  recipeTitle: string,
   recipeIngredients: string
 ): Promise<DBRecipeRecord["data"]> {
   console.warn("Connecting to GPT text")
@@ -27,7 +36,10 @@ async function getRecipeText(
       Accept: "application.json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ promptIngredients: recipeIngredients }),
+    body: JSON.stringify({
+      recipeTitle: recipeTitle,
+      promptIngredients: recipeIngredients,
+    }),
   })
 
   if (!res.ok) {
@@ -38,6 +50,28 @@ async function getRecipeText(
   const parsedRecipe = sanitizeAndParseGPTText(GPTText)
 
   return parsedRecipe
+}
+
+async function getRecipeTitle(recipeIngredients: string): Promise<string> {
+  console.warn("Generating recipe title...")
+  const res = await fetch("http://localhost:3000/api/openai/text/recipeTitle", {
+    method: "POST",
+    headers: {
+      Accept: "application.json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ promptIngredients: recipeIngredients }),
+  })
+
+  if (!res.ok) {
+    throw new Error(
+      "Failed to connect to OpenAI/text/recipeTitle " + res.statusText
+    )
+  }
+
+  const GPTTitle: string = await res.json()
+
+  return GPTTitle
 }
 
 async function getRecipeImage(recipeTitle: string): Promise<string> {
@@ -167,6 +201,7 @@ export {
   getRecipeRecord,
   getRecipeText,
   getRecipeImage,
+  getRecipeTitle,
   updateRecipeRecord,
   clearRecipeRecord,
 }

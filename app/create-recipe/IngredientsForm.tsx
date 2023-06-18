@@ -52,16 +52,23 @@ export default function IngredientsForm() {
   })
 
   const createRecipe = async (data: z.infer<typeof FormSchema>) => {
-    const pb = new PocketBase("http://127.0.0.1:8090")
+    router.push(
+      `recipe?${createQueryString(
+        "ingredients",
+        String(data.selectedIngredients)
+      )}`
+    )
 
-    const newRecipeRecord = await pb.collection("recipes").create({
-      data: {},
-      ready: false,
-      ingredients: String(data.selectedIngredients),
-    })
-    // TODO: use redirect instead of router
-    // redirect(`/recipes/${newRecipeRecord.id}`)
-    router.push(`/recipes/${newRecipeRecord.id}`)
+    // const pb = new PocketBase("http://127.0.0.1:8090")
+
+    // const newRecipeRecord = await pb.collection("recipes").create({
+    //   data: {},
+    //   ready: false,
+    //   ingredients: String(data.selectedIngredients),
+    // })
+    // // TODO: use redirect instead of router
+    // // redirect(`/recipes/${newRecipeRecord.id}`)
+    // router.push(`/recipes/${newRecipeRecord.id}`)
   }
 
   return (
@@ -155,4 +162,11 @@ function CheckboxEntry({
       }}
     />
   )
+}
+
+const createQueryString = (name: string, value: string) => {
+  const params = new URLSearchParams()
+  params.set(name, value)
+
+  return params.toString()
 }

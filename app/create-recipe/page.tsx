@@ -12,7 +12,7 @@ import {
 
 import IngredientsForm from "./IngredientsForm"
 
-export default function IngredientsCard() {
+export default function CreateRecipePage() {
   return (
     <Card className="absolute left-1/2 top-1/2 mr-[-50%] w-[380px] -translate-x-1/2 -translate-y-1/2">
       <CardHeader>

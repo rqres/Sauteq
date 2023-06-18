@@ -12,7 +12,7 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar"
 
-import { clearRecipeRecord } from "./actions"
+import { clearRecipeRecord } from "../../actions"
 
 export default function RecipeMenubar({ recipeId }: { recipeId: string }) {
   const regenerateRecipe = async () => {

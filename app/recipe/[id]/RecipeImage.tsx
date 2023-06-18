@@ -2,7 +2,7 @@ import Image from "next/image"
 
 import { DBRecipeRecord } from "@/types/recipe"
 
-import { getRecipeImage, updateRecipeRecord } from "./actions"
+import { getRecipeImage, updateRecipeRecord } from "../../actions"
 
 export default async function RecipeImage({
   recipe,

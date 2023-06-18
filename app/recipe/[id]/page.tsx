@@ -6,11 +6,15 @@ import { Card, CardFooter } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 
+import {
+  getRecipeRecord,
+  getRecipeText,
+  updateRecipeRecord,
+} from "../../actions"
 import RecipeContent from "./RecipeContent"
 import RecipeHeader from "./RecipeHeader"
 import RecipeImage from "./RecipeImage"
 import RecipeMenubar from "./RecipeMenubar"
-import { getRecipeRecord, getRecipeText, updateRecipeRecord } from "./actions"
 
 export default async function RecipePage({
   params,
