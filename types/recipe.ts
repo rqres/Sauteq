@@ -1,5 +1,5 @@
 export interface DBRecipeRecord {
-  id: string
+  id: number
   title: string
   data: {
     "recipe-name": string
@@ -11,8 +11,9 @@ export interface DBRecipeRecord {
     directions: string[]
     optional: string[]
   }
-  rawData: string
-  ready: boolean
+  // rawData: string
+  // ready: boolean
   ingredients: string
-  imageUrl: string
+  image_url: string
+  user_id: string
 }

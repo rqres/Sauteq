@@ -1,17 +1,21 @@
-"use client"
+'use client'
 
-import { RefObject, useRef } from "react"
-import { useRouter } from "next/navigation"
-import ingredientMap from "@/utils/ingredientData"
-import { zodResolver } from "@hookform/resolvers/zod"
-import PocketBase from "pocketbase"
-import ingredients from "public/english_ingredients.json"
-import { UseFormReturn, useForm } from "react-hook-form"
-import * as z from "zod"
+import { RefObject, useContext, useRef, useState } from 'react'
 
-import useSearch from "@/hooks/useSearch"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Input } from "@/components/ui/input"
+import { useRouter } from 'next/navigation'
+
+import ingredientMap from '@/utils/ingredientData'
+import { addRecipe } from '@/utils/supabaseRequests'
+import { zodResolver } from '@hookform/resolvers/zod'
+import ingredients from 'public/english_ingredients.json'
+import { UseFormReturn, useForm } from 'react-hook-form'
+import * as z from 'zod'
+
+import useSearch from '@/hooks/useSearch'
+
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+
 import {
   Form,
   FormControl,
@@ -19,13 +23,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/react-hook-form/form"
+} from '@/components/react-hook-form/form'
+
+import { getRecipeImage, getRecipeText, getRecipeTitle } from '../actions'
 
 const FormSchema = z.object({
   selectedIngredients: z
     .array(z.number())
     .refine((value) => value.some((item) => item), {
-      message: "You have to select at least one item.",
+      message: 'You have to select at least one item.',
     }),
 })
 
@@ -34,19 +40,21 @@ interface Ingredient {
   UsdaId: number
 }
 
+
+
 export default function IngredientsForm() {
   const router = useRouter()
   const searchBoxRef = useRef<HTMLInputElement>(null)
   const { results, searchQuery, setSearchQuery } = useSearch<Ingredient>({
     dataSet: ingredients.data,
-    keys: ["name"],
+    keys: ['name'],
   })
+  const [isLoading, setLoading] = useState(false)
 
   // TODO: use most popular ingredients
   const defaultIngredients: { [UsdaId: number]: string } = Object.fromEntries(
     Object.entries(ingredientMap).slice(0, 6)
   )
-  // const defaultIngredients = ingredientMap
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -56,29 +64,47 @@ export default function IngredientsForm() {
   })
 
   const createRecipe = async (data: z.infer<typeof FormSchema>) => {
+    setLoading(true)
     // sort by id
     data.selectedIngredients.sort(function (a, b) {
       return a - b
     })
 
-    const ingredientsString = data.selectedIngredients.map(
-      (id) => ingredientMap[id]
+    const ingredientsString = String(
+      data.selectedIngredients.map((id) => ingredientMap[id])
     )
+    const recipeTitle = await getRecipeTitle(ingredientsString)
+    console.log(recipeTitle)
+    const recipeBodyPromise = getRecipeText(recipeTitle, ingredientsString)
+    const recipeImagePromise = getRecipeImage(recipeTitle)
+    const [recipeBody, recipeImage] = await Promise.all([
+      recipeBodyPromise,
+      recipeImagePromise,
+    ])
 
-    router.push(
-      `recipe?${createQueryString("ingredients", String(ingredientsString))}`
-    )
+    // if (userId) {
+    // const token = await getToken({ template: 'supabase' })
+    // console.log('User logged in ' + userId)
+    // if (token) {
+    try {
+      const recipe = await addRecipe({
+        ingredients: ingredientsString,
+        title: recipeTitle,
+        recipeBody: recipeBody,
+        image_url: recipeImage,
+      })
+      if (!recipe) throw new Error('Recipe not defined')
 
-    // const pb = new PocketBase("http://127.0.0.1:8090")
+      router.push(`/recipe/${recipe.id}`)
+    } catch (error) {
+      console.error("Couldn't create recipe record " + error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-    // const newRecipeRecord = await pb.collection("recipes").create({
-    //   data: {},
-    //   ready: false,
-    //   ingredients: String(data.selectedIngredients),
-    // })
-    // // TODO: use redirect instead of router
-    // // redirect(`/recipes/${newRecipeRecord.id}`)
-    // router.push(`/recipes/${newRecipeRecord.id}`)
+  if (isLoading) {
+    return <p>Loading...</p>
   }
 
   return (
@@ -91,7 +117,7 @@ export default function IngredientsForm() {
             <FormItem className="flex flex-col gap-4">
               <Input
                 type="search"
-                placeholder={"Search for ingredients..."}
+                placeholder={'Search for ingredients...'}
                 className="h-9"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -107,7 +133,7 @@ export default function IngredientsForm() {
                       searchBoxRef={searchBoxRef}
                     />
                   ))
-                ) : searchQuery === "" ? (
+                ) : searchQuery === '' ? (
                   Object.entries(defaultIngredients).map((ing) => (
                     <CheckboxEntry
                       key={ing[0]}
