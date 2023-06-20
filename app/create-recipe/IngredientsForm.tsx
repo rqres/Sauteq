@@ -1,4 +1,3 @@
-'use client'
 
 import { RefObject, useContext, useRef, useState } from 'react'
 
@@ -27,7 +26,7 @@ import {
 
 import { getRecipeImage, getRecipeText, getRecipeTitle } from '../actions'
 
-const FormSchema = z.object({
+export const FormSchema = z.object({
   selectedIngredients: z
     .array(z.number())
     .refine((value) => value.some((item) => item), {
@@ -40,10 +39,7 @@ interface Ingredient {
   UsdaId: number
 }
 
-
-
-export default function IngredientsForm() {
-  const router = useRouter()
+export default function IngredientsForm({ onSubmit }) {
   const searchBoxRef = useRef<HTMLInputElement>(null)
   const { results, searchQuery, setSearchQuery } = useSearch<Ingredient>({
     dataSet: ingredients.data,
@@ -64,6 +60,7 @@ export default function IngredientsForm() {
   })
 
   const createRecipe = async (data: z.infer<typeof FormSchema>) => {
+    return
     setLoading(true)
     // sort by id
     data.selectedIngredients.sort(function (a, b) {
@@ -95,7 +92,7 @@ export default function IngredientsForm() {
       })
       if (!recipe) throw new Error('Recipe not defined')
 
-      router.push(`/recipe/${recipe.id}`)
+      // router.push(`/recipe/${recipe.id}`)
     } catch (error) {
       console.error("Couldn't create recipe record " + error)
     } finally {
@@ -103,26 +100,30 @@ export default function IngredientsForm() {
     }
   }
 
-  if (isLoading) {
-    return <p>Loading...</p>
-  }
+  // if (isLoading) {
+  //   return <p>Loading...</p>
+  // }
 
   return (
     <Form {...form}>
-      <form id="ingredients-form" onSubmit={form.handleSubmit(createRecipe)}>
+      <form
+        className="flex w-2/3 flex-col items-center space-y-4"
+        id="ingredients-form"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
+        <Input
+          type="search"
+          placeholder={'Search...'}
+          className="h-9"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          ref={searchBoxRef}
+        />
         <FormField
           control={form.control}
           name="selectedIngredients"
           render={() => (
-            <FormItem className="flex flex-col gap-4">
-              <Input
-                type="search"
-                placeholder={'Search for ingredients...'}
-                className="h-9"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                ref={searchBoxRef}
-              />
+            <FormItem className="flex flex-col">
               <div className="space-y-2">
                 {results.length ? (
                   results.map((result) => (

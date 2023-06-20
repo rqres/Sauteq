@@ -2,9 +2,6 @@ import { Suspense } from 'react'
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
-
-import { getRecipe } from '@/utils/supabaseRequests'
 
 import { DBRecipeRecord } from '@/types/recipe'
 
@@ -20,30 +17,25 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 
-import RecipeMenubar from '../RecipeMenubar'
+import RecipeMenubar from './RecipeMenubar'
 
-// export const revalidate = 10 // revalidate this page every 10 seconds
+interface RecipeSheetProps {
+  title: string
+  body: DBRecipeRecord['data']
+  image: string
+}
 
-export default function RecipePage() {
-  // const { userId, getToken } = auth()
-  // const recipe = await getRecipe({ recipeId: params.id })
-  // if (!recipe) {
-  //   notFound()
-  // }
-  // const recipeTitle = recipe.title
-  // const recipeBody = recipe.body
-  // const recipeImage = recipe.image_url
-
+export default function RecipeSheet({ title, body, image }: RecipeSheetProps) {
   return (
     <Card className="mx-auto my-12 w-[400px] md:w-[750px]">
-      <RecipeMenubar recipeRecord={recipe} />
+      <RecipeMenubar />
 
       <CardHeader>
         <div className="space-y-8 md:flex md:gap-x-4 md:space-y-0">
           <div>
             <CardTitle className="mb-6">
               <span className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-                {recipeTitle}
+                {title}
               </span>
             </CardTitle>
             <Suspense
@@ -54,12 +46,12 @@ export default function RecipePage() {
                 </div>
               }
             >
-              <RecipeDescription recipeDescription={recipeBody.description} />
+              <RecipeDescription recipeDescription={body.description} />
             </Suspense>
           </div>
           <div className="md:shrink-0">
             <Suspense fallback={<Skeleton className="h-[350px] w-[350px]" />}>
-              <RecipeImage img={recipeImage || ''} />
+              <RecipeImage img={image || ''} />
             </Suspense>
           </div>
         </div>
@@ -68,7 +60,7 @@ export default function RecipePage() {
       <Separator className="mb-11 mt-7" />
 
       <Suspense fallback={<RecipeContentSkeleton />}>
-        <RecipeContent recipeBody={recipeBody} />
+        <RecipeContent body={body} />
       </Suspense>
 
       <CardFooter>
@@ -81,13 +73,10 @@ export default function RecipePage() {
 }
 
 function RecipeDescription({
-  // promise,
   recipeDescription,
 }: {
-  // promise: Promise<DBRecipeRecord['data']>
   recipeDescription: string
 }) {
-  // const recipeBody = await promise
   return (
     <CardDescription>
       {recipeDescription}
@@ -96,27 +85,19 @@ function RecipeDescription({
   )
 }
 
-function RecipeContent({
-  recipeBody,
-}: // promise,
-{
-  recipeBody: DBRecipeRecord['data']
-  // promise: Promise<DBRecipeRecord['data']>
-}) {
-  // const recipeBody = await promise
-
+function RecipeContent({ body }: { body: DBRecipeRecord['data'] }) {
   return (
     <CardContent>
       <section className="mb-4">
-        <p className=" ">Prep Time: {recipeBody['prep-time']}</p>
-        <p className=" ">Cook Time: {recipeBody['cook-time']}</p>
-        <p className=" ">Serves: {recipeBody['serves']}</p>
+        <p className=" ">Prep Time: {body['prep-time']}</p>
+        <p className=" ">Cook Time: {body['cook-time']}</p>
+        <p className=" ">Serves: {body['serves']}</p>
       </section>
       <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
         Ingredients
       </h4>
       <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
-        {recipeBody.ingredients.map((ingredient) => (
+        {body.ingredients.map((ingredient) => (
           <li key={ingredient}>{ingredient}</li>
         ))}
       </ul>
@@ -125,17 +106,17 @@ function RecipeContent({
         Directions
       </h4>
       <ol className="my-6 ml-6 list-decimal [&>li]:mt-2">
-        {recipeBody.directions.map((direction) => (
+        {body.directions.map((direction) => (
           <li key={direction}>{direction}</li>
         ))}
       </ol>
-      {recipeBody.optional.length > 0 && (
+      {body.optional.length > 0 && (
         <>
           <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
             Optional
           </h4>
           <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
-            {recipeBody.optional.map((optionalStep) => (
+            {body.optional.map((optionalStep) => (
               <li key={optionalStep}>{optionalStep}</li>
             ))}
           </ul>
@@ -189,14 +170,7 @@ function RecipeContentSkeleton() {
   )
 }
 
-function RecipeImage({
-  img,
-}: // promise
-{
-  img: string
-  // promise: Promise<string>
-}) {
-  // const img = await promise
+function RecipeImage({ img }: { img: string }) {
   const imageStyle = {
     borderRadius: '1%',
     border: '1px solid #fff',

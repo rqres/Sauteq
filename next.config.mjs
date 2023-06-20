@@ -3,15 +3,20 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     appDir: true,
-    serverActions: true
+    serverActions: true,
   },
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "oaidalleapiprodscus.blob.core.windows.net",
-        port: "",
-        pathname: "**",
+        protocol: 'https',
+        hostname: 'oaidalleapiprodscus.blob.core.windows.net',
+        port: '',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org',
+        pathname: '**',
       },
     ],
   },

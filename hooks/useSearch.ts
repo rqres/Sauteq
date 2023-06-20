@@ -1,13 +1,14 @@
-import { useMemo, useState } from "react"
-import Fuse from "fuse.js"
+import { useMemo, useState } from 'react'
 
-interface IUseSearchProps<T> {
+import Fuse from 'fuse.js'
+
+interface UseSearchProps<T> {
   dataSet: T[]
   keys: string[]
 }
 
-export default function useSearch<T>({ dataSet, keys }: IUseSearchProps<T>) {
-  const [searchQuery, setSearchQuery] = useState("")
+export default function useSearch<T>({ dataSet, keys }: UseSearchProps<T>) {
+  const [searchQuery, setSearchQuery] = useState('')
 
   const fuse = useMemo(() => {
     const options = {

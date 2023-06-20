@@ -1,58 +1,42 @@
 'use server'
 
-import { Dispatch, SetStateAction } from 'react'
+import { revalidatePath } from 'next/cache'
 
-import { DBRecipeRecord } from '@/types/recipe'
-
-async function getRecipeRecord(recipeId: string) {
-  console.log('>> Fetching recipe record...')
-  const res = await fetch(
-    `http://127.0.0.1:8090/api/collections/recipes/records/${recipeId}`,
-    { cache: 'no-store' }
-  )
-
-  if (!res.ok) {
-    const message = 'Error fetching recipe record from database'
-    throw new Error(message)
-  }
-
-  const recipe: DBRecipeRecord = await res.json()
-
-  return recipe
-}
+import { RecipeBody } from '@/types/recipe'
 
 /**
  * Gets recipe body from GPT API
  *
- * @param recipeIngredients The ingredients required for the recipe
+ * @param ingredients The ingredients required for the recipe
  * @returns The recipe parsed as JSON
  */
-const getRecipeText = async (
-  recipeTitle: string,
-  recipeIngredients: string
-  // progress: number,
-  // setProgress: Dispatch<SetStateAction<number>>
-): Promise<DBRecipeRecord['data']> => {
-  console.warn('Connecting to GPT text')
-  // setProgress(progress + 5)
-  const res = await fetch('http://localhost:3000/api/openai/text', {
+
+export const flushCache = () => {
+  revalidatePath('/eat')
+}
+
+const getRecipeBody = async (
+  title: string,
+  ingredients: string[]
+): Promise<RecipeBody> => {
+  console.warn('Connecting to GPT body')
+  const res = await fetch('http://localhost:3000/api/openai/body', {
     method: 'POST',
     headers: {
       Accept: 'application.json',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      recipeTitle: recipeTitle,
-      promptIngredients: recipeIngredients,
+      title: title,
+      ingredients: ingredients,
     }),
-    cache: 'no-store',
+    // cache: 'no-store',
+    // next: { tags: ['bodies'] },
   })
-  // setProgress(progress + 10)
 
   if (!res.ok) {
     throw new Error('Failed to connect to OpenAI/text ' + res.statusText)
   }
-  // setProgress(progress + 5)
 
   const GPTText: string = await res.json()
   const parsedRecipe = sanitizeAndParseGPTText(GPTText)
@@ -60,16 +44,17 @@ const getRecipeText = async (
   return parsedRecipe
 }
 
-const getRecipeTitle = async (recipeIngredients: string): Promise<string> => {
-  console.warn('Generating recipe title...')
-  const res = await fetch('http://localhost:3000/api/openai/text/recipeTitle', {
+const getRecipeTitle = async (recipeIngredients: string[]): Promise<string> => {
+  console.warn('Connecting to GPT title...')
+  const res = await fetch('http://localhost:3000/api/openai/title', {
     method: 'POST',
     headers: {
       Accept: 'application.json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ promptIngredients: recipeIngredients }),
-    cache: 'no-store',
+    body: JSON.stringify({ ingredients: recipeIngredients }),
+    // cache: 'no-store',
+    // next: { tags: ['titles'] },
   })
 
   if (!res.ok) {
@@ -83,13 +68,8 @@ const getRecipeTitle = async (recipeIngredients: string): Promise<string> => {
   return GPTTitle
 }
 
-const getRecipeImage = async (
-  recipeTitle: string
-  // progress: number,
-  // setProgress: Dispatch<SetStateAction<number>>
-): Promise<string> => {
+const getRecipeImage = async (recipeTitle: string): Promise<string> => {
   console.warn('Connecting to GPT image')
-  // setProgress(progress + 5)
   const res = await fetch('http://localhost:3000/api/openai/image', {
     method: 'POST',
     headers: {
@@ -97,81 +77,19 @@ const getRecipeImage = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ title: recipeTitle }),
-    cache: 'no-store',
+    // cache: 'no-store',
+    // next: { tags: ['images'] },
   })
-  // setProgress(progress + 10)
 
   if (!res.ok) {
     throw new Error('Failed to connect to OpenAI/image ' + res.statusText)
   }
 
   const recipeImageURL: string = await res.json()
-  // setProgress(progress + 5)
 
   return recipeImageURL
 }
-
-async function updateRecipeRecord(
-  recipeId: string,
-  fields: {
-    rawRecipeContent?: string
-    recipeText?: DBRecipeRecord['data']
-    recipeImageURL?: DBRecipeRecord['imageUrl']
-    title?: string
-  }
-): Promise<DBRecipeRecord> {
-  console.log('>> Updating recipe...')
-  const oldRecord = await getRecipeRecord(recipeId)
-  const dbUpdateRes = await fetch(
-    `http://127.0.0.1:8090/api/collections/recipes/records/${recipeId}`,
-    {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        data: fields.recipeText || oldRecord.data,
-        rawData: fields.rawRecipeContent || oldRecord.rawData,
-        imageUrl: fields.recipeImageURL || oldRecord.imageUrl,
-        ready: true,
-        title: fields.title || oldRecord.title,
-      }),
-    }
-  )
-
-  if (!dbUpdateRes.ok) {
-    throw new Error('Failed to update Recipe Record' + dbUpdateRes.statusText)
-  }
-
-  const updatedRecord: DBRecipeRecord = await dbUpdateRes.json()
-  return updatedRecord
-}
-
-async function clearRecipeRecord(recipeId: string): Promise<void> {
-  console.log('>> Clearing recipe...')
-  const dbClearRes = await fetch(
-    `http://127.0.0.1:8090/api/collections/recipes/records/${recipeId}`,
-    {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        data: {},
-        imageUrl: '',
-        title: '',
-      }),
-    }
-  )
-
-  if (!dbClearRes.ok) {
-    throw new Error('Failed to clear Recipe Record' + dbClearRes.statusText)
-  }
-}
-
-function sanitizeAndParseGPTText(
-  recipeContent: string
-): DBRecipeRecord['data'] {
+function sanitizeAndParseGPTText(recipeContent: string): RecipeBody {
   const startIndex = recipeContent.indexOf('{')
 
   // Find the last occurrence of }
@@ -188,8 +106,8 @@ function sanitizeAndParseGPTText(
 
   try {
     // Validate the JSON object
-    const jsonObject: DBRecipeRecord['data'] = JSON.parse(sanitizedObject)
-    console.log('Valid JSON object:', jsonObject)
+    const jsonObject: RecipeBody = JSON.parse(sanitizedObject)
+    // console.log('Valid JSON object:', jsonObject)
     removeListNumbering(jsonObject.directions)
     return jsonObject
   } catch (error) {
@@ -198,9 +116,7 @@ function sanitizeAndParseGPTText(
   }
 }
 
-function removeListNumbering(
-  recipeDirections: DBRecipeRecord['data']['directions']
-): void {
+function removeListNumbering(recipeDirections: RecipeBody['directions']): void {
   const isDigit = (char: string) => {
     return !isNaN(parseInt(char)) && !isNaN(Number(char))
   }
@@ -214,11 +130,4 @@ function removeListNumbering(
   }
 }
 
-export {
-  // getRecipeRecord,
-  getRecipeText,
-  getRecipeImage,
-  getRecipeTitle,
-  // updateRecipeRecord,
-  // clearRecipeRecord,
-}
+export { getRecipeBody, getRecipeImage, getRecipeTitle }

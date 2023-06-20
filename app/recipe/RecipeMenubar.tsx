@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 import { addRecipe } from '@/utils/supabaseRequests'
-import { useAuth } from '@clerk/nextjs'
+// import { useAuth } from '@clerk/nextjs'
 import { Bookmark, RefreshCcw, Share } from 'lucide-react'
 
 import { Database } from '@/types/supabase'
