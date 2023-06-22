@@ -1,10 +1,16 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import Image from 'next/image'
 
 import ingredientMap from '@/utils/ingredientData'
+import {
+  addRecipe,
+  linkRecipeToUser,
+  toggleBookmark,
+} from '@/utils/supabaseRequests'
+import { useAuth } from '@clerk/nextjs'
 import ingredients from 'public/english_ingredients.json'
 
 import { RecipeBody } from '@/types/recipe'
@@ -21,6 +27,7 @@ import {
 const defaultIngredients = ingredients.data.slice(0, 6)
 
 export default function EatPage() {
+  const { isLoaded, userId, sessionId, getToken } = useAuth()
   const { searchQuery, setSearchQuery, results } = useSearch({
     dataSet: ingredients.data,
     keys: ['name'],
@@ -29,7 +36,10 @@ export default function EatPage() {
   const [title, setTitle] = useState<string>('')
   const [body, setBody] = useState<RecipeBody | null>(null)
   const [image, setImage] = useState<string>('')
+  const [error, setError] = useState<string>('')
+  const [isBookmark, setBookmark] = useState<boolean>(false)
   const searchBoxRef = useRef<HTMLInputElement | null>(null)
+  const recipeRef = useRef<number | null>(null)
 
   useEffect(() => {
     const unloadCallback = (event: BeforeUnloadEvent) => {
@@ -43,7 +53,7 @@ export default function EatPage() {
     return () => window.removeEventListener('beforeunload', unloadCallback)
   }, [title])
 
-  const generateRecipe = async () => {
+  const generateRecipe = useCallback(async () => {
     selection.sort(function (a, b) {
       return a - b
     })
@@ -51,6 +61,10 @@ export default function EatPage() {
     const ingredients = selection.map((id) => ingredientMap[id])
 
     const rTitle = await getRecipeTitle(ingredients)
+
+    if (!rTitle) {
+      throw new Error('Error generating title')
+    }
     setTitle(rTitle)
     console.log(rTitle)
 
@@ -58,8 +72,69 @@ export default function EatPage() {
       await getRecipeBody(rTitle, ingredients),
       await getRecipeImage(rTitle),
     ])
+    if (!rBody) {
+      throw new Error('Error generating body')
+    }
+    if (!rImage) {
+      throw new Error('Error generating image')
+    }
     setBody(rBody)
     setImage(rImage)
+
+    let token = undefined
+    if (isLoaded && userId) {
+      const tkn = await getToken({ template: 'supabase' })
+      token = tkn ? tkn : undefined
+    }
+
+    // save to db
+    const newRecipe = await addRecipe({
+      ingredients: String(ingredients),
+      title: rTitle,
+      recipeBody: rBody,
+      image_url: rImage,
+      token: token,
+    })
+
+    if (newRecipe) {
+      console.log('Saved recipe to db')
+      recipeRef.current = newRecipe.id
+    }
+  }, [getToken, isLoaded, selection, userId])
+
+  const bookmarkRecipe = async () => {
+    flushCache()
+    if (!isLoaded || !userId) {
+      setError('You must be logged in to perform this action')
+      return
+    }
+
+    if (!recipeRef || !recipeRef.current) {
+      console.error('No recipe')
+      return
+    }
+    console.log('Recipe id: ' + recipeRef.current)
+    const token = await getToken({ template: 'supabase' })
+
+    if (!token) {
+      console.error('Unable to fetch token')
+      setError('You must be logged in to perform this action')
+      return
+    }
+
+    linkRecipeToUser({
+      recipeId: recipeRef.current,
+      userId: userId,
+      token: token,
+    })
+
+    toggleBookmark({
+      recipeId: recipeRef.current,
+      token: token,
+      toggle: !isBookmark,
+    })
+
+    setBookmark(!isBookmark)
   }
 
   return (
@@ -142,6 +217,20 @@ export default function EatPage() {
         </>
       )}
       {image && <Image src={image} width={300} height={300} alt={title} />}
+      {title && body && image && (
+        <button
+          className={`border px-4 py-2 ${
+            isBookmark ? 'bg-pink-500' : 'bg-pink-200'
+          }`}
+          onClick={(e) => {
+            e.preventDefault()
+            bookmarkRecipe()
+          }}
+        >
+          Bookmark
+        </button>
+      )}
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   )
 }

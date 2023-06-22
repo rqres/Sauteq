@@ -1,4 +1,6 @@
-import { DBRecipeRecord } from '@/types/recipe'
+'use server'
+
+import { RecipeBody } from '@/types/recipe'
 
 import supabaseClient from './supabaseClient'
 
@@ -9,24 +11,19 @@ export async function getRecipe({
   recipeId: number
   token?: string
 }) {
-  const supabase = await supabaseClient(/*token*/)
+  const supabase = supabaseClient(token)
 
-  let { data: recipe, error } = await supabase
+  const { data, error } = await supabase
     .from('recipes')
     .select('*')
     .eq('id', recipeId)
-    .limit(1)
 
   if (error) {
-    throw error
+    console.error(error)
+    return
   }
 
-  // if (error) {
-  //   console.error(error)
-  //   return
-  // }
-
-  return recipe ? recipe[0] : null
+  return data ? data[0] : null
 }
 
 export async function addRecipe({
@@ -35,18 +32,16 @@ export async function addRecipe({
   title,
   recipeBody,
   image_url,
-  user_id,
 }: {
   token?: string
   ingredients: string
   title: string
-  recipeBody: DBRecipeRecord['data']
-  image_url?: string
-  user_id?: string
+  recipeBody: RecipeBody
+  image_url: string
 }) {
-  const supabase = await supabaseClient(/*token*/)
+  const supabase = supabaseClient(token)
 
-  const { data: recipe, error } = await supabase
+  const { data, error } = await supabase
     .from('recipes')
     .insert([
       {
@@ -54,18 +49,62 @@ export async function addRecipe({
         title: title,
         body: recipeBody,
         image_url: image_url,
-        user_id: user_id,
       },
     ])
     .select()
 
   if (error) {
-    throw error
+    console.error(error)
+    return
   }
 
-  // if (error) {
-  //   console.error(error)
-  //   return
-  // }
-  return recipe[0]
+  return data[0]
+}
+
+export async function linkRecipeToUser({
+  recipeId,
+  userId,
+  token,
+}: {
+  recipeId: number
+  userId: string
+  token: string
+}) {
+  const supabase = supabaseClient(token)
+  const { data, error } = await supabase
+    .from('recipes')
+    .update({ user_id: userId })
+    .eq('id', recipeId)
+    .select()
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  return data[0]
+}
+
+export async function toggleBookmark({
+  recipeId,
+  token,
+  toggle,
+}: {
+  recipeId: number
+  token: string
+  toggle: boolean
+}) {
+  const supabase = supabaseClient(token)
+  const { data, error } = await supabase
+    .from('recipes')
+    .update({ bookmark: toggle })
+    .eq('id', recipeId)
+    .select()
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  return data[0]
 }

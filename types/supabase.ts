@@ -1,4 +1,4 @@
-import { DBRecipeRecord } from './recipe'
+import { RecipeBody } from './recipe'
 
 export type Json =
   | string
@@ -13,31 +13,34 @@ export interface Database {
     Tables: {
       recipes: {
         Row: {
-          body: DBRecipeRecord['data']
+          body: RecipeBody
+          bookmark: boolean
           created_at: string | null
           id: number
-          image_url: string | null
+          image_url: string
           ingredients: string
           title: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
-          body: DBRecipeRecord['data']
+          body: RecipeBody
+          bookmark?: boolean
           created_at?: string | null
           id?: number
-          image_url?: string | null
+          image_url: string
           ingredients: string
           title?: string
-          user_id?: string | null
+          user_id?: string
         }
         Update: {
-          body?: DBRecipeRecord['data']
+          body?: RecipeBody
+          bookmark?: boolean
           created_at?: string | null
           id?: number
-          image_url?: string | null
+          image_url?: string
           ingredients?: string
           title?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }

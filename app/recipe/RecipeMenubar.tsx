@@ -8,7 +8,7 @@ import { addRecipe } from '@/utils/supabaseRequests'
 // import { useAuth } from '@clerk/nextjs'
 import { Bookmark, RefreshCcw, Share } from 'lucide-react'
 
-import { Database } from '@/types/supabase'
+import { Database } from '@/types/oldsupabase'
 
 import { Button, buttonVariants } from '@/components/ui/button'
 import {

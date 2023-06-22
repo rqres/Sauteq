@@ -2,7 +2,7 @@
 
 import { Bookmark, RefreshCcw, Share } from 'lucide-react'
 
-import { Database } from '@/types/supabase'
+import { Database } from '@/types/oldsupabase'
 
 import {
   Menubar,

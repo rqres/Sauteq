@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-// import { UserButton } from "@clerk/nextjs"
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 import { siteConfig } from '@/config/site'
 
@@ -33,7 +33,14 @@ export function SiteHeader() {
               </div>
             </Link>
             <ThemeToggle />
-            {/* <UserButton afterSignOutUrl="/" /> */}
+            <SignedIn>
+              {/* Mount the UserButton component */}
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+            <SignedOut>
+              {/* Signed out users get sign in button */}
+              <SignInButton />
+            </SignedOut>
           </nav>
         </div>
       </div>
