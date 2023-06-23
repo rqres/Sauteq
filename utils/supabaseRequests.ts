@@ -26,6 +26,28 @@ export async function getRecipe({
   return data ? data[0] : null
 }
 
+export async function getUserRecipes({
+  userId,
+  token,
+}: {
+  userId: string
+  token: string
+}) {
+  const supabase = supabaseClient(token)
+
+  const { data, error } = await supabase
+    .from('recipes')
+    .select('*')
+    .eq('user_id', userId)
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  return data
+}
+
 export async function addRecipe({
   token,
   ingredients,

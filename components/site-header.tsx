@@ -35,7 +35,7 @@ export function SiteHeader() {
             <ThemeToggle />
             <SignedIn>
               {/* Mount the UserButton component */}
-              <UserButton afterSignOutUrl="/" />
+              <UserButton showName={true} afterSignOutUrl="/" />
             </SignedIn>
             <SignedOut>
               {/* Signed out users get sign in button */}
