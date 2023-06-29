@@ -1,11 +1,10 @@
-import { Suspense } from 'react'
+import { MouseEvent } from 'react'
 
 import Image from 'next/image'
-import Link from 'next/link'
 
-import { DBRecipeRecord } from '@/types/recipe'
+import { RecipeBody } from '@/types/recipe'
 
-import { buttonVariants } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -21,52 +20,88 @@ import RecipeMenubar from './RecipeMenubar'
 
 interface RecipeSheetProps {
   title: string
-  body: DBRecipeRecord['data']
+  body: RecipeBody
   image: string
+  regen: (e: MouseEvent<HTMLButtonElement>) => void
+  bookmark: (e: MouseEvent<HTMLButtonElement>) => void
+  isBookmark: boolean
+  loading: boolean
 }
 
-export default function RecipeSheet({ title, body, image }: RecipeSheetProps) {
+export default function RecipeSheet({
+  title,
+  body,
+  image,
+  regen,
+  bookmark,
+  isBookmark,
+  loading,
+}: RecipeSheetProps) {
   return (
-    <Card className="mx-auto my-12 w-[400px] md:w-[750px]">
-      <RecipeMenubar />
+    <Card className="my-8 w-[400px] place-self-center md:w-[750px]">
+      <RecipeMenubar
+        regen={regen}
+        bookmark={bookmark}
+        isBookmark={isBookmark}
+        loading={loading}
+      />
 
       <CardHeader>
-        <div className="space-y-8 md:flex md:gap-x-4 md:space-y-0">
+        <div className="space-y-8 md:flex md:justify-between md:gap-x-4 md:space-y-0">
           <div>
             <CardTitle className="mb-6">
-              <span className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-                {title}
-              </span>
+              {loading ? (
+                <Skeleton className="h-20 w-full md:w-64" />
+              ) : (
+                <span className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+                  {title}
+                </span>
+              )}
             </CardTitle>
-            <Suspense
-              fallback={
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-full" />
-                </div>
-              }
-            >
+            {loading ? (
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+              </div>
+            ) : (
               <RecipeDescription recipeDescription={body.description} />
-            </Suspense>
+            )}
           </div>
           <div className="md:shrink-0">
-            <Suspense fallback={<Skeleton className="h-[350px] w-[350px]" />}>
+            {loading ? (
+              <Skeleton className="h-[350px] w-[350px]" />
+            ) : (
               <RecipeImage img={image || ''} />
-            </Suspense>
+            )}
           </div>
         </div>
       </CardHeader>
 
       <Separator className="mb-11 mt-7" />
 
-      <Suspense fallback={<RecipeContentSkeleton />}>
-        <RecipeContent body={body} />
-      </Suspense>
+      {loading ? <RecipeContentSkeleton /> : <RecipeContent body={body} />}
 
       <CardFooter>
-        <Link href="/" className={buttonVariants()}>
-          Back to home
-        </Link>
+        <Button onClick={() => window.location.reload()}>
+          <div className="flex justify-between gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-move-left"
+            >
+              <path d="M6 8L2 12L6 16" />
+              <path d="M2 12H22" />
+            </svg>
+            Create another
+          </div>
+        </Button>
       </CardFooter>
     </Card>
   )
@@ -77,15 +112,10 @@ function RecipeDescription({
 }: {
   recipeDescription: string
 }) {
-  return (
-    <CardDescription>
-      {recipeDescription}
-      {/* TODO: display this differently */}
-    </CardDescription>
-  )
+  return <CardDescription>{recipeDescription}</CardDescription>
 }
 
-function RecipeContent({ body }: { body: DBRecipeRecord['data'] }) {
+function RecipeContent({ body }: { body: RecipeBody }) {
   return (
     <CardContent>
       <section className="mb-4">

@@ -11,7 +11,7 @@ export default function IndexPage() {
         <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
           {siteConfig.description}
         </h1>
-        <p className="max-w-[700px] text-lg text-muted-foreground">
+        <p className="text-muted-foreground max-w-[700px] text-lg">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sit amet
           imperdiet nibh. Morbi elementum, erat feugiat maximus euismod, eros
           lectus ullamcorper risus, vitae tempor mauris arcu ac eros. Cras

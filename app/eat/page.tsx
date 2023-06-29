@@ -1,8 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
-
-import Image from 'next/image'
+import { MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
 
 import ingredientMap from '@/utils/ingredientData'
 import {
@@ -11,11 +9,21 @@ import {
   toggleBookmark,
 } from '@/utils/supabaseRequests'
 import { useAuth } from '@clerk/nextjs'
+import { X } from 'lucide-react'
 import ingredients from 'public/english_ingredients.json'
 
 import { RecipeBody } from '@/types/recipe'
 
 import useSearch from '@/hooks/useSearch'
+
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 import {
   flushCache,
@@ -23,6 +31,7 @@ import {
   getRecipeImage,
   getRecipeTitle,
 } from '../actions'
+import RecipeSheet from './RecipeSheet'
 
 const defaultIngredients = ingredients.data.slice(0, 6)
 
@@ -33,10 +42,13 @@ export default function EatPage() {
     keys: ['name'],
   })
   const [selection, setSelection] = useState<number[]>([])
+  const [recipeView, setRecipeView] = useState<boolean>(false)
+  const [formView, setFormView] = useState<boolean>(true)
   const [title, setTitle] = useState<string>('')
   const [body, setBody] = useState<RecipeBody | null>(null)
   const [image, setImage] = useState<string>('')
   const [error, setError] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
   const [isBookmark, setBookmark] = useState<boolean>(false)
   const searchBoxRef = useRef<HTMLInputElement | null>(null)
   const recipeRef = useRef<number | null>(null)
@@ -102,6 +114,17 @@ export default function EatPage() {
     }
   }, [getToken, isLoaded, selection, userId])
 
+  const regenRecipe = async (e: MouseEvent<HTMLButtonElement>) => {
+    setLoading(true)
+    // setTitle('')
+    // setBody(null)
+    // setImage('')
+    e.preventDefault()
+    flushCache()
+    await generateRecipe()
+    setLoading(false)
+  }
+
   const bookmarkRecipe = async () => {
     flushCache()
     if (!isLoaded || !userId) {
@@ -113,7 +136,7 @@ export default function EatPage() {
       console.error('No recipe')
       return
     }
-    console.log('Recipe id: ' + recipeRef.current)
+    console.log('Bookmarking recipe: ' + recipeRef.current)
     const token = await getToken({ template: 'supabase' })
 
     if (!token) {
@@ -138,99 +161,106 @@ export default function EatPage() {
   }
 
   return (
-    <div>
-      <p>Choose ingredients</p>
-      <input
-        type="search"
-        placeholder={'Search...'}
-        className="h-9"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        ref={searchBoxRef}
-      />
-      {results.length ? (
-        results.map((result) => (
-          <div className="flex" key={result.UsdaId}>
-            <input
-              type="checkbox"
-              id={result.name}
-              onChange={(event) => {
-                event.target.checked
-                  ? setSelection([...selection, result.UsdaId])
-                  : setSelection(
-                      selection.filter((val) => val !== result.UsdaId)
-                    )
-                searchBoxRef?.current?.focus()
-                searchBoxRef?.current?.select()
+    <>
+      {formView ? (
+        <div className="mt-12 flex flex-col items-center justify-center gap-8 md:mt-0 md:h-full md:flex-row">
+          <>
+            <Card className="w-80">
+              <CardHeader>
+                <CardTitle>Card Title</CardTitle>
+                <CardDescription>Card Description</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <input
+                  type="search"
+                  placeholder={'Search...'}
+                  className="h-9"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  ref={searchBoxRef}
+                />
+                <div className="h-40 overflow-y-auto rounded-xl bg-stone-100 px-5 py-3">
+                  {results.length > 0 &&
+                    results.map((result) => (
+                      <div className="space-x-2" key={result.UsdaId}>
+                        <input
+                          type="checkbox"
+                          id={result.name}
+                          checked={selection.includes(result.UsdaId)}
+                          onChange={(event) => {
+                            event.target.checked
+                              ? setSelection([...selection, result.UsdaId])
+                              : setSelection(
+                                  selection.filter(
+                                    (val) => val !== result.UsdaId
+                                  )
+                                )
+                            searchBoxRef?.current?.focus()
+                            searchBoxRef?.current?.select()
+                          }}
+                        />
+                        <label htmlFor={result.name} className="lowercase">
+                          {result.name}
+                        </label>
+                      </div>
+                    ))}
+                </div>
+              </CardContent>
+            </Card>
+            <div className="flex flex-col items-center">
+              <div className="flex flex-col-reverse gap-2 md:grid md:grid-flow-col md:grid-rows-4">
+                {selection.length > 0 &&
+                  selection.slice(0, 12).map((ingredientId) => (
+                    <div
+                      className="flex w-40 items-center justify-between gap-4 rounded border px-4 py-2 md:w-32 lg:w-40"
+                      key={ingredientId}
+                    >
+                      <X
+                        className="cursor-pointer rounded-xl border p-1 hover:bg-gray-300"
+                        onClick={() =>
+                          setSelection(
+                            selection.filter((val) => val !== ingredientId)
+                          )
+                        }
+                      />
+                      <p className="w-20 truncate text-end text-sm lowercase">
+                        {ingredientMap[ingredientId]}
+                      </p>
+                    </div>
+                  ))}
+              </div>
+              {selection.length > 12 && <p className="mt-4">& more</p>}
+            </div>
+            <Button
+              className="absolute bottom-1 right-1 md:bottom-14 md:right-44"
+              onClick={(e) => {
+                setRecipeView(true)
+                setFormView(false)
+                e.preventDefault()
+                generateRecipe()
               }}
-            />
-            <label htmlFor={result.name}>{result.name}</label>
-          </div>
-        ))
-      ) : searchQuery === '' ? (
-        defaultIngredients.map((ing) => (
-          <div className="flex" key={ing.UsdaId}>
-            <input
-              type="checkbox"
-              id={ing.name}
-              onChange={(event) => {
-                event.target.checked
-                  ? setSelection([...selection, ing.UsdaId])
-                  : setSelection(selection.filter((val) => val !== ing.UsdaId))
-              }}
-            />
-            <label htmlFor={ing.name}>{ing.name}</label>
-          </div>
-        ))
+            >
+              Go
+            </Button>
+          </>
+        </div>
       ) : (
-        // TODO: ADD INGREDIENT TO DB?
-        <p>No Results</p>
+        // recipeView
+        <div className="flex justify-center ">
+          {/* {loading && <Loader2 size={35} className="animate-spin" />} */}
+          {recipeView && title && body && image && (
+            <RecipeSheet
+              title={title}
+              body={body}
+              image={image}
+              regen={regenRecipe}
+              bookmark={bookmarkRecipe}
+              isBookmark={isBookmark}
+              loading={loading}
+            />
+          )}
+        </div>
       )}
-      <button
-        className="border bg-slate-200 px-4 py-2"
-        onClick={(e) => {
-          e.preventDefault()
-          generateRecipe()
-        }}
-      >
-        Go
-      </button>
-      <button
-        className="border bg-blue-200 px-4 py-2"
-        onClick={(e) => {
-          e.preventDefault()
-          flushCache()
-          setTitle('')
-          setBody(null)
-          setImage('')
-          generateRecipe()
-        }}
-      >
-        Regenerate
-      </button>
-      {title && <p>{title}</p>}
-      {body && (
-        <>
-          <p>{body.description}</p>
-          <p>{body['cook-time']}</p>
-          <p>{body['prep-time']}</p>
-        </>
-      )}
-      {image && <Image src={image} width={300} height={300} alt={title} />}
-      {title && body && image && (
-        <button
-          className={`border px-4 py-2 ${
-            isBookmark ? 'bg-pink-500' : 'bg-pink-200'
-          }`}
-          onClick={(e) => {
-            e.preventDefault()
-            bookmarkRecipe()
-          }}
-        >
-          Bookmark
-        </button>
-      )}
-      {error && <p className="text-red-500">{error}</p>}
-    </div>
+    </>
   )
 }

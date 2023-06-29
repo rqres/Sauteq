@@ -23,7 +23,7 @@ export default function useSearch<T>({ dataSet, keys }: UseSearchProps<T>) {
   const results = useMemo(() => {
     if (!searchQuery) return []
 
-    const searchResults = fuse.search(searchQuery, { limit: 6 })
+    const searchResults = fuse.search(searchQuery, { limit: 10 })
 
     return searchResults.map((sr) => sr.item)
   }, [fuse, searchQuery])

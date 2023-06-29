@@ -16,7 +16,6 @@ const systemPrompt =
 
 export const POST = async (req: NextRequest) => {
   const { ingredients }: Payload = await req.json()
-  // const ingredients = String(data.promptIngredients)
 
   if (!ingredients || !ingredients.length) {
     return NextResponse.json('No ingredients provided', { status: 400 })
