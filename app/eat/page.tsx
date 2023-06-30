@@ -9,6 +9,7 @@ import {
   toggleBookmark,
 } from '@/utils/supabaseRequests'
 import { useAuth } from '@clerk/nextjs'
+import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import ingredients from 'public/english_ingredients.json'
 
@@ -27,6 +28,8 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+
+import { AnimatedIngredientItem } from '@/components/AnimatedIngredientItem'
 
 import {
   flushCache,
@@ -168,89 +171,98 @@ export default function EatPage() {
   return (
     <>
       {formView ? (
-        <div className="mt-12 flex flex-col items-center justify-center gap-8 md:mt-0 md:h-full md:flex-row">
-          <Card className="w-80">
-            <CardHeader>
-              <CardTitle>Choose ingredients</CardTitle>
-              <CardDescription>
-                What do you have lying in your pantry?
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Input
-                type="search"
-                placeholder={'Search...'}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                ref={searchBoxRef}
-              />
-              <div className="h-40 space-y-2 overflow-y-auto pl-1">
-                {results.length > 0 &&
-                  results.map((result) => (
-                    <div
-                      className="flex items-center space-x-2"
-                      key={result.UsdaId}
-                    >
-                      <Checkbox
-                        id={result.name}
-                        checked={selection.includes(result.UsdaId)}
-                        onCheckedChange={(checked) => {
-                          checked
-                            ? setSelection([...selection, result.UsdaId])
-                            : setSelection(
-                                selection.filter((val) => val !== result.UsdaId)
-                              )
-                          searchBoxRef?.current?.focus()
-                          searchBoxRef?.current?.select()
-                        }}
-                      />
-                      <Label
-                        htmlFor={result.name}
-                        className="text-sm lowercase"
-                      >
-                        {result.name}
-                      </Label>
-                    </div>
+        <AnimatePresence initial={false}>
+          <div className="mt-12 flex flex-col items-center justify-center gap-8 md:mt-0 md:h-full md:flex-row">
+            <motion.div layout>
+              <Card className="w-80">
+                <CardHeader>
+                  <CardTitle>Choose ingredients</CardTitle>
+                  <CardDescription>
+                    What do you have lying in your pantry?
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Input
+                    type="search"
+                    placeholder={'Search...'}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    ref={searchBoxRef}
+                  />
+                  <div className="h-40 space-y-2 overflow-y-auto pl-1">
+                    {results.length > 0 &&
+                      results.map((result) => (
+                        <div
+                          className="flex items-center space-x-2"
+                          key={result.UsdaId}
+                        >
+                          <Checkbox
+                            className="transition"
+                            id={result.name}
+                            checked={selection.includes(result.UsdaId)}
+                            onCheckedChange={(checked) => {
+                              checked
+                                ? setSelection([...selection, result.UsdaId])
+                                : setSelection(
+                                    selection.filter(
+                                      (val) => val !== result.UsdaId
+                                    )
+                                  )
+                              searchBoxRef?.current?.focus()
+                              searchBoxRef?.current?.select()
+                            }}
+                          />
+                          <Label
+                            htmlFor={result.name}
+                            className="text-sm lowercase"
+                          >
+                            {result.name}
+                          </Label>
+                        </div>
+                      ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+            <div className="flex flex-col items-center">
+              <div className="flex flex-col-reverse gap-2 md:grid md:grid-flow-col md:grid-rows-4">
+                {selection.length > 0 &&
+                  //TODO: reverse?
+                  selection.slice(0, 12).map((ingredientId) => (
+                    <AnimatedIngredientItem key={ingredientId}>
+                      <div className="flex w-44 items-center gap-4 rounded-xl border px-4 py-2 transition">
+                        <X
+                          className="cursor-pointer rounded-xl border p-1 hover:bg-gray-300"
+                          onClick={() =>
+                            setSelection(
+                              selection.filter((val) => val !== ingredientId)
+                            )
+                          }
+                        />
+                        <Label className="w-24 lowercase">
+                          {ingredientMap[ingredientId]}
+                        </Label>
+                      </div>
+                    </AnimatedIngredientItem>
                   ))}
               </div>
-            </CardContent>
-          </Card>
-          <div className="flex flex-col items-center">
-            <div className="flex flex-col-reverse gap-2 md:grid md:grid-flow-col md:grid-rows-4">
-              {selection.length > 0 &&
-                selection.slice(0, 12).map((ingredientId) => (
-                  <div
-                    className="flex w-44 items-center gap-4 rounded-xl border px-4 py-2"
-                    key={ingredientId}
-                  >
-                    <X
-                      className="cursor-pointer rounded-xl border p-1 hover:bg-gray-300"
-                      onClick={() =>
-                        setSelection(
-                          selection.filter((val) => val !== ingredientId)
-                        )
-                      }
-                    />
-                    <Label className="w-24 lowercase">
-                      {ingredientMap[ingredientId]}
-                    </Label>
-                  </div>
-                ))}
+              {selection.length > 12 && <p className="mt-4">& more</p>}
             </div>
-            {selection.length > 12 && <p className="mt-4">& more</p>}
+            <Button
+              className={`absolute bottom-1 right-1 transition-opacity ease-in-out md:bottom-14 md:right-44 ${
+                selection.length > 0 ? 'opacity-100' : 'opacity-0'
+              }`}
+              onClick={(e) => {
+                setRecipeView(true)
+                setFormView(false)
+                e.preventDefault()
+                generateRecipe()
+              }}
+            >
+              Go
+            </Button>
           </div>
-          <Button
-            className="absolute bottom-1 right-1 md:bottom-14 md:right-44"
-            onClick={(e) => {
-              setRecipeView(true)
-              setFormView(false)
-              e.preventDefault()
-              generateRecipe()
-            }}
-          >
-            Go
-          </Button>
-        </div>
+        </AnimatePresence>
       ) : (
         // recipeView
         <div className="flex justify-center ">

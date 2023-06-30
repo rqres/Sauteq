@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { MouseEvent } from 'react'
 
@@ -33,7 +33,9 @@ export default function RecipeMenubar({
         <MenubarTrigger
           disabled={loading}
           className={`${
-            loading ? 'cursor-default hover:bg-white' : 'cursor-pointer'
+            loading
+              ? 'cursor-not-allowed hover:bg-transparent'
+              : 'cursor-pointer'
           }`}
         >
           <Share />
@@ -44,7 +46,7 @@ export default function RecipeMenubar({
           onClick={regen}
           className={`${
             loading
-              ? 'animate-spin cursor-default hover:bg-white'
+              ? 'animate-spin cursor-not-allowed hover:bg-transparent'
               : 'animate-none cursor-pointer'
           }`}
           disabled={loading}
@@ -57,10 +59,16 @@ export default function RecipeMenubar({
           onClick={bookmark}
           disabled={loading}
           className={`${
-            loading ? 'cursor-default hover:bg-white' : 'cursor-pointer'
+            loading
+              ? 'cursor-not-allowed hover:bg-transparent'
+              : 'cursor-pointer'
           }`}
         >
-          <Bookmark fill="black" fillOpacity={Number(isBookmark)} />
+          <Bookmark
+            className={`${
+              isBookmark ? 'fill-black' : 'fill-transparent'
+            } transition`}
+          />
         </MenubarTrigger>
       </MenubarMenu>
     </Menubar>

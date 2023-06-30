@@ -87,7 +87,7 @@ export default function RecipeSheet({
       {!body ? <RecipeContentSkeleton /> : <RecipeContent body={body} />}
 
       <CardFooter>
-        <Button onClick={() => window.location.reload()}>
+        <Button className={`${loading ? 'cursor-not-allowed' : 'cursor-pointer'}`} disabled={loading} onClick={() => window.location.reload()}>
           <div className="flex justify-between gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
