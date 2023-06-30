@@ -24,6 +24,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 import {
   flushCache,
@@ -66,6 +69,7 @@ export default function EatPage() {
   }, [title])
 
   const generateRecipe = useCallback(async () => {
+    setLoading(true)
     selection.sort(function (a, b) {
       return a - b
     })
@@ -111,6 +115,7 @@ export default function EatPage() {
       console.log('Saved recipe to db')
       recipeRef.current = newRecipe.id
     }
+    setLoading(false)
   }, [getToken, isLoaded, selection, userId])
 
   const regenRecipe = async (e: MouseEvent<HTMLButtonElement>) => {
@@ -164,85 +169,87 @@ export default function EatPage() {
     <>
       {formView ? (
         <div className="mt-12 flex flex-col items-center justify-center gap-8 md:mt-0 md:h-full md:flex-row">
-          <>
-            <Card className="w-80">
-              <CardHeader>
-                <CardTitle>Card Title</CardTitle>
-                <CardDescription>Card Description</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <input
-                  type="search"
-                  placeholder={'Search...'}
-                  className="h-9"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  ref={searchBoxRef}
-                />
-                <div className="h-40 overflow-y-auto rounded-xl bg-stone-100 px-5 py-3">
-                  {results.length > 0 &&
-                    results.map((result) => (
-                      <div className="space-x-2" key={result.UsdaId}>
-                        <input
-                          type="checkbox"
-                          id={result.name}
-                          checked={selection.includes(result.UsdaId)}
-                          onChange={(event) => {
-                            event.target.checked
-                              ? setSelection([...selection, result.UsdaId])
-                              : setSelection(
-                                  selection.filter(
-                                    (val) => val !== result.UsdaId
-                                  )
-                                )
-                            searchBoxRef?.current?.focus()
-                            searchBoxRef?.current?.select()
-                          }}
-                        />
-                        <label htmlFor={result.name} className="lowercase">
-                          {result.name}
-                        </label>
-                      </div>
-                    ))}
-                </div>
-              </CardContent>
-            </Card>
-            <div className="flex flex-col items-center">
-              <div className="flex flex-col-reverse gap-2 md:grid md:grid-flow-col md:grid-rows-4">
-                {selection.length > 0 &&
-                  selection.slice(0, 12).map((ingredientId) => (
+          <Card className="w-80">
+            <CardHeader>
+              <CardTitle>Choose ingredients</CardTitle>
+              <CardDescription>
+                What do you have lying in your pantry?
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Input
+                type="search"
+                placeholder={'Search...'}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                ref={searchBoxRef}
+              />
+              <div className="h-40 space-y-2 overflow-y-auto pl-1">
+                {results.length > 0 &&
+                  results.map((result) => (
                     <div
-                      className="flex w-40 items-center justify-between gap-4 rounded border px-4 py-2 md:w-32 lg:w-40"
-                      key={ingredientId}
+                      className="flex items-center space-x-2"
+                      key={result.UsdaId}
                     >
-                      <X
-                        className="cursor-pointer rounded-xl border p-1 hover:bg-gray-300"
-                        onClick={() =>
-                          setSelection(
-                            selection.filter((val) => val !== ingredientId)
-                          )
-                        }
+                      <Checkbox
+                        id={result.name}
+                        checked={selection.includes(result.UsdaId)}
+                        onCheckedChange={(checked) => {
+                          checked
+                            ? setSelection([...selection, result.UsdaId])
+                            : setSelection(
+                                selection.filter((val) => val !== result.UsdaId)
+                              )
+                          searchBoxRef?.current?.focus()
+                          searchBoxRef?.current?.select()
+                        }}
                       />
-                      <p className="w-20 truncate text-end text-sm lowercase">
-                        {ingredientMap[ingredientId]}
-                      </p>
+                      <Label
+                        htmlFor={result.name}
+                        className="text-sm lowercase"
+                      >
+                        {result.name}
+                      </Label>
                     </div>
                   ))}
               </div>
-              {selection.length > 12 && <p className="mt-4">& more</p>}
+            </CardContent>
+          </Card>
+          <div className="flex flex-col items-center">
+            <div className="flex flex-col-reverse gap-2 md:grid md:grid-flow-col md:grid-rows-4">
+              {selection.length > 0 &&
+                selection.slice(0, 12).map((ingredientId) => (
+                  <div
+                    className="flex w-44 items-center gap-4 rounded-xl border px-4 py-2"
+                    key={ingredientId}
+                  >
+                    <X
+                      className="cursor-pointer rounded-xl border p-1 hover:bg-gray-300"
+                      onClick={() =>
+                        setSelection(
+                          selection.filter((val) => val !== ingredientId)
+                        )
+                      }
+                    />
+                    <Label className="w-24 lowercase">
+                      {ingredientMap[ingredientId]}
+                    </Label>
+                  </div>
+                ))}
             </div>
-            <Button
-              className="absolute bottom-1 right-1 md:bottom-14 md:right-44"
-              onClick={(e) => {
-                setRecipeView(true)
-                setFormView(false)
-                e.preventDefault()
-                generateRecipe()
-              }}
-            >
-              Go
-            </Button>
-          </>
+            {selection.length > 12 && <p className="mt-4">& more</p>}
+          </div>
+          <Button
+            className="absolute bottom-1 right-1 md:bottom-14 md:right-44"
+            onClick={(e) => {
+              setRecipeView(true)
+              setFormView(false)
+              e.preventDefault()
+              generateRecipe()
+            }}
+          >
+            Go
+          </Button>
         </div>
       ) : (
         // recipeView
