@@ -174,12 +174,10 @@ export default function EatPage() {
         <AnimatePresence initial={false}>
           <div className="mt-12 flex flex-col items-center justify-center gap-8 md:mt-0 md:h-full md:flex-row">
             <motion.div layout>
-              <Card className="w-80">
+              <Card className="w-80 md:w-72 lg:w-96">
                 <CardHeader>
                   <CardTitle>Choose ingredients</CardTitle>
-                  <CardDescription>
-                    What do you have lying in your pantry?
-                  </CardDescription>
+                  <CardDescription>What will you cook next?</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <Input
@@ -229,16 +227,16 @@ export default function EatPage() {
                   //TODO: reverse?
                   selection.slice(0, 12).map((ingredientId) => (
                     <AnimatedIngredientItem key={ingredientId}>
-                      <div className="flex w-44 items-center gap-4 rounded-xl border px-4 py-2 transition">
+                      <div className="flex h-full w-44 items-center gap-4 rounded-xl border px-4 py-2 transition md:w-32 lg:w-44">
                         <X
-                          className="cursor-pointer rounded-xl border p-1 hover:bg-gray-300"
+                          className="shrink-0 cursor-pointer rounded-xl border p-1 hover:bg-gray-300"
                           onClick={() =>
                             setSelection(
                               selection.filter((val) => val !== ingredientId)
                             )
                           }
                         />
-                        <Label className="w-24 lowercase">
+                        <Label className="text-sm lowercase md:text-xs lg:text-sm">
                           {ingredientMap[ingredientId]}
                         </Label>
                       </div>

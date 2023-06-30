@@ -22,7 +22,7 @@ export function AnimatedIngredientItem({
         opacity: 1,
         transition: {
           type: 'spring',
-          bounce: 0.3,
+          bounce: 0.25,
           opacity: { delay: t(0.025) },
         },
       }}
