@@ -192,33 +192,32 @@ export default function EatPage() {
                   <div className="h-40 space-y-2 overflow-y-auto pl-1">
                     {results.length > 0 &&
                       results.map((result) => (
-                        <div
-                          className="flex items-center space-x-2"
-                          key={result.UsdaId}
-                        >
-                          <Checkbox
-                            className="transition"
-                            id={result.name}
-                            checked={selection.includes(result.UsdaId)}
-                            onCheckedChange={(checked) => {
-                              checked
-                                ? setSelection([...selection, result.UsdaId])
-                                : setSelection(
-                                    selection.filter(
-                                      (val) => val !== result.UsdaId
+                        <AnimatedIngredientItem key={'f' + result.UsdaId}>
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              className="transition"
+                              id={result.name}
+                              checked={selection.includes(result.UsdaId)}
+                              onCheckedChange={(checked) => {
+                                checked
+                                  ? setSelection([...selection, result.UsdaId])
+                                  : setSelection(
+                                      selection.filter(
+                                        (val) => val !== result.UsdaId
+                                      )
                                     )
-                                  )
-                              searchBoxRef?.current?.focus()
-                              searchBoxRef?.current?.select()
-                            }}
-                          />
-                          <Label
-                            htmlFor={result.name}
-                            className="text-sm lowercase"
-                          >
-                            {result.name}
-                          </Label>
-                        </div>
+                                searchBoxRef?.current?.focus()
+                                searchBoxRef?.current?.select()
+                              }}
+                            />
+                            <Label
+                              htmlFor={result.name}
+                              className="text-sm lowercase"
+                            >
+                              {result.name}
+                            </Label>
+                          </div>
+                        </AnimatedIngredientItem>
                       ))}
                   </div>
                 </CardContent>
