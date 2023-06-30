@@ -1,26 +1,31 @@
-import { MouseEvent } from 'react'
+import { MouseEvent } from 'react';
 
-import Image from 'next/image'
 
-import { RecipeBody } from '@/types/recipe'
 
-import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
-import { Skeleton } from '@/components/ui/skeleton'
+import Image from 'next/image';
 
-import RecipeMenubar from './RecipeMenubar'
+
+
+import { RecipeBody } from '@/types/recipe';
+
+
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+
+
+
+import RecipeMenubar from './RecipeMenubar';
+
+
+
+
 
 interface RecipeSheetProps {
   title: string
-  body: RecipeBody
+  body: RecipeBody | null
   image: string
   regen: (e: MouseEvent<HTMLButtonElement>) => void
   bookmark: (e: MouseEvent<HTMLButtonElement>) => void
@@ -50,7 +55,7 @@ export default function RecipeSheet({
         <div className="space-y-8 md:flex md:justify-between md:gap-x-4 md:space-y-0">
           <div>
             <CardTitle className="mb-6">
-              {loading ? (
+              {title === '' ? (
                 <Skeleton className="h-20 w-full md:w-64" />
               ) : (
                 <span className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
@@ -58,7 +63,7 @@ export default function RecipeSheet({
                 </span>
               )}
             </CardTitle>
-            {loading ? (
+            {!body ? (
               <div className="space-y-2">
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-full" />
@@ -68,7 +73,7 @@ export default function RecipeSheet({
             )}
           </div>
           <div className="md:shrink-0">
-            {loading ? (
+            {image === '' ? (
               <Skeleton className="h-[350px] w-[350px]" />
             ) : (
               <RecipeImage img={image || ''} />
@@ -79,7 +84,7 @@ export default function RecipeSheet({
 
       <Separator className="mb-11 mt-7" />
 
-      {loading ? <RecipeContentSkeleton /> : <RecipeContent body={body} />}
+      {!body ? <RecipeContentSkeleton /> : <RecipeContent body={body} />}
 
       <CardFooter>
         <Button onClick={() => window.location.reload()}>
@@ -201,17 +206,13 @@ function RecipeContentSkeleton() {
 }
 
 function RecipeImage({ img }: { img: string }) {
-  const imageStyle = {
-    borderRadius: '1%',
-    border: '1px solid #fff',
-  }
   return (
     <Image
       src={img}
       width={350}
       height={300}
       alt={'Recipe Image'}
-      style={imageStyle}
+      className="rounded-xl shadow"
       priority={true}
     />
   )

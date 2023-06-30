@@ -80,18 +80,17 @@ export default function EatPage() {
     setTitle(rTitle)
     console.log(rTitle)
 
-    const [rBody, rImage] = await Promise.all([
-      await getRecipeBody(rTitle, ingredients),
-      await getRecipeImage(rTitle),
-    ])
-    if (!rBody) {
-      throw new Error('Error generating body')
-    }
+    const rImage = await getRecipeImage(rTitle)
     if (!rImage) {
       throw new Error('Error generating image')
     }
-    setBody(rBody)
     setImage(rImage)
+
+    const rBody = await getRecipeBody(rTitle, ingredients)
+    if (!rBody) {
+      throw new Error('Error generating body')
+    }
+    setBody(rBody)
 
     let token = undefined
     if (isLoaded && userId) {
@@ -116,9 +115,10 @@ export default function EatPage() {
 
   const regenRecipe = async (e: MouseEvent<HTMLButtonElement>) => {
     setLoading(true)
-    // setTitle('')
-    // setBody(null)
-    // setImage('')
+    setBookmark(false)
+    setTitle('')
+    setBody(null)
+    setImage('')
     e.preventDefault()
     flushCache()
     await generateRecipe()
@@ -247,8 +247,7 @@ export default function EatPage() {
       ) : (
         // recipeView
         <div className="flex justify-center ">
-          {/* {loading && <Loader2 size={35} className="animate-spin" />} */}
-          {recipeView && title && body && image && (
+          {recipeView && (
             <RecipeSheet
               title={title}
               body={body}
