@@ -1,13 +1,9 @@
 'use client'
 
-import { MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import ingredientMap from '@/utils/ingredientData'
-import {
-  addRecipe,
-  linkRecipeToUser,
-  toggleBookmark,
-} from '@/utils/supabaseRequests'
+import { addRecipe } from '@/utils/supabaseRequests'
 import { useAuth } from '@clerk/nextjs'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
@@ -30,6 +26,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 import { AnimatedIngredientItem } from '@/components/AnimatedIngredientItem'
+import RecipeSheet from '@/components/RecipeSheet'
 
 import {
   flushCache,
@@ -37,12 +34,9 @@ import {
   getRecipeImage,
   getRecipeTitle,
 } from '../actions'
-import RecipeSheet from './RecipeSheet'
-
-const defaultIngredients = ingredients.data.slice(0, 6)
 
 export default function EatPage() {
-  const { isLoaded, userId, sessionId, getToken } = useAuth()
+  const { isLoaded, userId, getToken } = useAuth()
   const { searchQuery, setSearchQuery, results } = useSearch({
     dataSet: ingredients.data,
     keys: ['name'],
@@ -53,9 +47,7 @@ export default function EatPage() {
   const [title, setTitle] = useState<string>('')
   const [body, setBody] = useState<RecipeBody | null>(null)
   const [image, setImage] = useState<string>('')
-  const [error, setError] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
-  const [isBookmark, setBookmark] = useState<boolean>(false)
   const searchBoxRef = useRef<HTMLInputElement | null>(null)
   const recipeRef = useRef<number | null>(null)
 
@@ -71,6 +63,7 @@ export default function EatPage() {
     return () => window.removeEventListener('beforeunload', unloadCallback)
   }, [title])
 
+  // TODO: move this to server actions
   const generateRecipe = useCallback(async () => {
     setLoading(true)
     selection.sort(function (a, b) {
@@ -121,58 +114,21 @@ export default function EatPage() {
     setLoading(false)
   }, [getToken, isLoaded, selection, userId])
 
-  const regenRecipe = async (e: MouseEvent<HTMLButtonElement>) => {
+  const regenRecipe = async () => {
     setLoading(true)
-    setBookmark(false)
     setTitle('')
     setBody(null)
     setImage('')
-    e.preventDefault()
     flushCache()
     await generateRecipe()
     setLoading(false)
-  }
-
-  const bookmarkRecipe = async () => {
-    flushCache()
-    if (!isLoaded || !userId) {
-      setError('You must be logged in to perform this action')
-      return
-    }
-
-    if (!recipeRef || !recipeRef.current) {
-      console.error('No recipe')
-      return
-    }
-    console.log('Bookmarking recipe: ' + recipeRef.current)
-    const token = await getToken({ template: 'supabase' })
-
-    if (!token) {
-      console.error('Unable to fetch token')
-      setError('You must be logged in to perform this action')
-      return
-    }
-
-    linkRecipeToUser({
-      recipeId: recipeRef.current,
-      userId: userId,
-      token: token,
-    })
-
-    toggleBookmark({
-      recipeId: recipeRef.current,
-      token: token,
-      toggle: !isBookmark,
-    })
-
-    setBookmark(!isBookmark)
   }
 
   return (
     <>
       {formView ? (
         <AnimatePresence initial={false}>
-          <div className="mt-12 flex flex-col items-center justify-center gap-8 md:mt-0 md:h-full md:flex-row">
+          <div className="flex flex-col items-center justify-center gap-8 py-12 md:mt-0 md:h-full md:flex-row">
             <motion.div layout>
               <Card className="w-80 md:w-72 lg:w-96">
                 <CardHeader>
@@ -256,7 +212,7 @@ export default function EatPage() {
                 generateRecipe()
               }}
             >
-              Go
+              Generate
             </Button>
           </div>
         </AnimatePresence>
@@ -269,9 +225,9 @@ export default function EatPage() {
               body={body}
               image={image}
               regen={regenRecipe}
-              bookmark={bookmarkRecipe}
-              isBookmark={isBookmark}
               loading={loading}
+              recipeId={recipeRef.current!}
+              initialBookmark={false}
             />
           )}
         </div>

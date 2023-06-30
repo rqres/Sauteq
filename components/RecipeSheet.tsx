@@ -1,52 +1,83 @@
-import { MouseEvent } from 'react';
+'use client'
 
+import { useState } from 'react'
 
+import Image from 'next/image'
 
-import Image from 'next/image';
+import { SignInButton } from '@clerk/nextjs'
 
+import { RecipeBody } from '@/types/recipe'
 
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
+import { ToastAction } from '@/components/ui/toast'
+import { useToast } from '@/components/ui/use-toast'
 
-import { RecipeBody } from '@/types/recipe';
+import { bookmarkRecipe } from '@/app/actions'
 
-
-
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
-
-
-
-import RecipeMenubar from './RecipeMenubar';
-
-
-
-
+import RecipeMenubar from '../app/eat/RecipeMenubar'
 
 interface RecipeSheetProps {
+  recipeId: number
   title: string
   body: RecipeBody | null
   image: string
-  regen: (e: MouseEvent<HTMLButtonElement>) => void
-  bookmark: (e: MouseEvent<HTMLButtonElement>) => void
-  isBookmark: boolean
-  loading: boolean
+  regen?: () => Promise<void>
+  loading?: boolean
+  initialBookmark: boolean
+  noReturnButton?: boolean
+  noRegen?: boolean
 }
 
 export default function RecipeSheet({
+  recipeId,
   title,
   body,
   image,
   regen,
-  bookmark,
-  isBookmark,
   loading,
+  initialBookmark,
+  noReturnButton,
+  noRegen,
 }: RecipeSheetProps) {
+  const [isBookmark, setBookmark] = useState<boolean>(initialBookmark)
+  const { toast } = useToast()
+
   return (
     <Card className="my-8 w-[400px] place-self-center md:w-[750px]">
       <RecipeMenubar
-        regen={regen}
-        bookmark={bookmark}
+        noRegen={noRegen}
+        regen={async () => {
+          if (regen) {
+            setBookmark(false)
+            await regen()
+          }
+        }}
+        bookmark={async () => {
+          const res = await bookmarkRecipe(recipeId, isBookmark)
+          if (res == -1) {
+            toast({
+              title: 'Uh oh! Something went wrong.',
+              description: 'You must sign in to save recipes.',
+              action: (
+                <SignInButton>
+                  <ToastAction altText="Sign in">Sign in</ToastAction>
+                </SignInButton>
+              ),
+            })
+            return
+          }
+          setBookmark(!isBookmark)
+        }}
         isBookmark={isBookmark}
         loading={loading}
       />
@@ -86,28 +117,34 @@ export default function RecipeSheet({
 
       {!body ? <RecipeContentSkeleton /> : <RecipeContent body={body} />}
 
-      <CardFooter>
-        <Button className={`${loading ? 'cursor-not-allowed' : 'cursor-pointer'}`} disabled={loading} onClick={() => window.location.reload()}>
-          <div className="flex justify-between gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-move-left"
-            >
-              <path d="M6 8L2 12L6 16" />
-              <path d="M2 12H22" />
-            </svg>
-            Create another
-          </div>
-        </Button>
-      </CardFooter>
+      {!noReturnButton && (
+        <CardFooter>
+          <Button
+            className={`${loading ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+            disabled={loading}
+            onClick={() => window.location.reload()}
+          >
+            <div className="flex justify-between gap-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-move-left"
+              >
+                <path d="M6 8L2 12L6 16" />
+                <path d="M2 12H22" />
+              </svg>
+              Create another
+            </div>
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   )
 }
@@ -161,7 +198,7 @@ function RecipeContent({ body }: { body: RecipeBody }) {
   )
 }
 
-function RecipeContentSkeleton() {
+export function RecipeContentSkeleton() {
   return (
     <CardContent>
       <section className="mb-4 space-y-2">
@@ -208,12 +245,12 @@ function RecipeContentSkeleton() {
 function RecipeImage({ img }: { img: string }) {
   return (
     <Image
+      priority
       src={img}
       width={350}
       height={300}
       alt={'Recipe Image'}
       className="rounded-xl shadow"
-      priority={true}
     />
   )
 }

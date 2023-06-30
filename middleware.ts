@@ -2,7 +2,7 @@ import { authMiddleware } from '@clerk/nextjs'
 
 export default authMiddleware({
   //TODO:
-  publicRoutes: ['/', '/eat', '/api/openai/(.*)'],
+  publicRoutes: ['/', '/r/(.*)', '/eat', '/api/openai/(.*)'],
   // ["/", "/create-recipe", "/recipe", "/api/openai/(.*)"],
 })
 

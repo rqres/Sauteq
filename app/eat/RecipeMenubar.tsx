@@ -1,6 +1,4 @@
-'use client'
-
-import { MouseEvent } from 'react'
+'use client';
 
 import { Bookmark, RefreshCcw, Share } from 'lucide-react'
 
@@ -15,10 +13,11 @@ import {
 } from '@/components/ui/menubar'
 
 interface RecipeMenubarProps {
-  regen: (e: MouseEvent<HTMLButtonElement>) => void
-  bookmark: (e: MouseEvent<HTMLButtonElement>) => void
+  regen?: () => Promise<void>
+  bookmark: () => Promise<void>
   isBookmark: boolean
-  loading: boolean
+  loading?: boolean
+  noRegen?: boolean
 }
 
 export default function RecipeMenubar({
@@ -26,6 +25,7 @@ export default function RecipeMenubar({
   bookmark,
   isBookmark,
   loading,
+  noRegen,
 }: RecipeMenubarProps) {
   return (
     <Menubar className="mr-4 mt-6 justify-end">
@@ -41,19 +41,21 @@ export default function RecipeMenubar({
           <Share />
         </MenubarTrigger>
       </MenubarMenu>
-      <MenubarMenu>
-        <MenubarTrigger
-          onClick={regen}
-          className={`${
-            loading
-              ? 'animate-spin cursor-not-allowed hover:bg-transparent'
-              : 'animate-none cursor-pointer'
-          }`}
-          disabled={loading}
-        >
-          <RefreshCcw />
-        </MenubarTrigger>
-      </MenubarMenu>
+      {!noRegen && (
+        <MenubarMenu>
+          <MenubarTrigger
+            onClick={regen}
+            className={`${
+              loading
+                ? 'animate-spin cursor-not-allowed hover:bg-transparent'
+                : 'animate-none cursor-pointer'
+            }`}
+            disabled={loading}
+          >
+            <RefreshCcw />
+          </MenubarTrigger>
+        </MenubarMenu>
+      )}
       <MenubarMenu>
         <MenubarTrigger
           onClick={bookmark}

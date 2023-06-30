@@ -2,14 +2,10 @@
 
 import { revalidatePath } from 'next/cache'
 
-import { RecipeBody } from '@/types/recipe'
+import { linkRecipeToUser, toggleBookmark } from '@/utils/supabaseRequests'
+import { auth } from '@clerk/nextjs'
 
-/**
- * Gets recipe body from GPT API
- *
- * @param ingredients The ingredients required for the recipe
- * @returns The recipe parsed as JSON
- */
+import { RecipeBody } from '@/types/recipe'
 
 export const flushCache = () => {
   revalidatePath('/eat')
@@ -30,8 +26,6 @@ const getRecipeBody = async (
       title: title,
       ingredients: ingredients,
     }),
-    // cache: 'no-store',
-    // next: { tags: ['bodies'] },
   })
 
   if (!res.ok) {
@@ -53,8 +47,6 @@ const getRecipeTitle = async (recipeIngredients: string[]): Promise<string> => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ ingredients: recipeIngredients }),
-    // cache: 'no-store',
-    // next: { tags: ['titles'] },
   })
 
   if (!res.ok) {
@@ -77,8 +69,6 @@ const getRecipeImage = async (recipeTitle: string): Promise<string> => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ title: recipeTitle }),
-    // cache: 'no-store',
-    // next: { tags: ['images'] },
   })
 
   if (!res.ok) {
@@ -89,6 +79,7 @@ const getRecipeImage = async (recipeTitle: string): Promise<string> => {
 
   return recipeImageURL
 }
+
 function sanitizeAndParseGPTText(recipeContent: string): RecipeBody {
   const startIndex = recipeContent.indexOf('{')
 
@@ -107,7 +98,6 @@ function sanitizeAndParseGPTText(recipeContent: string): RecipeBody {
   try {
     // Validate the JSON object
     const jsonObject: RecipeBody = JSON.parse(sanitizedObject)
-    // console.log('Valid JSON object:', jsonObject)
     removeListNumbering(jsonObject.directions)
     return jsonObject
   } catch (error) {
@@ -128,6 +118,34 @@ function removeListNumbering(recipeDirections: RecipeBody['directions']): void {
     const direction = recipeDirections[i]
     if (isDigit(direction.charAt(0))) recipeDirections[i] = direction.slice(3)
   }
+}
+
+export const bookmarkRecipe = async (recipeId: number, isBookmark: boolean) => {
+  const { userId, getToken } = auth()
+  flushCache()
+  if (!userId) {
+    return -1 //no user
+  }
+
+  console.log('Bookmarking recipe: ' + recipeId)
+  const token = await getToken({ template: 'supabase' })
+
+  if (!token) {
+    console.error('Unable to fetch token')
+    return -1 //no token
+  }
+
+  linkRecipeToUser({
+    recipeId: recipeId,
+    userId: userId,
+    token: token,
+  })
+
+  toggleBookmark({
+    recipeId: recipeId,
+    token: token,
+    toggle: !isBookmark,
+  })
 }
 
 export { getRecipeBody, getRecipeImage, getRecipeTitle }

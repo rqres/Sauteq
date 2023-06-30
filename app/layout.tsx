@@ -1,31 +1,19 @@
-import '@/styles/globals.css';
+import '@/styles/globals.css'
 
+import { Metadata } from 'next'
 
+import { ClerkProvider } from '@clerk/nextjs'
 
-import { Metadata } from 'next';
+import { siteConfig } from '@/config/site'
 
+import { fontSans } from '@/lib/fonts'
+import { cn } from '@/lib/utils'
 
+import { Toaster } from '@/components/ui/toaster'
 
-import { ClerkProvider } from '@clerk/nextjs';
-
-
-
-import { siteConfig } from '@/config/site';
-
-
-
-import { fontSans } from '@/lib/fonts';
-import { cn } from '@/lib/utils';
-
-
-
-import { SiteHeader } from '@/components/site-header';
-import { TailwindIndicator } from '@/components/tailwind-indicator';
-import { ThemeProvider } from '@/components/theme-provider';
-
-
-
-
+import { SiteHeader } from '@/components/site-header'
+import { TailwindIndicator } from '@/components/tailwind-indicator'
+import { ThemeProvider } from '@/components/theme-provider'
 
 export const metadata: Metadata = {
   title: {
@@ -51,17 +39,15 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <ClerkProvider>
-      <html lang="en" className="h-full">
-        {/* suppressHydrationWarning */}
+      <html lang="en" className="h-full" suppressHydrationWarning>
         <head />
         <body className={cn('h-full font-sans antialiased', fontSans.variable)}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {/* <div className="relative flex h-full flex-col"> */}
-            {/* <SiteHeader /> */}
-            {/* <div className="flex h-full items-center justify-center"> */}
-            {children}
-            {/* </div> */}
-            {/* </div> */}
+            <div className="relative flex h-full flex-col">
+              <SiteHeader />
+              {children}
+              <Toaster />
+            </div>
             <TailwindIndicator />
           </ThemeProvider>
         </body>
