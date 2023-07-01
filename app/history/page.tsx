@@ -22,17 +22,27 @@ export default async function HistoryPage() {
 
   return (
     <div>
-      <h1>History</h1>
+      <h1 className="mb-6 mt-3 scroll-m-20 text-center text-3xl font-extrabold tracking-tight lg:text-5xl">
+        History
+      </h1>
       {recipes && recipes.length > 0 ? (
-        <ul>
-          {recipes.map((r) => (
-            <li key={r.id}>
-              <div className="flex justify-between">
-                <p>{r.title}</p>
-                <p>{r.created_at}</p>
-              </div>
-            </li>
-          ))}
+        <ul className="mx-4 mb-6 space-y-2">
+          {recipes
+            .sort((a, b) => b.id - a.id)
+            .map((r) => (
+              <li key={r.id}>
+                <Link href={`/r/${r.id}`}>
+                  <div
+                    className={`flex justify-between rounded-lg border px-4 py-2 transition-colors hover:bg-stone-100 ${
+                      r.bookmark && 'border-pink-300'
+                    }`}
+                  >
+                    <p>{r.title}</p>
+                    <p>{r.created_at}</p>
+                  </div>
+                </Link>
+              </li>
+            ))}
         </ul>
       ) : (
         <>
