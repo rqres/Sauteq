@@ -1,14 +1,7 @@
-'use client'
-
-import { useState } from 'react'
-
 import Image from 'next/image'
-
-import { SignInButton } from '@clerk/nextjs'
 
 import { RecipeBody } from '@/types/recipe'
 
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -19,12 +12,9 @@ import {
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ToastAction } from '@/components/ui/toast'
-import { useToast } from '@/components/ui/use-toast'
 
-import { bookmarkRecipe } from '@/app/actions'
-
-import RecipeMenubar from '../app/eat/RecipeMenubar'
+import RecipeMenubar from './RecipeMenubar'
+import { CreateAnotherButton } from './ui/CreateAnotherButton'
 
 interface RecipeSheetProps {
   recipeId: number
@@ -49,37 +39,14 @@ export default function RecipeSheet({
   noReturnButton,
   noRegen,
 }: RecipeSheetProps) {
-  const [isBookmark, setBookmark] = useState<boolean>(initialBookmark)
-  const { toast } = useToast()
-
   return (
     <Card className="my-8 w-[400px] place-self-center md:w-[750px]">
       <RecipeMenubar
         noRegen={noRegen}
-        regen={async () => {
-          if (regen) {
-            setBookmark(false)
-            await regen()
-          }
-        }}
-        bookmark={async () => {
-          const res = await bookmarkRecipe(recipeId, isBookmark)
-          if (res == -1) {
-            toast({
-              title: 'Uh oh! Something went wrong.',
-              description: 'You must sign in to save recipes.',
-              action: (
-                <SignInButton>
-                  <ToastAction altText="Sign in">Sign in</ToastAction>
-                </SignInButton>
-              ),
-            })
-            return
-          }
-          setBookmark(!isBookmark)
-        }}
-        isBookmark={isBookmark}
+        initialBookmark={initialBookmark}
+        recipeId={recipeId}
         loading={loading}
+        regen={regen}
       />
 
       <CardHeader>
@@ -119,30 +86,7 @@ export default function RecipeSheet({
 
       {!noReturnButton && (
         <CardFooter>
-          <Button
-            className={`${loading ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-            disabled={loading}
-            onClick={() => window.location.reload()}
-          >
-            <div className="flex justify-between gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="lucide lucide-move-left"
-              >
-                <path d="M6 8L2 12L6 16" />
-                <path d="M2 12H22" />
-              </svg>
-              Create another
-            </div>
-          </Button>
+          <CreateAnotherButton loading={loading} />
         </CardFooter>
       )}
     </Card>

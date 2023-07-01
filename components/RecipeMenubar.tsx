@@ -1,5 +1,8 @@
-'use client';
+'use client'
 
+import { useState } from 'react'
+
+import { SignInButton } from '@clerk/nextjs'
 import { Bookmark, RefreshCcw, Share } from 'lucide-react'
 
 import {
@@ -12,21 +15,29 @@ import {
   MenubarTrigger,
 } from '@/components/ui/menubar'
 
+import { bookmarkRecipe } from '@/app/actions'
+
+import { ToastAction } from './ui/toast'
+import { useToast } from './ui/use-toast'
+
 interface RecipeMenubarProps {
+  recipeId: number
   regen?: () => Promise<void>
-  bookmark: () => Promise<void>
-  isBookmark: boolean
   loading?: boolean
   noRegen?: boolean
+  initialBookmark: boolean
 }
 
 export default function RecipeMenubar({
+  recipeId,
   regen,
-  bookmark,
-  isBookmark,
   loading,
   noRegen,
+  initialBookmark,
 }: RecipeMenubarProps) {
+  const [isBookmark, setBookmark] = useState<boolean>(initialBookmark)
+  const { toast } = useToast()
+
   return (
     <Menubar className="mr-4 mt-6 justify-end">
       <MenubarMenu>
@@ -44,7 +55,12 @@ export default function RecipeMenubar({
       {!noRegen && (
         <MenubarMenu>
           <MenubarTrigger
-            onClick={regen}
+            onClick={async () => {
+              if (regen) {
+                setBookmark(false)
+                await regen()
+              }
+            }}
             className={`${
               loading
                 ? 'animate-spin cursor-not-allowed hover:bg-transparent'
@@ -58,7 +74,22 @@ export default function RecipeMenubar({
       )}
       <MenubarMenu>
         <MenubarTrigger
-          onClick={bookmark}
+          onClick={async () => {
+            const res = await bookmarkRecipe(recipeId, isBookmark)
+            if (res == -1) {
+              toast({
+                title: 'Uh oh! Something went wrong.',
+                description: 'You must sign in to save recipes.',
+                action: (
+                  <SignInButton>
+                    <ToastAction altText="Sign in">Sign in</ToastAction>
+                  </SignInButton>
+                ),
+              })
+              return
+            }
+            setBookmark(!isBookmark)
+          }}
           disabled={loading}
           className={`${
             loading
