@@ -135,14 +135,15 @@ export const bookmarkRecipe = async (recipeId: number, isBookmark: boolean) => {
     return -1 //no token
   }
 
-  linkRecipeToUser({
-    recipeId: recipeId,
-    userId: userId,
-    token: token,
-  })
+  // linkRecipeToUser({
+  //   recipeId: recipeId,
+  //   userId: userId,
+  //   token: token,
+  // })
 
   toggleBookmark({
     recipeId: recipeId,
+    userId: userId,
     token: token,
     toggle: !isBookmark,
   })

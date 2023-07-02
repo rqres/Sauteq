@@ -1,14 +1,29 @@
 import { notFound } from 'next/navigation'
 
-import { getRecipe } from '@/utils/supabaseRequests'
+import { getBookmark, getRecipe } from '@/utils/supabaseRequests'
+import { auth } from '@clerk/nextjs'
 
 import RecipeSheet from '@/components/RecipeSheet'
 
 export default async function RPage({ params }: { params: { id: number } }) {
   const recipe = await getRecipe({ recipeId: params.id })
-
   if (!recipe) {
     notFound()
+  }
+
+  let bookmark = false
+  const { userId, getToken } = auth()
+  if (userId) {
+    const token = await getToken({ template: 'supabase' })
+    if (token) {
+      bookmark = (await getBookmark({
+        recipeId: params.id,
+        userId: userId,
+        token: token,
+      }))
+        ? true
+        : false
+    }
   }
 
   return (
@@ -20,7 +35,7 @@ export default async function RPage({ params }: { params: { id: number } }) {
         body={recipe?.body || null}
         image={recipe?.image_url || ''}
         recipeId={params.id}
-        initialBookmark={recipe?.bookmark || false}
+        initialBookmark={bookmark}
       />
     </div>
   )

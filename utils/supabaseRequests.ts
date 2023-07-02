@@ -1,8 +1,14 @@
-'use server'
+'use server';
 
-import { RecipeBody } from '@/types/recipe'
+import { RecipeBody } from '@/types/recipe';
 
-import supabaseClient from './supabaseClient'
+
+
+import supabaseClient from './supabaseClient';
+
+
+
+
 
 export async function getRecipe({
   recipeId,
@@ -93,6 +99,12 @@ export async function linkRecipeToUser({
   token: string
 }) {
   const supabase = supabaseClient(token)
+
+  const rec = await getRecipe({ recipeId })
+  if (rec?.user_id !== userId && rec?.user_id !== 'server') {
+    throw new Error('Recipe belongs to someone else')
+  }
+
   const { data, error } = await supabase
     .from('recipes')
     .update({ user_id: userId })
@@ -109,24 +121,61 @@ export async function linkRecipeToUser({
 
 export async function toggleBookmark({
   recipeId,
+  userId,
   token,
   toggle,
 }: {
   recipeId: number
+  userId: string
   token: string
   toggle: boolean
 }) {
   const supabase = supabaseClient(token)
-  const { data, error } = await supabase
-    .from('recipes')
-    .update({ bookmark: toggle })
-    .eq('id', recipeId)
-    .select()
+
+  if (toggle) {
+    const { error } = await supabase.from('bookmarks').insert([
+      {
+        user_id: userId,
+        recipe_id: recipeId,
+      },
+    ])
+    if (error) {
+      console.error(error)
+    }
+  } else {
+    const { error } = await supabase
+      .from('bookmarks')
+      .delete()
+      .eq('recipe_id', recipeId)
+      .eq('user_id', userId)
+    if (error) {
+      console.error(error)
+    }
+  }
+}
+
+export async function getBookmark({
+  recipeId,
+  userId,
+  token,
+}: {
+  recipeId: number
+  userId: string
+  token: string
+}) {
+  const supabase = supabaseClient(token)
+  let { data, error } = await supabase
+    .from('bookmarks')
+    .select('*')
+    .eq('recipe_id', recipeId)
+    .eq('user_id', userId)
 
   if (error) {
     console.error(error)
     return
   }
 
-  return data[0]
+  if (!data) return false
+
+  return data.length > 0 ? true : false
 }
