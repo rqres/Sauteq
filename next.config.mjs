@@ -10,12 +10,11 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'oaidalleapiprodscus.blob.core.windows.net',
-        port: '',
         pathname: '**',
       },
       {
         protocol: 'https',
-        hostname: 'upload.wikimedia.org',
+        hostname: 'outggvemqdylkseydkof.supabase.co',
         pathname: '**',
       },
     ],

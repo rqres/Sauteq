@@ -22,7 +22,7 @@ export const POST = async (req: NextRequest) => {
   })
 
   const imageResponse =
-    aiImageResult.data.data[0].url?.trim() || 'Problem fetching OpenAI data.'
+    aiImageResult.data.data[0].url || 'Problem fetching OpenAI data.'
 
   console.log('%cIMAGE API CALLED!', 'color: red; font-size: larger')
 

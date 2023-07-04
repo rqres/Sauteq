@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 
-import { linkRecipeToUser, toggleBookmark } from '@/utils/supabaseRequests'
+import { toggleBookmark } from '@/utils/supabaseRequests'
 import { auth } from '@clerk/nextjs'
 
 import { RecipeBody } from '@/types/recipe'

@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import ingredientMap from '@/utils/ingredientData'
-import { addRecipe } from '@/utils/supabaseRequests'
+import {
+  addRecipe,
+  saveImageToStorage,
+  updateRecipeImage,
+} from '@/utils/supabaseRequests'
 import { useAuth } from '@clerk/nextjs'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
@@ -80,17 +84,17 @@ export default function EatPage() {
     setTitle(rTitle)
     console.log(rTitle)
 
-    const rImage = await getRecipeImage(rTitle)
-    if (!rImage) {
-      throw new Error('Error generating image')
-    }
-    setImage(rImage)
-
     const rBody = await getRecipeBody(rTitle, ingredients)
     if (!rBody) {
       throw new Error('Error generating body')
     }
     setBody(rBody)
+
+    const rImage = await getRecipeImage(rTitle)
+    if (!rImage) {
+      throw new Error('Error generating image')
+    }
+    setImage(rImage)
 
     let token = undefined
     if (isLoaded && userId) {
@@ -103,14 +107,19 @@ export default function EatPage() {
       ingredients: String(ingredients),
       title: rTitle,
       recipeBody: rBody,
-      image_url: rImage,
       token: token,
     })
 
     if (newRecipe) {
-      console.log('Saved recipe to db')
       recipeRef.current = newRecipe.id
+      await saveImageToStorage({
+        recipeId: newRecipe.id,
+        imageUrl: rImage,
+      })
+      await updateRecipeImage({ recipeId: newRecipe.id, token: token })
+      console.log('Saved recipe to db')
     }
+
     setLoading(false)
   }, [getToken, isLoaded, selection, userId])
 

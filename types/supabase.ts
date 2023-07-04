@@ -1,43 +1,69 @@
-import { RecipeBody } from './recipe'
+import { RecipeBody } from './recipe';
+
+
+
+
 
 export type Json =
   | string
   | number
   | boolean
   | null
-  | { [key: string]: Json }
+  | { [key: string]: Json | undefined }
   | Json[]
 
 export interface Database {
   public: {
     Tables: {
+      bookmarks: {
+        Row: {
+          created_at: string | null
+          recipe_id: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          recipe_id: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          recipe_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'bookmarks_recipe_id_fkey'
+            columns: ['recipe_id']
+            referencedRelation: 'recipes'
+            referencedColumns: ['id']
+          }
+        ]
+      }
       recipes: {
         Row: {
           body: RecipeBody
-          bookmark: boolean
           created_at: string | null
           id: number
-          image_url: string
+          image_url: string | null
           ingredients: string
           title: string
           user_id: string
         }
         Insert: {
           body: RecipeBody
-          bookmark?: boolean
           created_at?: string | null
           id?: number
-          image_url: string
+          image_url?: string | null
           ingredients: string
           title?: string
           user_id?: string
         }
         Update: {
           body?: RecipeBody
-          bookmark?: boolean
           created_at?: string | null
           id?: number
-          image_url?: string
+          image_url?: string | null
           ingredients?: string
           title?: string
           user_id?: string

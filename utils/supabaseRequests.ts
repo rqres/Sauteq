@@ -65,7 +65,7 @@ export async function addRecipe({
   ingredients: string
   title: string
   recipeBody: RecipeBody
-  image_url: string
+  image_url?: string
 }) {
   const supabase = supabaseClient(token)
 
@@ -178,4 +178,50 @@ export async function getBookmark({
   if (!data) return false
 
   return data.length > 0 ? true : false
+}
+
+export async function saveImageToStorage({
+  recipeId,
+  imageUrl,
+}: {
+  recipeId: number
+  imageUrl: string
+}) {
+  // convert DALL-E image to blob
+  const blob = await fetch(imageUrl).then((r) => r.blob())
+
+  const supabase = supabaseClient()
+
+  // save blob to supabase storage
+  const { error: storageError } = await supabase.storage
+    .from('recipe-images')
+    .upload(recipeId + '.png', blob)
+
+  if (storageError) {
+    console.error(storageError)
+    return
+  }
+}
+
+export async function updateRecipeImage({
+  recipeId,
+  token,
+}: {
+  recipeId: number
+  token?: string
+}) {
+  const supabase = supabaseClient(token)
+  // link public url to recipe record
+  const { data: publicUrlData } = supabase.storage
+    .from('recipe-images')
+    .getPublicUrl(recipeId + '.png')
+
+  const { error } = await supabase
+    .from('recipes')
+    .update({ image_url: publicUrlData.publicUrl })
+    .eq('id', recipeId)
+
+  if (error) {
+    console.error(error)
+  }
 }

@@ -32,11 +32,7 @@ export default async function HistoryPage() {
             .map((r) => (
               <li key={r.id}>
                 <Link href={`/r/${r.id}`}>
-                  <div
-                    className={`flex justify-between rounded-lg border px-4 py-2 transition-colors hover:bg-stone-100 ${
-                      r.bookmark && 'border-pink-300'
-                    }`}
-                  >
+                  <div className="flex justify-between rounded-lg border px-4 py-2 transition-colors hover:bg-stone-100">
                     <p>{r.title}</p>
                     <p>{r.created_at}</p>
                   </div>
@@ -48,7 +44,7 @@ export default async function HistoryPage() {
         <>
           <p>No recipes yet!</p>
           <p>
-            Generate some at <Link href={'/eat'}></Link>
+            Generate some <Link href={'/eat'}>here</Link>!
           </p>
         </>
       )}
