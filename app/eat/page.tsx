@@ -62,10 +62,13 @@ export default function EatPage() {
       return ''
     }
 
-    if (title) window.addEventListener('beforeunload', unloadCallback)
-    if (!title) window.removeEventListener('beforeunload', unloadCallback)
+    // if (!recipeRef.current)
+    window.addEventListener('beforeunload', unloadCallback)
+    // if (recipeRef.current)
+    // window.removeEventListener('beforeunload', unloadCallback)
     return () => window.removeEventListener('beforeunload', unloadCallback)
-  }, [title])
+  })
+  //  [recipeRef])
 
   // TODO: move this to server actions
   const generateRecipe = useCallback(async () => {
@@ -111,13 +114,13 @@ export default function EatPage() {
     })
 
     if (newRecipe) {
-      recipeRef.current = newRecipe.id
       await saveImageToStorage({
         recipeId: newRecipe.id,
         imageUrl: rImage,
       })
       await updateRecipeImage({ recipeId: newRecipe.id, token: token })
       console.log('Saved recipe to db')
+      recipeRef.current = newRecipe.id
     }
 
     setLoading(false)

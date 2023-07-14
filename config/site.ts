@@ -2,7 +2,8 @@ export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
   name: 'RecipeAI',
-  description: 'Create delicious recipes with any ingredients',
+  description: 'Create mouthwatering recipes',
+  addl: 'Taking the guesswork out of cooking',
   mainNav: [
     {
       title: 'Home',

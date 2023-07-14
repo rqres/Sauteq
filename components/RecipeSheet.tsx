@@ -2,6 +2,8 @@ import Image from 'next/image'
 
 import { RecipeBody } from '@/types/recipe'
 
+import { cn } from '@/lib/utils'
+
 import {
   Card,
   CardContent,
@@ -26,6 +28,8 @@ interface RecipeSheetProps {
   initialBookmark: boolean
   noReturnButton?: boolean
   noRegen?: boolean
+  noMenuBar?: boolean
+  className?: string
 }
 
 export default function RecipeSheet({
@@ -38,16 +42,22 @@ export default function RecipeSheet({
   initialBookmark,
   noReturnButton,
   noRegen,
+  noMenuBar,
+  className,
 }: RecipeSheetProps) {
   return (
-    <Card className="my-8 w-[400px] place-self-center md:w-[750px]">
-      <RecipeMenubar
-        noRegen={noRegen}
-        initialBookmark={initialBookmark}
-        recipeId={recipeId}
-        loading={loading}
-        regen={regen}
-      />
+    <Card
+      className={cn('my-8 w-[400px] place-self-center md:w-[750px]', className)}
+    >
+      {!noMenuBar && (
+        <RecipeMenubar
+          noRegen={noRegen}
+          initialBookmark={initialBookmark}
+          recipeId={recipeId}
+          loading={loading}
+          regen={regen}
+        />
+      )}
 
       <CardHeader>
         <div className="space-y-8 md:flex md:justify-between md:gap-x-4 md:space-y-0">

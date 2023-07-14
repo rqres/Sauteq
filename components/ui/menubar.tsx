@@ -1,15 +1,19 @@
-'use client'
+'use client';
 
-import * as React from 'react'
+import * as React from 'react';
 
-import {
-  CheckIcon,
-  ChevronRightIcon,
-  DotFilledIcon,
-} from '@radix-ui/react-icons'
-import * as MenubarPrimitive from '@radix-ui/react-menubar'
 
-import { cn } from '@/lib/utils'
+
+import { CheckIcon, ChevronRightIcon, DotFilledIcon } from '@radix-ui/react-icons';
+import * as MenubarPrimitive from '@radix-ui/react-menubar';
+
+
+
+import { cn } from '@/lib/utils';
+
+
+
+
 
 const MenubarMenu = MenubarPrimitive.Menu
 
@@ -43,7 +47,7 @@ const MenubarTrigger = React.forwardRef<
   <MenubarPrimitive.Trigger
     ref={ref}
     className={cn(
-      'flex cursor-pointer select-none items-center rounded-sm px-3 py-1 text-sm font-medium outline-none transition-colors hover:bg-stone-50',
+      'flex cursor-pointer select-none items-center rounded-sm px-3 py-1 text-sm font-medium outline-none transition-colors hover:bg-stone-50 dark:hover:bg-stone-600/90',
       className
     )}
     {...props}

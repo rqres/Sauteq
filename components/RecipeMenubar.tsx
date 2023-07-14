@@ -99,7 +99,7 @@ export default function RecipeMenubar({
         >
           <Bookmark
             className={`${
-              isBookmark ? 'fill-black' : 'fill-transparent'
+              isBookmark ? 'fill-black dark:fill-white' : 'fill-transparent'
             } transition`}
           />
         </MenubarTrigger>
