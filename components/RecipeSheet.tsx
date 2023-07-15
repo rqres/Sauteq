@@ -56,6 +56,7 @@ export default function RecipeSheet({
           recipeId={recipeId}
           loading={loading}
           regen={regen}
+          noReturnButton={noReturnButton}
         />
       )}
 

@@ -39,15 +39,22 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <ClerkProvider>
-      <html lang="en" className="h-full" suppressHydrationWarning>
+      <html lang="en" className="" suppressHydrationWarning>
         <head />
-        <body className={cn('h-full font-sans antialiased', fontSans.variable)}>
+        <body
+          className={cn(
+            'min-h-screen font-sans antialiased',
+            fontSans.variable
+          )}
+        >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="relative flex h-full flex-col">
-              <SiteHeader />
+            {/* <main className="flex flex-col"> */}
+            <SiteHeader />
+            <main className="">
               {children}
-              <Toaster />
-            </div>
+            </main>
+            <Toaster />
+            {/* </main> */}
             <TailwindIndicator />
           </ThemeProvider>
         </body>

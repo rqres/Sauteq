@@ -140,7 +140,7 @@ export default function EatPage() {
     <>
       {formView ? (
         <AnimatePresence initial={false}>
-          <div className="flex flex-col items-center justify-center gap-8 py-12 md:mt-0 md:h-full md:flex-row">
+          <div className="flex min-h-[calc(100vh-4.1rem)] flex-col items-center justify-center gap-8 py-16 md:flex-row md:py-0">
             <motion.div layout>
               <Card className="w-80 md:w-72 lg:w-96">
                 <CardHeader>

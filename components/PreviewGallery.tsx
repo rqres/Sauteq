@@ -27,11 +27,11 @@ const recipes = [
       'https://outggvemqdylkseydkof.supabase.co/storage/v1/object/public/recipe-images/152.png',
   },
   {
-    title: 'Grilled Apricot and Honey Glazed Zucchini',
+    title: 'Apricot Mint Lemonade',
     description:
-      'Grilled zucchini glazed with a sweet apricot and honey sauce.',
+      'A refreshing and tangy twist on classic lemonade with the sweetness of apricots and the freshness of mint.',
     imageSrc:
-      'https://outggvemqdylkseydkof.supabase.co/storage/v1/object/public/recipe-images/150.png',
+      'https://outggvemqdylkseydkof.supabase.co/storage/v1/object/public/recipe-images/162.png',
   },
 ]
 
@@ -44,18 +44,20 @@ const GalleryItem = ({
   description: string
   imageSrc: string
 }) => (
-  <Card className="">
-    <CardHeader>
-      <div className="space-y-8 md:flex md:justify-between md:gap-x-4 md:space-y-0">
+  <Card className="mt-6">
+    <CardHeader className="h-full">
+      <div className="flex h-full flex-col items-center justify-between gap-4 lg:flex-row">
         <div>
           <CardTitle className="mb-4">
-            <span className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0">
+            <span className="scroll-m-20 pb-2 text-xl font-semibold tracking-tight transition-colors first:mt-0 md:text-2xl">
               {title}
             </span>
           </CardTitle>
-          <CardDescription>{description}</CardDescription>
+          <CardDescription className="text-sm md:text-base">
+            {description}
+          </CardDescription>
         </div>
-        <div className="md:shrink-0">
+        <div className="shrink-0 place-self-center lg:place-self-auto">
           <Image
             src={imageSrc}
             width={233}
