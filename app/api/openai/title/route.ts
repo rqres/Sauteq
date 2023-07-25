@@ -32,7 +32,7 @@ export const POST = async (req: NextRequest) => {
   console.log('CALLED TITLE GPT')
 
   const textResponse =
-    res.data.choices[0].message?.content.trim() ||
+    res.data.choices[0].message?.content?.trim() ||
     'Problem fetching OpenAI data.'
 
   return NextResponse.json(textResponse)

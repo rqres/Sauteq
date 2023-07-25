@@ -1,19 +1,19 @@
-'use client'
+'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import ingredientMap from '@/utils/ingredientData'
-import {
-  addRecipe,
-  saveImageToStorage,
-  updateRecipeImage,
-} from '@/utils/supabaseRequests'
-import { useAuth } from '@clerk/nextjs'
-import { AnimatePresence, motion } from 'framer-motion'
-import { X } from 'lucide-react'
+
+
+import ingredientMap from '@/utils/ingredientData';
+import { addRecipe, saveImageToStorage, updateRecipeImage } from '@/utils/supabaseRequests';
+import { useAuth } from '@clerk/nextjs';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Drumstick, EggFried, X } from 'lucide-react'
 import ingredients from 'public/english_ingredients.json'
 
 import { RecipeBody } from '@/types/recipe'
+
+import { cn } from '@/lib/utils'
 
 import useSearch from '@/hooks/useSearch'
 
@@ -52,6 +52,7 @@ export default function EatPage() {
   const [body, setBody] = useState<RecipeBody | null>(null)
   const [image, setImage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const [mealType, setMealType] = useState<string>('any')
   const searchBoxRef = useRef<HTMLInputElement | null>(null)
   const recipeRef = useRef<number | null>(null)
 
@@ -148,6 +149,75 @@ export default function EatPage() {
                   <CardDescription>What will you cook next?</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  <div className="flex justify-center gap-4 text-sm text-stone-600 dark:text-stone-400">
+                    <div
+                      className={cn(
+                        'grid grow cursor-pointer place-items-center gap-1 rounded-md border border-stone-200 py-3 shadow-sm transition-colors duration-300 ease-in-out hover:bg-stone-100/60 dark:border-stone-800 dark:bg-stone-950',
+                        mealType === 'breakfast' &&
+                          'border-stone-400 bg-stone-100/50 text-stone-900'
+                      )}
+                      onClick={() => {
+                        if (mealType === 'breakfast') {
+                          setMealType('any')
+                        } else {
+                          setMealType('breakfast')
+                        }
+                      }}
+                    >
+                      <EggFried />
+                      Breakfast
+                    </div>
+                    <div
+                      className={cn(
+                        'grid grow cursor-pointer place-items-center gap-1 rounded-md border border-stone-200 py-3 shadow-sm transition-colors duration-300 ease-in-out hover:bg-stone-100/60 dark:border-stone-800 dark:bg-stone-950',
+                        mealType === 'lunch' &&
+                          'border-stone-400 bg-stone-100/50 text-stone-900'
+                      )}
+                      onClick={() => {
+                        if (mealType === 'lunch') {
+                          setMealType('any')
+                        } else {
+                          setMealType('lunch')
+                        }
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-sandwich"
+                      >
+                        <path d="M3 11v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3" />
+                        <path d="M12 19H4a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3.83" />
+                        <path d="m3 11 7.77-6.04a2 2 0 0 1 2.46 0L21 11H3Z" />
+                        <path d="M12.97 19.77 7 15h12.5l-3.75 4.5a2 2 0 0 1-2.78.27Z" />
+                      </svg>
+                      Lunch
+                    </div>
+                    <div
+                      className={cn(
+                        'grid grow cursor-pointer place-items-center gap-1 rounded-md border border-stone-200 py-3 shadow-sm transition-colors duration-300 ease-in-out hover:bg-stone-100/60 dark:border-stone-800 dark:bg-stone-950',
+                        mealType === 'dinner' &&
+                          'border-stone-400 bg-stone-100/50 text-stone-900'
+                      )}
+                      onClick={() => {
+                        if (mealType === 'dinner') {
+                          setMealType('any')
+                        } else {
+                          setMealType('dinner')
+                        }
+                      }}
+                    >
+                      <Drumstick />
+                      Dinner
+                    </div>
+                  </div>
                   <Input
                     type="search"
                     placeholder={'Search...'}

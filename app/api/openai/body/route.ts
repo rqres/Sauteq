@@ -35,7 +35,7 @@ export const POST = async (req: NextRequest) => {
   })
 
   const textResponse =
-    aiTextResult.data.choices[0].message?.content.trim() ||
+    aiTextResult.data.choices[0].message?.content?.trim() ||
     'Problem fetching OpenAI data.'
 
   return NextResponse.json(textResponse)
