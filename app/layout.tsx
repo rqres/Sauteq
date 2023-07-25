@@ -48,13 +48,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
           )}
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {/* <main className="flex flex-col"> */}
             <SiteHeader />
-            <main className="">
+            <main>
               {children}
             </main>
             <Toaster />
-            {/* </main> */}
             <TailwindIndicator />
           </ThemeProvider>
         </body>

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { SignInButton, SignedIn, SignedOut } from '@clerk/nextjs'
 
 import { siteConfig } from '@/config/site'
 
@@ -10,9 +10,10 @@ import { Icons } from '@/components/icons'
 import { MainNav } from '@/components/main-nav'
 import { ThemeToggle } from '@/components/theme-toggle'
 
+import UserButton from './UserButton'
+
 export function SiteHeader() {
   return (
-    // top-0 z-40
     <header className="sticky top-0 z-40 w-full border-b bg-stone-50 dark:bg-black">
       <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
         <MainNav items={siteConfig.mainNav} />
@@ -36,7 +37,7 @@ export function SiteHeader() {
             <ThemeToggle />
             <SignedIn>
               {/* Mount the UserButton component */}
-              <UserButton afterSignOutUrl="/" />
+              <UserButton />
             </SignedIn>
             <SignedOut>
               {/* Signed out users get sign in button */}
