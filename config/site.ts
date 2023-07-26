@@ -5,14 +5,14 @@ export const siteConfig = {
   description: 'Create mouthwatering recipes',
   addl: 'Taking the guesswork out of cooking',
   mainNav: [
-    {
-      title: 'Home',
-      href: '/',
-    },
-    {
-      title: 'History',
-      href: '/history',
-    },
+    // {
+    //   title: 'Home',
+    //   href: '/',
+    // },
+    // {
+    //   title: 'History',
+    //   href: '/history',
+    // },
   ],
   links: {
     github: 'https://github.com/rqres',

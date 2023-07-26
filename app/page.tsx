@@ -1,10 +1,6 @@
-import Link from 'next/link';
+import Link from 'next/link'
 
-
-
-import { siteConfig } from '@/config/site';
-
-
+import { siteConfig } from '@/config/site'
 
 import { buttonVariants } from '@/components/ui/button'
 
@@ -31,9 +27,7 @@ export default function IndexPage() {
           Get Started
         </Link>
       </div>
-      <div>
-        <PreviewGallery />
-      </div>
+      <PreviewGallery />
     </section>
   )
 }

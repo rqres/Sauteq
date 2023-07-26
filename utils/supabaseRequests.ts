@@ -1,14 +1,8 @@
-'use server';
+'use server'
 
-import { RecipeBody } from '@/types/recipe';
+import { RecipeBody } from '@/types/recipe'
 
-
-
-import supabaseClient from './supabaseClient';
-
-
-
-
+import supabaseClient from './supabaseClient'
 
 export async function getRecipe({
   recipeId,
@@ -37,7 +31,7 @@ export async function getUserRecipes({
   token,
 }: {
   userId: string
-  token: string
+  token?: string
 }) {
   const supabase = supabaseClient(token)
 

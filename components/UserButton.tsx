@@ -12,7 +12,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
 
@@ -21,15 +20,18 @@ export default function UserButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar className="h-8 w-8">
+        <Avatar className="h-8 w-8 cursor-pointer">
           {isLoaded && <AvatarImage src={user?.imageUrl} />}
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mr-5 w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>{user?.username}</DropdownMenuLabel>
+        <DropdownMenuLabel className="-mt-3 text-sm font-light text-gray-500">
+          {user?.emailAddresses[0].emailAddress}
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link href={'/account'}>
+          <Link href={`/${user?.username}`}>
             <DropdownMenuItem>
               Profile
               {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
@@ -45,6 +47,12 @@ export default function UserButton() {
             Favorites
             {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
           </DropdownMenuItem>
+          <Link href={'/settings'}>
+            <DropdownMenuItem>
+              Settings
+              {/* <DropdownMenuShortcut>⌘B</DropdownMenuShortcut> */}
+            </DropdownMenuItem>
+          </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>

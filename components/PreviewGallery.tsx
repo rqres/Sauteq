@@ -1,4 +1,8 @@
-import Image from 'next/image'
+import Image from 'next/image';
+
+
+
+import { cn } from '@/lib/utils'
 
 import { Card, CardDescription, CardHeader, CardTitle } from './ui/card'
 
@@ -35,38 +39,36 @@ const recipes = [
   },
 ]
 
-const GalleryItem = ({
+export const GalleryItem = ({
   title,
   description,
   imageSrc,
+  imageClassName,
 }: {
   title: string
   description: string
   imageSrc: string
+  imageClassName?: string
 }) => (
-  <Card className="mt-6">
-    <CardHeader className="h-full">
-      <div className="flex h-full flex-col items-center justify-between gap-4 lg:flex-row">
-        <div>
-          <CardTitle className="mb-4">
-            <span className="scroll-m-20 pb-2 text-xl font-semibold tracking-tight transition-colors first:mt-0 md:text-2xl">
-              {title}
-            </span>
-          </CardTitle>
-          <CardDescription className="text-sm md:text-base">
-            {description}
-          </CardDescription>
-        </div>
-        <div className="shrink-0 place-self-center lg:place-self-auto">
-          <Image
-            src={imageSrc}
-            width={233}
-            height={200}
-            alt={'Recipe Image'}
-            className="rounded-xl shadow"
-          />
-        </div>
+  <Card>
+    <CardHeader className="grid h-full grid-cols-4 items-center justify-center gap-4">
+      <CardTitle className="col-span-2">
+        <span className="scroll-m-20 pb-2 text-xl font-semibold tracking-tight transition-colors first:mt-0 md:text-2xl">
+          {title}
+        </span>
+      </CardTitle>
+      <div className="col-span-2 justify-self-end">
+        <Image
+          src={imageSrc}
+          width={533}
+          height={500}
+          alt={'Recipe Image'}
+          className={cn('rounded-xl shadow', imageClassName)}
+        />
       </div>
+      <CardDescription className="col-span-4 text-sm md:text-base">
+        {description}
+      </CardDescription>
     </CardHeader>
   </Card>
 )
