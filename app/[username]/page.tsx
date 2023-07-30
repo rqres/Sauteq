@@ -1,8 +1,16 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
-import { getUserFavoriteRecipes } from '@/utils/supabaseRequests'
-import { clerkClient } from '@clerk/nextjs'
 
+
+import {
+  checkFollower,
+  getFollowerCount,
+  getFollowingCount,
+  getUserFavoriteRecipes,
+} from '@/utils/supabaseRequests'
+import { auth, clerkClient } from '@clerk/nextjs'
+
+import FollowButton from '@/components/ui/FollowButton'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import {
   Card,
@@ -20,22 +28,30 @@ export default async function ProfilePage({
 }: {
   params: { username: string }
 }) {
+  const { userId: currentUserId } = auth()
   const user = (
     await clerkClient.users.getUserList({
       username: [params.username],
     })
   )[0]
 
+  const followsInit = await checkFollower({
+    followerId: currentUserId!,
+    followeeId: user.id,
+  })
+
   const userRecipes = await getUserFavoriteRecipes({ userId: user.id })
+  const followerCount = await getFollowerCount({ userId: user.id })
+  const followingCount = await getFollowingCount({ userId: user.id })
 
   return (
     <div className="flex justify-center">
-      <Card className="w-[400px] border-0 shadow-none sm:my-8 sm:w-[660px] sm:rounded-xl sm:border sm:border-stone-200 sm:shadow sm:dark:border-stone-800 md:w-[750px] lg:w-[960px] xl:w-[1250px]">
-        <CardHeader className="grid grid-cols-4 grid-rows-3 items-center gap-x-8 px-10">
+      <Card className="w-[400px] border-0 shadow-none sm:my-8 sm:w-[620px] sm:rounded-xl sm:border sm:border-stone-200 sm:shadow sm:dark:border-stone-800 md:w-[750px] lg:w-[960px] xl:w-[1250px]">
+        <CardHeader className="grid grid-cols-3 grid-rows-3 items-center gap-x-8 px-10 sm:grid-cols-4">
           <Avatar className="col-span-1 row-span-2 h-20 w-20 self-center md:row-span-3 md:h-40 md:w-40 lg:h-40 lg:w-40">
             <AvatarImage src={user.imageUrl} />
           </Avatar>
-          <div className="col-span-3 row-span-2 flex flex-col self-start md:row-span-1">
+          <div className="col-span-2 row-span-1 self-start sm:col-span-2 sm:row-span-2 md:row-span-1">
             <CardTitle className="text-xl md:text-2xl lg:text-4xl">
               {user.firstName + ' ' + user.lastName}
             </CardTitle>
@@ -43,22 +59,39 @@ export default async function ProfilePage({
               @{user.username}
             </CardDescription>
           </div>
-          <div className="hidden md:block">
-            {userRecipes?.length} recipe
-            {userRecipes && userRecipes.length > 1 && <span>s</span>}
+          <div className=" col-span-2 row-span-1 self-center sm:col-span-1 sm:row-span-2 md:row-span-1">
+            {currentUserId && currentUserId !== user.id && (
+              <FollowButton
+                currentUserId={currentUserId}
+                followeeId={user.id}
+                followsInit={followsInit}
+              />
+            )}
           </div>
-          <div className="hidden md:block">0 followers</div>
-          <div className="hidden md:block">0 following</div>
+          <div className="hidden font-medium md:block">
+            {userRecipes?.length} recipe
+            {userRecipes && userRecipes.length !== 1 && <span>s</span>}
+          </div>
+          <div className="hidden font-medium md:block">
+            {followerCount} follower
+            {followerCount !== 1 && <span>s</span>}
+          </div>
+          <div className="hidden font-medium md:block">
+            {followingCount} following
+          </div>
           <div className="col-span-4 md:col-span-3">
             Hello! My name is Rares and I love cooking.
           </div>
-          <div className="col-span-4 flex items-center justify-between gap-8 md:hidden">
+          <div className="col-span-4 flex items-center justify-between gap-8 font-medium md:hidden">
             <div>
               {userRecipes?.length} recipe
-              {userRecipes && userRecipes.length > 1 && <span>s</span>}
+              {userRecipes && userRecipes.length !== 1 && <span>s</span>}
             </div>
-            <div>0 followers</div>
-            <div>0 following</div>
+            <div>
+              {followerCount} follower
+              {followerCount !== 1 && <span>s</span>}
+            </div>
+            <div>{followingCount} following</div>
           </div>
         </CardHeader>
         <CardContent>

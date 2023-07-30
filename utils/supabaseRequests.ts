@@ -211,12 +211,110 @@ export async function getBookmark({
 
   if (error) {
     console.error(error)
-    return
+    return false
   }
 
   if (!data) return false
 
   return data.length > 0 ? true : false
+}
+
+export async function addFollower({
+  followerId,
+  followeeId,
+  token,
+}: {
+  followerId: string
+  followeeId: string
+  token: string
+}) {
+  const supabase = supabaseClient(token)
+  const { error } = await supabase
+    .from('followers')
+    .insert({ follower_id: followerId, followee_id: followeeId })
+  if (error) {
+    console.error(error)
+    return
+  }
+}
+
+export async function removeFollower({
+  followerId,
+  followeeId,
+  token,
+}: {
+  followerId: string
+  followeeId: string
+  token: string
+}) {
+  const supabase = supabaseClient(token)
+  const { error } = await supabase
+    .from('followers')
+    .delete()
+    .eq('follower_id', followerId)
+    .eq('followee_id', followeeId)
+
+  if (error) {
+    console.error(error)
+    return
+  }
+}
+
+export async function checkFollower({
+  followerId,
+  followeeId,
+}: {
+  followerId: string
+  followeeId: string
+}) {
+  const supabase = supabaseClient()
+  let { data, error } = await supabase
+    .from('followers')
+    .select('*')
+    .eq('follower_id', followerId)
+    .eq('followee_id', followeeId)
+
+  if (error) {
+    console.error(error)
+    return false
+  }
+
+  if (!data) return false
+  return data.length === 1
+}
+
+export async function getFollowerCount({ userId }: { userId: string }) {
+  const supabase = supabaseClient()
+  const { count, error } = await supabase
+    .from('followers')
+    .select('*', { count: 'exact', head: true })
+    .eq('followee_id', userId)
+
+  if (error) {
+    console.error(error)
+    return 0
+  }
+
+  if (count === null) return 0
+
+  return count
+}
+
+export async function getFollowingCount({ userId }: { userId: string }) {
+  const supabase = supabaseClient()
+  const { count, error } = await supabase
+    .from('followers')
+    .select('*', { count: 'exact', head: true })
+    .eq('follower_id', userId)
+
+  if (error) {
+    console.error(error)
+    return 0
+  }
+
+  if (count === null) return 0
+
+  return count
 }
 
 export async function saveImageToStorage({

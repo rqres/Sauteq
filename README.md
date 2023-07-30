@@ -10,6 +10,9 @@ npm i && npm run dev
 
 ## TODO:
 
+- [x] Add follower/following count on profile page
+- [ ] Add followers/following sheets to see them
+- [ ] Add profile bio
 - [ ] Add separate loading skeletons when generating a recipe (for images and other parts of the recipe)
 - [ ] Only generate images on user demand (checkbox?)
 - [ ] Implement Auth
