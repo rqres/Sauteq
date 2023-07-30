@@ -2,26 +2,17 @@ import Link from 'next/link';
 
 
 
-import {
-  checkFollower,
-  getFollowerCount,
-  getFollowingCount,
-  getUserFavoriteRecipes,
-} from '@/utils/supabaseRequests'
-import { auth, clerkClient } from '@clerk/nextjs'
+import { checkFollower, getFollowerCount, getFollowingCount, getUserFavoriteRecipes } from '@/utils/supabaseRequests';
+import { auth, clerkClient } from '@clerk/nextjs';
 
-import FollowButton from '@/components/ui/FollowButton'
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 
+import FollowButton from '@/components/ui/FollowButton';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+
+import FollowersSheet from '@/components/FollowersSheet'
 import { GalleryItem } from '@/components/PreviewGallery'
+import FollowingSheet from '@/components/FollowingSheet';
 
 export default async function ProfilePage({
   params,
@@ -72,13 +63,19 @@ export default async function ProfilePage({
             {userRecipes?.length} recipe
             {userRecipes && userRecipes.length !== 1 && <span>s</span>}
           </div>
-          <div className="hidden font-medium md:block">
-            {followerCount} follower
-            {followerCount !== 1 && <span>s</span>}
-          </div>
-          <div className="hidden font-medium md:block">
-            {followingCount} following
-          </div>
+          <FollowersSheet user={user.id}>
+            <div className="hidden cursor-pointer font-medium md:block">
+              {followerCount} follower
+              {followerCount !== 1 && <span>s</span>}
+            </div>
+          </FollowersSheet>
+
+          <FollowingSheet user={user.id} >
+            <div className="hidden cursor-pointer font-medium md:block">
+              {followingCount} following
+            </div>
+          </FollowingSheet>
+
           <div className="col-span-4 md:col-span-3">
             Hello! My name is Rares and I love cooking.
           </div>
@@ -87,11 +84,17 @@ export default async function ProfilePage({
               {userRecipes?.length} recipe
               {userRecipes && userRecipes.length !== 1 && <span>s</span>}
             </div>
-            <div>
-              {followerCount} follower
-              {followerCount !== 1 && <span>s</span>}
-            </div>
-            <div>{followingCount} following</div>
+
+            <FollowersSheet user={user.id}>
+              <div className="cursor-pointer">
+                {followerCount} follower
+                {followerCount !== 1 && <span>s</span>}
+              </div>
+            </FollowersSheet>
+
+            <FollowingSheet user={user.id}>
+              <div className="cursor-pointer">{followingCount} following</div>
+            </FollowingSheet>
           </div>
         </CardHeader>
         <CardContent>
@@ -109,7 +112,6 @@ export default async function ProfilePage({
             ))}
           </div>
         </CardContent>
-        {/* <CardFooter></CardFooter> */}
       </Card>
     </div>
   )

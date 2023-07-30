@@ -10,12 +10,12 @@ npm i && npm run dev
 
 ## TODO:
 
-- [x] Add follower/following count on profile page
-- [ ] Add followers/following sheets to see them
-- [ ] Add profile bio
-- [ ] Add separate loading skeletons when generating a recipe (for images and other parts of the recipe)
+- [x] ~~Add follower/following count on profile page~~
+- [x] ~~Add followers/following sheets to see them~~
+- [ ] !!!Add profile bio
+- [x] ~~Add separate loading skeletons when generating a recipe (for images and other parts of the recipe)~~
 - [ ] Only generate images on user demand (checkbox?)
-- [ ] Implement Auth
+- [x] ~~Implement Auth~~
 - [ ] Display selected ingredients in generated recipe document differently (maybe somewhere on the side)
 - [ ] Add functionality for adding new items to the ingredient DB if the search misses
 - [ ] Change default ingredients displayed

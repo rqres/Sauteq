@@ -1,8 +1,14 @@
-'use server'
+'use server';
 
-import { RecipeBody } from '@/types/recipe'
+import { RecipeBody } from '@/types/recipe';
 
-import supabaseClient from './supabaseClient'
+
+
+import supabaseClient from './supabaseClient';
+
+
+
+
 
 export async function getRecipe({
   recipeId,
@@ -315,6 +321,38 @@ export async function getFollowingCount({ userId }: { userId: string }) {
   if (count === null) return 0
 
   return count
+}
+
+export async function getFollowerList({ userId }: { userId: string }) {
+  const supabase = supabaseClient()
+
+  const { data, error } = await supabase
+    .from('followers')
+    .select('follower_id')
+    .eq('followee_id', userId)
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  return data
+}
+
+export async function getFollowingList({ userId }: { userId: string }) {
+  const supabase = supabaseClient()
+
+  const { data, error } = await supabase
+    .from('followers')
+    .select('followee_id')
+    .eq('follower_id', userId)
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  return data
 }
 
 export async function saveImageToStorage({
