@@ -1,6 +1,5 @@
 import Image from 'next/image';
-
-
+import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
 
@@ -8,6 +7,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from './ui/card'
 
 const recipes = [
   {
+    id: 147,
     title: 'Asparagus and Feta Salad with Olive Oil Dressing',
     description:
       'A refreshing salad featuring asparagus and feta cheese, dressed with a delicious olive oil dressing.',
@@ -15,14 +15,16 @@ const recipes = [
       'https://outggvemqdylkseydkof.supabase.co/storage/v1/object/public/recipe-images/147.png',
   },
   {
+    id: 194,
     title:
       'Dark Chocolate Cardamom Truffles with Edamer Cheese and Dandelion Honey',
     description:
       'Decadent dark chocolate truffles infused with cardamom, served with a creamy Edamer cheese filling and drizzled with sweet dandelion honey.',
     imageSrc:
-      'https://outggvemqdylkseydkof.supabase.co/storage/v1/object/public/recipe-images/Dark%20Chocolate%20Cardamom%20Truffles%20with%20Edamer%20Cheese%20and%20Dandelion%20Honey.png',
+      'https://outggvemqdylkseydkof.supabase.co/storage/v1/object/public/recipe-images/194.png',
   },
   {
+    id: 152,
     title:
       'Lemon Herb Roasted Chicken with Lavender Potatoes and Yoghurt Drizzle',
     description:
@@ -31,6 +33,7 @@ const recipes = [
       'https://outggvemqdylkseydkof.supabase.co/storage/v1/object/public/recipe-images/152.png',
   },
   {
+    id: 162,
     title: 'Apricot Mint Lemonade',
     description:
       'A refreshing and tangy twist on classic lemonade with the sweetness of apricots and the freshness of mint.',
@@ -50,7 +53,7 @@ export const GalleryItem = ({
   imageSrc: string
   imageClassName?: string
 }) => (
-  <Card>
+  <Card className="h-full transition duration-200 ease-in-out hover:scale-105">
     <CardHeader className="grid h-full grid-cols-4 items-center justify-center gap-4">
       <CardTitle className="col-span-2">
         <span className="scroll-m-20 pb-2 text-xl font-semibold tracking-tight transition-colors first:mt-0 md:text-2xl">
@@ -77,12 +80,14 @@ export default function PreviewGallery() {
   return (
     <div className="grid grid-cols-2 gap-4">
       {recipes.map((r) => (
-        <GalleryItem
-          title={r.title}
-          description={r.description}
-          imageSrc={r.imageSrc}
-          key={r.title}
-        />
+        <Link href={`r/${r.id}`}>
+          <GalleryItem
+            title={r.title}
+            description={r.description}
+            imageSrc={r.imageSrc}
+            key={r.title}
+          />
+        </Link>
       ))}
     </div>
   )

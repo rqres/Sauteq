@@ -25,9 +25,9 @@ export default function UserButton() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mr-5 w-56">
-        <DropdownMenuLabel>{user?.username}</DropdownMenuLabel>
+        <DropdownMenuLabel>{user?.fullName || ''}</DropdownMenuLabel>
         <DropdownMenuLabel className="-mt-3 text-sm font-light text-gray-500">
-          {user?.emailAddresses[0].emailAddress}
+          @{user?.username}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>

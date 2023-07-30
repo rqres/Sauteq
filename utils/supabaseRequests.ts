@@ -48,6 +48,51 @@ export async function getUserRecipes({
   return data
 }
 
+export async function getUserFavoriteRecipes({
+  userId,
+  token,
+}: {
+  userId: string
+  token?: string
+}) {
+  const supabase = supabaseClient(token)
+
+  let { data: favRecipes, error } = await supabase
+    .from('bookmarks')
+    .select('recipe_id')
+    .eq('user_id', userId)
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  let dataPromises: Promise<
+    | {
+        body: RecipeBody
+        created_at: string | null
+        id: number
+        image_url: string | null
+        ingredients: string
+        title: string
+        user_id: string
+      }
+    | null
+    | undefined
+  >[] = []
+
+  if (!favRecipes) return []
+
+  for (let i = favRecipes.length - 1; i >= 0; i--) {
+    const favRec = favRecipes[i]
+    const rec = getRecipe({ recipeId: favRec.recipe_id })
+    dataPromises.push(rec)
+  }
+  const data = Promise.all(dataPromises)
+
+  return data
+}
+
 export async function addRecipe({
   token,
   ingredients,
