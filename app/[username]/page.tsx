@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
 import {
   checkFollower,
@@ -8,7 +9,10 @@ import {
 } from '@/utils/supabaseRequests'
 import { auth, clerkClient } from '@clerk/nextjs'
 
+import { cn } from '@/lib/utils'
+
 import FollowButton from '@/components/ui/FollowButton'
+import UserBio from '@/components/ui/UserBio'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import {
   Card,
@@ -35,6 +39,10 @@ export default async function ProfilePage({
     })
   )[0]
 
+  if (user === undefined) {
+    notFound()
+  }
+
   const followsInit = await checkFollower({
     followerId: currentUserId!,
     followeeId: user.id,
@@ -51,7 +59,14 @@ export default async function ProfilePage({
           <Avatar className="col-span-1 row-span-2 h-20 w-20 self-center md:row-span-3 md:h-40 md:w-40 lg:h-40 lg:w-40">
             <AvatarImage src={user.imageUrl} />
           </Avatar>
-          <div className="col-span-2 row-span-1 self-start sm:col-span-2 sm:row-span-2 md:row-span-1">
+          <div
+            className={cn(
+              'col-span-2 row-span-2 self-center sm:col-span-2 sm:row-span-2 md:col-span-3 md:row-span-1',
+              currentUserId !== null &&
+                currentUserId !== user.id &&
+                'md:col-span-2'
+            )}
+          >
             <CardTitle className="text-xl md:text-2xl lg:text-4xl">
               {user.firstName + ' ' + user.lastName}
             </CardTitle>
@@ -59,15 +74,15 @@ export default async function ProfilePage({
               @{user.username}
             </CardDescription>
           </div>
-          <div className=" col-span-2 row-span-1 self-center sm:col-span-1 sm:row-span-2 md:row-span-1">
-            {currentUserId && currentUserId !== user.id && (
+          {currentUserId !== null && currentUserId !== user.id && (
+            <div className="col-span-2 row-span-1 self-center sm:col-span-1 sm:row-span-2 md:row-span-1">
               <FollowButton
                 currentUserId={currentUserId}
                 followeeId={user.id}
                 followsInit={followsInit}
               />
-            )}
-          </div>
+            </div>
+          )}
           <div className="hidden font-medium md:block">
             {userRecipes?.length} recipe
             {userRecipes && userRecipes.length !== 1 && <span>s</span>}
@@ -85,9 +100,21 @@ export default async function ProfilePage({
             </div>
           </FollowingSheet>
 
-          <div className="col-span-4 md:col-span-3">
-            Hello! My name is Rares and I love cooking.
-          </div>
+          {!(
+            currentUserId !== null &&
+            currentUserId !== user.id &&
+            (user.unsafeMetadata.bio === '' ||
+              user.unsafeMetadata.bio === undefined)
+          ) && (
+            <div className="col-span-4 md:col-span-3">
+              <UserBio
+                editable={
+                  !(currentUserId !== null && currentUserId !== user.id)
+                }
+                metadata={user.unsafeMetadata}
+              />
+            </div>
+          )}
           <div className="col-span-4 flex items-center justify-between gap-8 font-medium md:hidden">
             <div>
               {userRecipes?.length} recipe
