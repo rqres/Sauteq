@@ -29,7 +29,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "api/staticdata.js"
+    "api/staticdata.js",
+    "app/r/[id]/[slug].tsx"
   ],
   "exclude": ["node_modules"]
 }

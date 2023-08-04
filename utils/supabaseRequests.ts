@@ -1,14 +1,21 @@
-'use server';
+'use server'
 
-import { RecipeBody } from '@/types/recipe';
+import { RecipeBody } from '@/types/recipe'
 
+import supabaseClient from './supabaseClient'
 
+export async function getRecipes() {
+  const supabase = supabaseClient()
 
-import supabaseClient from './supabaseClient';
+  const { data, error } = await supabase.from('recipes').select('title')
 
+  if (error) {
+    console.error(error)
+    return []
+  }
 
-
-
+  return data
+}
 
 export async function getRecipe({
   recipeId,

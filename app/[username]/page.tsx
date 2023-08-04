@@ -1,18 +1,27 @@
-import Link from 'next/link';
+import Link from 'next/link'
 
+import {
+  checkFollower,
+  getFollowerCount,
+  getFollowingCount,
+  getUserFavoriteRecipes,
+} from '@/utils/supabaseRequests'
+import { auth, clerkClient } from '@clerk/nextjs'
 
-
-import { checkFollower, getFollowerCount, getFollowingCount, getUserFavoriteRecipes } from '@/utils/supabaseRequests';
-import { auth, clerkClient } from '@clerk/nextjs';
-
-
-import FollowButton from '@/components/ui/FollowButton';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import FollowButton from '@/components/ui/FollowButton'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 import FollowersSheet from '@/components/FollowersSheet'
+import FollowingSheet from '@/components/FollowingSheet'
 import { GalleryItem } from '@/components/PreviewGallery'
-import FollowingSheet from '@/components/FollowingSheet';
 
 export default async function ProfilePage({
   params,
@@ -70,7 +79,7 @@ export default async function ProfilePage({
             </div>
           </FollowersSheet>
 
-          <FollowingSheet user={user.id} >
+          <FollowingSheet user={user.id}>
             <div className="hidden cursor-pointer font-medium md:block">
               {followingCount} following
             </div>
@@ -100,7 +109,11 @@ export default async function ProfilePage({
         <CardContent>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
             {userRecipes?.map((r) => (
-              <Link href={`r/${r?.id}`}>
+              <Link
+                href={`r/${r?.id}/${r?.title
+                  .replace(/\s+/g, '-')
+                  .toLowerCase()}`}
+              >
                 <GalleryItem
                   title={r?.title || ''}
                   description={r?.body.description || ''}

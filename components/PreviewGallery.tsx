@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
@@ -80,7 +80,7 @@ export default function PreviewGallery() {
   return (
     <div className="grid grid-cols-2 gap-4">
       {recipes.map((r) => (
-        <Link href={`r/${r.id}`}>
+        <Link href={`r/${r.id}/${r?.title.replace(/\s+/g, '-').toLowerCase()}`}>
           <GalleryItem
             title={r.title}
             description={r.description}
