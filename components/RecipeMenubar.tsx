@@ -1,22 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react'
+
+import { SignInButton } from '@clerk/nextjs'
+import { Bookmark, Printer, RefreshCcw, Share } from 'lucide-react'
+import { useReactToPrint } from 'react-to-print';
 
 
 
-import { SignInButton } from '@clerk/nextjs';
-import { Bookmark, RefreshCcw, Share } from 'lucide-react';
+import { RecipeBody } from '@/types/recipe'
 
+import { Menubar, MenubarMenu, MenubarTrigger } from '@/components/ui/menubar'
 
+import { bookmarkRecipe } from '@/app/actions'
 
-import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarTrigger } from '@/components/ui/menubar';
-
-
-
-import { bookmarkRecipe } from '@/app/actions';
-
-
-
+import RecipeSheet from './RecipeSheet'
 import { CreateAnotherButton } from './ui/CreateAnotherButton'
 import { ToastAction } from './ui/toast'
 import {
@@ -34,6 +32,9 @@ interface RecipeMenubarProps {
   noRegen?: boolean
   initialBookmark: boolean
   noReturnButton?: boolean
+  title?: string
+  body?: RecipeBody
+  image?: string
 }
 
 export default function RecipeMenubar({
@@ -43,9 +44,23 @@ export default function RecipeMenubar({
   noRegen,
   initialBookmark,
   noReturnButton,
+  title,
+  body,
+  image,
 }: RecipeMenubarProps) {
   const [isBookmark, setBookmark] = useState<boolean>(initialBookmark)
   const { toast } = useToast()
+
+  const cardRef = useRef(null)
+  const handlePrint = useReactToPrint({
+    content: () => cardRef.current,
+    // onBeforeGetContent: () =>
+    //   new Promise((resolve) => {
+    //     setTimeout(() => {
+    //       resolve('Promise resolved after 5 seconds!')
+    //     }, 5000) // 5000 milliseconds = 5 seconds
+    //   }),
+  })
 
   return (
     <Menubar
@@ -53,8 +68,43 @@ export default function RecipeMenubar({
         noReturnButton ? 'justify-end' : 'justify-between'
       }`}
     >
+      <div className="hidden">
+        <RecipeSheet
+          ref={cardRef}
+          recipeId={recipeId}
+          title={title || ''}
+          body={body || null}
+          image={image || ''}
+          initialBookmark={false}
+          noMenuBar
+          noReturnButton
+          className="border-0 shadow-none"
+        />
+      </div>
       {!noReturnButton && <CreateAnotherButton loading={loading} />}
       <div className="flex">
+        <MenubarMenu>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <MenubarTrigger
+                  onClick={handlePrint}
+                  disabled={loading}
+                  className={`${
+                    loading
+                      ? 'cursor-not-allowed hover:bg-transparent'
+                      : 'cursor-pointer'
+                  }`}
+                >
+                  <Printer />
+                </MenubarTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Print</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </MenubarMenu>
         <MenubarMenu>
           <TooltipProvider>
             <Tooltip>

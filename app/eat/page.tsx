@@ -88,17 +88,17 @@ export default function EatPage() {
     setTitle(rTitle)
     console.log(rTitle)
 
-    const rBody = await getRecipeBody(rTitle, ingredients)
-    if (!rBody) {
-      throw new Error('Error generating body')
-    }
-    setBody(rBody)
-
     const rImage = await getRecipeImage(rTitle)
     if (!rImage) {
       throw new Error('Error generating image')
     }
     setImage(rImage)
+
+    const rBody = await getRecipeBody(rTitle, ingredients)
+    if (!rBody) {
+      throw new Error('Error generating body')
+    }
+    setBody(rBody)
 
     let token = undefined
     if (isLoaded && userId) {

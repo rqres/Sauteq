@@ -1,3 +1,5 @@
+import { forwardRef } from 'react'
+
 import Image from 'next/image'
 
 import { RecipeBody } from '@/types/recipe'
@@ -32,77 +34,89 @@ interface RecipeSheetProps {
   className?: string
 }
 
-export default function RecipeSheet({
-  recipeId,
-  title,
-  body,
-  image,
-  regen,
-  loading,
-  initialBookmark,
-  noReturnButton,
-  noRegen,
-  noMenuBar,
-  className,
-}: RecipeSheetProps) {
-  return (
-    <Card
-      className={cn('my-8 w-[400px] place-self-center md:w-[750px]', className)}
-    >
-      {!noMenuBar && (
-        <RecipeMenubar
-          noRegen={noRegen}
-          initialBookmark={initialBookmark}
-          recipeId={recipeId}
-          loading={loading}
-          regen={regen}
-          noReturnButton={noReturnButton}
-        />
-      )}
+const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
+  function RecipeSheet(
+    {
+      recipeId,
+      title,
+      body,
+      image,
+      regen,
+      loading,
+      initialBookmark,
+      noReturnButton,
+      noRegen,
+      noMenuBar,
+      className,
+    },
+    ref
+  ) {
+    return (
+      <Card
+        ref={ref}
+        className={cn(
+          'my-8 w-[400px] place-self-center md:w-[750px]',
+          className
+        )}
+      >
+        {!noMenuBar && (
+          <RecipeMenubar
+            noRegen={noRegen}
+            initialBookmark={initialBookmark}
+            recipeId={recipeId}
+            loading={loading}
+            regen={regen}
+            noReturnButton={noReturnButton}
+            title={title}
+            body={body || undefined}
+            image={image}
+          />
+        )}
 
-      <CardHeader>
-        <div className="space-y-8 md:flex md:justify-between md:gap-x-4 md:space-y-0">
-          <div>
-            <CardTitle className="mb-6">
-              {title === '' ? (
-                <Skeleton className="h-20 w-full md:w-64" />
+        <CardHeader>
+          <div className="space-y-8 md:flex md:justify-between md:gap-x-4 md:space-y-0">
+            <div>
+              <CardTitle className="mb-6">
+                {title === '' ? (
+                  <Skeleton className="h-20 w-full md:w-64" />
+                ) : (
+                  <span className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+                    {title}
+                  </span>
+                )}
+              </CardTitle>
+              {!body ? (
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-full" />
+                </div>
               ) : (
-                <span className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-                  {title}
-                </span>
+                <RecipeDescription recipeDescription={body.description} />
               )}
-            </CardTitle>
-            {!body ? (
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-full" />
-              </div>
-            ) : (
-              <RecipeDescription recipeDescription={body.description} />
-            )}
+            </div>
+            <div className="md:shrink-0">
+              {image === '' ? (
+                <Skeleton className="h-[350px] w-[350px]" />
+              ) : (
+                <RecipeImage img={image || ''} />
+              )}
+            </div>
           </div>
-          <div className="md:shrink-0">
-            {image === '' ? (
-              <Skeleton className="h-[350px] w-[350px]" />
-            ) : (
-              <RecipeImage img={image || ''} />
-            )}
-          </div>
-        </div>
-      </CardHeader>
+        </CardHeader>
 
-      <Separator className="mb-11 mt-7" />
+        <Separator className="mb-11 mt-7" />
 
-      {!body ? <RecipeContentSkeleton /> : <RecipeContent body={body} />}
+        {!body ? <RecipeContentSkeleton /> : <RecipeContent body={body} />}
 
-      {!noReturnButton && (
-        <CardFooter>
-          <CreateAnotherButton loading={loading} />
-        </CardFooter>
-      )}
-    </Card>
-  )
-}
+        {!noReturnButton && (
+          <CardFooter>
+            <CreateAnotherButton loading={loading} />
+          </CardFooter>
+        )}
+      </Card>
+    )
+  }
+)
 
 function RecipeDescription({
   recipeDescription,
@@ -209,3 +223,5 @@ function RecipeImage({ img }: { img: string }) {
     />
   )
 }
+
+export default RecipeSheet
