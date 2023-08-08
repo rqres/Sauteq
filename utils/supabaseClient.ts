@@ -6,8 +6,9 @@ export default function supabaseClient(supabaseToken?: string) {
   const options = supabaseToken
     ? {
         global: { headers: { Authorization: `Bearer ${supabaseToken}` } },
+        auth: { persistSession: false },
       }
-    : undefined
+    : { auth: { persistSession: false } }
 
   const supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

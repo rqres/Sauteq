@@ -2,6 +2,8 @@ import { forwardRef } from 'react'
 
 import Image from 'next/image'
 
+import { Drumstick, EggFried } from 'lucide-react'
+
 import { RecipeBody } from '@/types/recipe'
 
 import { cn } from '@/lib/utils'
@@ -17,6 +19,8 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 
+import { LunchIcon } from '@/app/eat/page'
+
 import RecipeMenubar from './RecipeMenubar'
 import { CreateAnotherButton } from './ui/CreateAnotherButton'
 
@@ -25,6 +29,7 @@ interface RecipeSheetProps {
   title: string
   body: RecipeBody | null
   image: string
+  mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
   regen?: () => Promise<void>
   loading?: boolean
   initialBookmark: boolean
@@ -41,6 +46,7 @@ const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
       title,
       body,
       image,
+      mealType,
       regen,
       loading,
       initialBookmark,
@@ -70,12 +76,13 @@ const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
             title={title}
             body={body || undefined}
             image={image}
+            mealType={mealType}
           />
         )}
 
         <CardHeader>
           <div className="space-y-8 md:flex md:justify-between md:gap-x-4 md:space-y-0">
-            <div>
+            <div className="flex flex-col">
               <CardTitle className="mb-6">
                 {title === '' ? (
                   <Skeleton className="h-20 w-full md:w-64" />
@@ -92,6 +99,30 @@ const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
                 </div>
               ) : (
                 <RecipeDescription recipeDescription={body.description} />
+              )}
+
+              {mealType !== 'any' && (
+                <div className="flex h-full items-center gap-2 text-stone-600 dark:border-stone-800 dark:bg-stone-950 dark:text-stone-400">
+                  Perfect for
+                  {mealType === 'breakfast' && (
+                    <div className="flex">
+                      <EggFried />
+                      <span>Breakfast</span>
+                    </div>
+                  )}
+                  {mealType === 'lunch' && (
+                    <div className="flex">
+                      <LunchIcon />
+                      <span>Lunch</span>
+                    </div>
+                  )}
+                  {mealType === 'dinner' && (
+                    <div className="flex">
+                      <Drumstick />
+                      <span>Dinner</span>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
             <div className="md:shrink-0">

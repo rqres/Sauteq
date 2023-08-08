@@ -4,19 +4,21 @@ import { useRef, useState } from 'react';
 
 
 
-import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
-import { SignInButton } from '@clerk/nextjs'
+
+
+import { SignInButton } from '@clerk/nextjs';
 import {
   Bookmark,
-  FacebookIcon,
+  Facebook,
   Link,
   Mail,
   Printer,
   RefreshCcw,
   Share,
-  TwitterIcon,
+  Twitter,
 } from 'lucide-react'
 import whatsappIcon from 'public/whatsapp.svg'
 import {
@@ -60,6 +62,7 @@ interface RecipeMenubarProps {
   title?: string
   body?: RecipeBody
   image?: string
+  mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
 }
 
 export default function RecipeMenubar({
@@ -72,6 +75,7 @@ export default function RecipeMenubar({
   title,
   body,
   image,
+  mealType,
 }: RecipeMenubarProps) {
   const [isBookmark, setBookmark] = useState<boolean>(initialBookmark)
   const { toast } = useToast()
@@ -104,6 +108,7 @@ export default function RecipeMenubar({
           noMenuBar
           noReturnButton
           className="border-0 shadow-none"
+          mealType={mealType}
         />
       </div>
       {!noReturnButton && <CreateAnotherButton loading={loading} />}
@@ -161,7 +166,7 @@ export default function RecipeMenubar({
                     url={currentURL}
                   >
                     Facebook
-                    <FacebookIcon />
+                    <Facebook />
                   </FacebookShareButton>
                 </MenubarItem>
                 <MenubarItem>
@@ -173,7 +178,7 @@ export default function RecipeMenubar({
                     via="recipeAI"
                   >
                     Twitter
-                    <TwitterIcon />
+                    <Twitter />
                   </TwitterShareButton>
                 </MenubarItem>
                 <MenubarItem>

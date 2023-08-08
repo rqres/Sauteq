@@ -1,8 +1,4 @@
-import { RecipeBody } from './recipe';
-
-
-
-
+import { RecipeBody } from './recipe'
 
 export type Json =
   | string
@@ -40,6 +36,24 @@ export interface Database {
           }
         ]
       }
+      followers: {
+        Row: {
+          created_at: string | null
+          followee_id: string
+          follower_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          followee_id: string
+          follower_id: string
+        }
+        Update: {
+          created_at?: string | null
+          followee_id?: string
+          follower_id?: string
+        }
+        Relationships: []
+      }
       recipes: {
         Row: {
           body: RecipeBody
@@ -47,6 +61,7 @@ export interface Database {
           id: number
           image_url: string | null
           ingredients: string
+          meal_type: 'breakfast' | 'lunch' | 'dinner' | 'any'
           title: string
           user_id: string
         }
@@ -56,6 +71,7 @@ export interface Database {
           id?: number
           image_url?: string | null
           ingredients: string
+          meal_type?: 'breakfast' | 'lunch' | 'dinner' | 'any'
           title?: string
           user_id?: string
         }
@@ -65,6 +81,7 @@ export interface Database {
           id?: number
           image_url?: string | null
           ingredients?: string
+          meal_type?: 'breakfast' | 'lunch' | 'dinner' | 'any'
           title?: string
           user_id?: string
         }

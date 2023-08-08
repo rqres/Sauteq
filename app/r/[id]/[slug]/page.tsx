@@ -44,6 +44,7 @@ export default async function RPage({ params }: { params: { id: number } }) {
         image={recipe?.image_url || ''}
         recipeId={params.id}
         initialBookmark={bookmark}
+        mealType={recipe?.meal_type}
       />
     </div>
   )

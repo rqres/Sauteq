@@ -13,7 +13,7 @@ npm i && npm run dev
 - [x] ~~!!History Skeleton~~
 - [ ] Add bookmark user count
 - [x] ~~!!Share Sheet~~
-- [ ] !!Time of Day buttons
+- [x] ~~!!Time of Day buttons~~
 - [ ] !!Favorites in UserButton
 - [x] ~~Add follower/following count on profile page~~
 - [x] ~~Add followers/following sheets to see them~~

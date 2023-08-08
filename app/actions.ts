@@ -1,11 +1,19 @@
-'use server'
+'use server';
 
-import { revalidatePath } from 'next/cache'
+import { revalidatePath } from 'next/cache';
 
-import { toggleBookmark } from '@/utils/supabaseRequests'
-import { auth } from '@clerk/nextjs'
 
-import { RecipeBody } from '@/types/recipe'
+
+import { toggleBookmark } from '@/utils/supabaseRequests';
+import { auth } from '@clerk/nextjs';
+
+
+
+import { RecipeBody } from '@/types/recipe';
+
+
+
+
 
 export const flushCache = () => {
   revalidatePath('/eat')
@@ -13,7 +21,8 @@ export const flushCache = () => {
 
 const getRecipeBody = async (
   title: string,
-  ingredients: string[]
+  ingredients: string[],
+  mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
 ): Promise<RecipeBody> => {
   console.warn('Connecting to GPT body')
   const res = await fetch('http://localhost:3000/api/openai/body', {
@@ -25,6 +34,7 @@ const getRecipeBody = async (
     body: JSON.stringify({
       title: title,
       ingredients: ingredients,
+      mealType: mealType,
     }),
   })
 
@@ -38,7 +48,10 @@ const getRecipeBody = async (
   return parsedRecipe
 }
 
-const getRecipeTitle = async (recipeIngredients: string[]): Promise<string> => {
+const getRecipeTitle = async (
+  recipeIngredients: string[],
+  mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
+): Promise<string> => {
   console.warn('Connecting to GPT title...')
   const res = await fetch('http://localhost:3000/api/openai/title', {
     method: 'POST',
@@ -46,7 +59,10 @@ const getRecipeTitle = async (recipeIngredients: string[]): Promise<string> => {
       Accept: 'application.json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ ingredients: recipeIngredients }),
+    body: JSON.stringify({
+      ingredients: recipeIngredients,
+      mealType: mealType,
+    }),
   })
 
   if (!res.ok) {

@@ -1,8 +1,14 @@
-'use server'
+'use server';
 
-import { RecipeBody } from '@/types/recipe'
+import { RecipeBody } from '@/types/recipe';
 
-import supabaseClient from './supabaseClient'
+
+
+import supabaseClient from './supabaseClient';
+
+
+
+
 
 export async function getRecipes() {
   const supabase = supabaseClient()
@@ -112,12 +118,14 @@ export async function addRecipe({
   title,
   recipeBody,
   image_url,
+  mealType,
 }: {
   token?: string
   ingredients: string
   title: string
   recipeBody: RecipeBody
   image_url?: string
+  mealType?: string
 }) {
   const supabase = supabaseClient(token)
 
@@ -129,6 +137,7 @@ export async function addRecipe({
         title: title,
         body: recipeBody,
         image_url: image_url,
+        meal_type: mealType,
       },
     ])
     .select()

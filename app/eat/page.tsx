@@ -1,13 +1,15 @@
-'use client';
+'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react'
 
-
-
-import ingredientMap from '@/utils/ingredientData';
-import { addRecipe, saveImageToStorage, updateRecipeImage } from '@/utils/supabaseRequests';
-import { useAuth } from '@clerk/nextjs';
-import { AnimatePresence, motion } from 'framer-motion';
+import ingredientMap from '@/utils/ingredientData'
+import {
+  addRecipe,
+  saveImageToStorage,
+  updateRecipeImage,
+} from '@/utils/supabaseRequests'
+import { useAuth } from '@clerk/nextjs'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Drumstick, EggFried, X } from 'lucide-react'
 import ingredients from 'public/english_ingredients.json'
 
@@ -39,6 +41,26 @@ import {
   getRecipeTitle,
 } from '../actions'
 
+export const LunchIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="lucide lucide-sandwich"
+  >
+    <path d="M3 11v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3" />
+    <path d="M12 19H4a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3.83" />
+    <path d="m3 11 7.77-6.04a2 2 0 0 1 2.46 0L21 11H3Z" />
+    <path d="M12.97 19.77 7 15h12.5l-3.75 4.5a2 2 0 0 1-2.78.27Z" />
+  </svg>
+)
+
 export default function EatPage() {
   const { isLoaded, userId, getToken } = useAuth()
   const { searchQuery, setSearchQuery, results } = useSearch({
@@ -52,7 +74,9 @@ export default function EatPage() {
   const [body, setBody] = useState<RecipeBody | null>(null)
   const [image, setImage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
-  const [mealType, setMealType] = useState<string>('any')
+  const [mealType, setMealType] = useState<
+    'breakfast' | 'lunch' | 'dinner' | 'any'
+  >('any')
   const searchBoxRef = useRef<HTMLInputElement | null>(null)
   const recipeRef = useRef<number | null>(null)
 
@@ -80,7 +104,7 @@ export default function EatPage() {
 
     const ingredients = selection.map((id) => ingredientMap[id])
 
-    const rTitle = await getRecipeTitle(ingredients)
+    const rTitle = await getRecipeTitle(ingredients, mealType)
 
     if (!rTitle) {
       throw new Error('Error generating title')
@@ -94,7 +118,7 @@ export default function EatPage() {
     }
     setImage(rImage)
 
-    const rBody = await getRecipeBody(rTitle, ingredients)
+    const rBody = await getRecipeBody(rTitle, ingredients, mealType)
     if (!rBody) {
       throw new Error('Error generating body')
     }
@@ -112,6 +136,7 @@ export default function EatPage() {
       title: rTitle,
       recipeBody: rBody,
       token: token,
+      mealType: mealType,
     })
 
     if (newRecipe) {
@@ -125,7 +150,7 @@ export default function EatPage() {
     }
 
     setLoading(false)
-  }, [getToken, isLoaded, selection, userId])
+  }, [getToken, isLoaded, mealType, selection, userId])
 
   const regenRecipe = async () => {
     setLoading(true)
@@ -149,7 +174,7 @@ export default function EatPage() {
                   <CardDescription>What will you cook next?</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex justify-center gap-4 text-sm text-stone-600 dark:text-stone-400">
+                  <div className="grid grid-cols-3 gap-4 text-sm text-stone-600 dark:text-stone-400">
                     <div
                       className={cn(
                         'grid grow cursor-pointer place-items-center gap-1 rounded-md border border-stone-200 py-3 shadow-sm transition-colors duration-300 ease-in-out hover:bg-stone-100/60 dark:border-stone-800 dark:bg-stone-950',
@@ -181,23 +206,7 @@ export default function EatPage() {
                         }
                       }}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="lucide lucide-sandwich"
-                      >
-                        <path d="M3 11v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3" />
-                        <path d="M12 19H4a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3.83" />
-                        <path d="m3 11 7.77-6.04a2 2 0 0 1 2.46 0L21 11H3Z" />
-                        <path d="M12.97 19.77 7 15h12.5l-3.75 4.5a2 2 0 0 1-2.78.27Z" />
-                      </svg>
+                      <LunchIcon />
                       Lunch
                     </div>
                     <div
@@ -300,7 +309,7 @@ export default function EatPage() {
         </AnimatePresence>
       ) : (
         // recipeView
-        <div className="flex justify-center ">
+        <div className="flex justify-center">
           {recipeView && (
             <RecipeSheet
               title={title}
@@ -310,6 +319,7 @@ export default function EatPage() {
               loading={loading}
               recipeId={recipeRef.current!}
               initialBookmark={false}
+              mealType={mealType}
             />
           )}
         </div>
