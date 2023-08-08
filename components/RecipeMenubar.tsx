@@ -1,16 +1,41 @@
 'use client';
 
-import { useRef, useState } from 'react'
+import { useRef, useState } from 'react';
+
+
+
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 
 import { SignInButton } from '@clerk/nextjs'
-import { Bookmark, Printer, RefreshCcw, Share } from 'lucide-react'
-import { useReactToPrint } from 'react-to-print';
-
-
+import {
+  Bookmark,
+  FacebookIcon,
+  Link,
+  Mail,
+  Printer,
+  RefreshCcw,
+  Share,
+  TwitterIcon,
+} from 'lucide-react'
+import whatsappIcon from 'public/whatsapp.svg'
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+} from 'react-share'
+import { useReactToPrint } from 'react-to-print'
 
 import { RecipeBody } from '@/types/recipe'
 
-import { Menubar, MenubarMenu, MenubarTrigger } from '@/components/ui/menubar'
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from '@/components/ui/menubar'
 
 import { bookmarkRecipe } from '@/app/actions'
 
@@ -50,17 +75,17 @@ export default function RecipeMenubar({
 }: RecipeMenubarProps) {
   const [isBookmark, setBookmark] = useState<boolean>(initialBookmark)
   const { toast } = useToast()
+  const pathname = usePathname()
+  const currentURL = `https://www.domainname.com${pathname}`
 
   const cardRef = useRef(null)
   const handlePrint = useReactToPrint({
     content: () => cardRef.current,
-    // onBeforeGetContent: () =>
-    //   new Promise((resolve) => {
-    //     setTimeout(() => {
-    //       resolve('Promise resolved after 5 seconds!')
-    //     }, 5000) // 5000 milliseconds = 5 seconds
-    //   }),
   })
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(window.location.toString())
+  }
 
   return (
     <Menubar
@@ -120,6 +145,59 @@ export default function RecipeMenubar({
                   <Share />
                 </MenubarTrigger>
               </TooltipTrigger>
+              <MenubarContent>
+                <MenubarItem
+                  onClick={copyToClipboard}
+                  className="flex w-full items-center justify-between"
+                >
+                  Copy
+                  <Link />
+                </MenubarItem>
+                <MenubarItem>
+                  <FacebookShareButton
+                    className="flex w-full items-center justify-between"
+                    title={`I just learned how to cook ${title} thanks to AI!`}
+                    hashtag="#recipe"
+                    url={currentURL}
+                  >
+                    Facebook
+                    <FacebookIcon />
+                  </FacebookShareButton>
+                </MenubarItem>
+                <MenubarItem>
+                  <TwitterShareButton
+                    className="flex w-full items-center justify-between"
+                    title={`I just learned how to cook ${title} thanks to AI!`}
+                    hashtags={['recipe']}
+                    url={currentURL}
+                    via="recipeAI"
+                  >
+                    Twitter
+                    <TwitterIcon />
+                  </TwitterShareButton>
+                </MenubarItem>
+                <MenubarItem>
+                  <WhatsappShareButton
+                    className="flex w-full items-center justify-between"
+                    title={`I just learned how to cook ${title} thanks to AI!`}
+                    url={currentURL}
+                  >
+                    WhatsApp
+                    <Image src={whatsappIcon} alt={'Share on whatsapp'} />
+                  </WhatsappShareButton>
+                </MenubarItem>
+                <MenubarItem>
+                  <EmailShareButton
+                    className="flex w-full items-center justify-between"
+                    subject="AI Recipe Discovery"
+                    body={`I just learned how to cook ${title} thanks to AI!`}
+                    url={currentURL}
+                  >
+                    Email
+                    <Mail />
+                  </EmailShareButton>
+                </MenubarItem>
+              </MenubarContent>
               <TooltipContent>
                 <p>Share</p>
               </TooltipContent>
