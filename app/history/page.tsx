@@ -8,7 +8,6 @@ export default async function HistoryPage() {
   const { userId, getToken } = auth()
 
   if (!userId) {
-    //TODO:
     notFound()
   }
 

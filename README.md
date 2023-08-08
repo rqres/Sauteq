@@ -10,7 +10,8 @@ npm i && npm run dev
 
 ## TODO:
 
-- [ ] !!History Skeleton
+- [x] ~~!!History Skeleton~~
+- [ ] Add bookmark user count
 - [x] ~~!!Share Sheet~~
 - [ ] !!Time of Day buttons
 - [ ] !!Favorites in UserButton
