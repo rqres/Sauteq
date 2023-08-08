@@ -137,7 +137,7 @@ export default async function ProfilePage({
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
             {userRecipes?.map((r) => (
               <Link
-                href={`r/${r?.id}/${r?.title
+                href={`recipe/${r?.id}/${r?.title
                   .replace(/\s+/g, '-')
                   .toLowerCase()}`}
               >

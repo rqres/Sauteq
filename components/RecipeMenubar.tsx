@@ -1,15 +1,10 @@
-'use client';
+'use client'
 
-import { useRef, useState } from 'react';
+import { useRef, useState } from 'react'
 
+import Image from 'next/image'
 
-
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-
-
-
-import { SignInButton } from '@clerk/nextjs';
+import { SignInButton } from '@clerk/nextjs'
 import {
   Bookmark,
   Facebook,
@@ -79,8 +74,9 @@ export default function RecipeMenubar({
 }: RecipeMenubarProps) {
   const [isBookmark, setBookmark] = useState<boolean>(initialBookmark)
   const { toast } = useToast()
-  const pathname = usePathname()
-  const currentURL = `https://www.domainname.com${pathname}`
+  const currentURL = `https://www.domainname.com/recipe/${recipeId}/${title
+    ?.replace(/\s+/g, '-')
+    .toLowerCase()}`
 
   const cardRef = useRef(null)
   const handlePrint = useReactToPrint({
@@ -88,7 +84,7 @@ export default function RecipeMenubar({
   })
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(window.location.toString())
+    navigator.clipboard.writeText(currentURL)
   }
 
   return (
@@ -162,7 +158,7 @@ export default function RecipeMenubar({
                   <FacebookShareButton
                     className="flex w-full items-center justify-between"
                     title={`I just learned how to cook ${title} thanks to AI!`}
-                    hashtag="#recipe"
+                    hashtag="#Sauteq"
                     url={currentURL}
                   >
                     Facebook
@@ -173,9 +169,9 @@ export default function RecipeMenubar({
                   <TwitterShareButton
                     className="flex w-full items-center justify-between"
                     title={`I just learned how to cook ${title} thanks to AI!`}
-                    hashtags={['recipe']}
+                    hashtags={['Sauteq', 'AIChef', 'recipe']}
                     url={currentURL}
-                    via="recipeAI"
+                    via="Sauteq"
                   >
                     Twitter
                     <Twitter />
@@ -184,7 +180,7 @@ export default function RecipeMenubar({
                 <MenubarItem>
                   <WhatsappShareButton
                     className="flex w-full items-center justify-between"
-                    title={`I just learned how to cook ${title} thanks to AI!`}
+                    title={`I just learned how to cook ${title} thanks to AI! Check it out here`}
                     url={currentURL}
                   >
                     WhatsApp
@@ -195,7 +191,7 @@ export default function RecipeMenubar({
                   <EmailShareButton
                     className="flex w-full items-center justify-between"
                     subject="AI Recipe Discovery"
-                    body={`I just learned how to cook ${title} thanks to AI!`}
+                    body={`I just learned how to cook ${title} thanks to AI! Check it out here`}
                     url={currentURL}
                   >
                     Email

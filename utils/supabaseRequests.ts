@@ -125,7 +125,7 @@ export async function addRecipe({
   title: string
   recipeBody: RecipeBody
   image_url?: string
-  mealType?: string
+  mealType?: 'breakfast' | 'lunch' | 'dinner' | 'any'
 }) {
   const supabase = supabaseClient(token)
 

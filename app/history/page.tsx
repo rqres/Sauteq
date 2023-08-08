@@ -30,7 +30,7 @@ export default async function HistoryPage() {
             .sort((a, b) => b.id - a.id)
             .map((r) => (
               <li key={r.id}>
-                <Link href={`/r/${r.id}/${r?.title
+                <Link href={`recipe/${r.id}/${r?.title
                   .replace(/\s+/g, '-')
                   .toLowerCase()}`}>
                   <div className="flex justify-between rounded-lg border px-4 py-2 transition-colors hover:bg-stone-100 dark:hover:bg-stone-600/90">

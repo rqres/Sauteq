@@ -30,7 +30,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "api/staticdata.js",
-    "app/r/[id]/[slug].tsx"
+    "app/recipe/[id]/[slug].tsx"
   ],
   "exclude": ["node_modules"]
 }
