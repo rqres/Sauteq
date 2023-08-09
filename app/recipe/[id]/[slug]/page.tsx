@@ -5,14 +5,6 @@ import { auth } from '@clerk/nextjs'
 
 import RecipeSheet from '@/components/RecipeSheet'
 
-export async function generateStaticParams() {
-  const recipes = await getRecipes()
-
-  return recipes.map((recipe) => ({
-    slug: recipe.title.replace(/\s+/g, '-').toLowerCase(),
-  }))
-}
-
 export default async function RPage({ params }: { params: { id: number } }) {
   const recipe = await getRecipe({ recipeId: params.id })
   if (!recipe) {

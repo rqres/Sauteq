@@ -1,19 +1,11 @@
-'use server';
+'use server'
 
-import { revalidatePath } from 'next/cache';
+import { revalidatePath } from 'next/cache'
 
+import { toggleBookmark } from '@/utils/supabaseRequests'
+import { auth } from '@clerk/nextjs'
 
-
-import { toggleBookmark } from '@/utils/supabaseRequests';
-import { auth } from '@clerk/nextjs';
-
-
-
-import { RecipeBody } from '@/types/recipe';
-
-
-
-
+import { RecipeBody } from '@/types/recipe'
 
 export const flushCache = () => {
   revalidatePath('/eat')
