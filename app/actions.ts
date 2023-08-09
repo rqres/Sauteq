@@ -17,18 +17,21 @@ const getRecipeBody = async (
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
 ): Promise<RecipeBody> => {
   console.warn('Connecting to GPT body')
-  const res = await fetch('/api/openai/body', {
-    method: 'POST',
-    headers: {
-      Accept: 'application.json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      title: title,
-      ingredients: ingredients,
-      mealType: mealType,
-    }),
-  })
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_DOMAIN_NAME + '/api/openai/body',
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application.json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: title,
+        ingredients: ingredients,
+        mealType: mealType,
+      }),
+    }
+  )
 
   if (!res.ok) {
     throw new Error('Failed to connect to OpenAI/text ' + res.statusText)
@@ -45,17 +48,20 @@ const getRecipeTitle = async (
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
 ): Promise<string> => {
   console.warn('Connecting to GPT title...')
-  const res = await fetch('/api/openai/title', {
-    method: 'POST',
-    headers: {
-      Accept: 'application.json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      ingredients: recipeIngredients,
-      mealType: mealType,
-    }),
-  })
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_DOMAIN_NAME + '/api/openai/title',
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application.json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ingredients: recipeIngredients,
+        mealType: mealType,
+      }),
+    }
+  )
 
   if (!res.ok) {
     throw new Error(
@@ -70,14 +76,17 @@ const getRecipeTitle = async (
 
 const getRecipeImage = async (recipeTitle: string): Promise<string> => {
   console.warn('Connecting to GPT image')
-  const res = await fetch('/api/openai/image', {
-    method: 'POST',
-    headers: {
-      Accept: 'application.json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ title: recipeTitle }),
-  })
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_DOMAIN_NAME + '/api/openai/image',
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application.json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ title: recipeTitle }),
+    }
+  )
 
   if (!res.ok) {
     throw new Error('Failed to connect to OpenAI/image ' + res.statusText)

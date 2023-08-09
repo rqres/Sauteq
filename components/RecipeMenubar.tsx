@@ -78,9 +78,9 @@ export default function RecipeMenubar({
   const router = useRouter()
   const [isBookmark, setBookmark] = useState<boolean>(initialBookmark)
   const { toast } = useToast()
-  const currentURL = `https://www.domainname.com/recipe/${recipeId}/${title
-    ?.replace(/\s+/g, '-')
-    .toLowerCase()}`
+  const currentURL = `${
+    process.env.NEXT_PUBLIC_DOMAIN_NAME
+  }/recipe/${recipeId}/${title?.replace(/\s+/g, '-').toLowerCase()}`
 
   const cardRef = useRef(null)
   const handlePrint = useReactToPrint({
