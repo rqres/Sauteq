@@ -17,7 +17,7 @@ const getRecipeBody = async (
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
 ): Promise<RecipeBody> => {
   console.warn('Connecting to GPT body')
-  const res = await fetch('http://localhost:3000/api/openai/body', {
+  const res = await fetch('/api/openai/body', {
     method: 'POST',
     headers: {
       Accept: 'application.json',
@@ -45,7 +45,7 @@ const getRecipeTitle = async (
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
 ): Promise<string> => {
   console.warn('Connecting to GPT title...')
-  const res = await fetch('http://localhost:3000/api/openai/title', {
+  const res = await fetch('/api/openai/title', {
     method: 'POST',
     headers: {
       Accept: 'application.json',
@@ -70,7 +70,7 @@ const getRecipeTitle = async (
 
 const getRecipeImage = async (recipeTitle: string): Promise<string> => {
   console.warn('Connecting to GPT image')
-  const res = await fetch('http://localhost:3000/api/openai/image', {
+  const res = await fetch('/api/openai/image', {
     method: 'POST',
     headers: {
       Accept: 'application.json',
