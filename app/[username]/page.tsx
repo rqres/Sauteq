@@ -140,6 +140,7 @@ export default async function ProfilePage({
                 href={`recipe/${r?.id}/${r?.title
                   .replace(/\s+/g, '-')
                   .toLowerCase()}`}
+                key={r?.id}
               >
                 <GalleryItem
                   title={r?.title || ''}

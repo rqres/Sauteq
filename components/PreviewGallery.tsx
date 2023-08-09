@@ -80,7 +80,10 @@ export default function PreviewGallery() {
   return (
     <div className="grid grid-cols-2 gap-4">
       {recipes.map((r) => (
-        <Link href={`recipe/${r.id}/${r?.title.replace(/\s+/g, '-').toLowerCase()}`}>
+        <Link
+          href={`recipe/${r.id}/${r?.title.replace(/\s+/g, '-').toLowerCase()}`}
+          key={r.id}
+        >
           <GalleryItem
             title={r.title}
             description={r.description}
