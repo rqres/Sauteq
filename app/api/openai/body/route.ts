@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { Configuration, OpenAIApi } from 'openai'
+import { Configuration, OpenAIApi, ResponseTypes } from 'openai-edge'
+
+export const runtime = 'edge'
 
 interface Payload {
   title: string
@@ -37,9 +39,11 @@ export const POST = async (req: NextRequest) => {
     ],
   })
 
+  const data =
+    (await aiTextResult.json()) as ResponseTypes['createChatCompletion']
+
   const textResponse =
-    aiTextResult.data.choices[0].message?.content?.trim() ||
-    'Problem fetching OpenAI data.'
+    data.choices[0].message?.content?.trim() || 'Problem fetching OpenAI data.'
 
   return NextResponse.json(textResponse)
 }
