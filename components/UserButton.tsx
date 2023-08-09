@@ -37,7 +37,9 @@ export default function UserButton() {
           <Link href={'/history'}>
             <DropdownMenuItem>History</DropdownMenuItem>
           </Link>
-          <DropdownMenuItem>Favorites</DropdownMenuItem>
+          <Link href={'/favorites'}>
+            <DropdownMenuItem>Favorites</DropdownMenuItem>
+          </Link>
           <Link href={'/settings'}>
             <DropdownMenuItem>Settings</DropdownMenuItem>
           </Link>
@@ -45,7 +47,7 @@ export default function UserButton() {
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <SignOutButton>
-            <button className='w-full text-start'>Sign out</button>
+            <button className="w-full text-start">Sign out</button>
           </SignOutButton>
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -20,8 +20,8 @@ export default async function HistoryPage() {
   const recipes = await getUserRecipes({ userId: userId, token: token })
 
   return (
-    <div>
-      <h1 className="mb-6 mt-3 scroll-m-20 text-center text-3xl font-extrabold tracking-tight lg:text-5xl">
+    <>
+      <h1 className="my-6 scroll-m-20 text-center text-3xl font-extrabold tracking-tight lg:text-5xl">
         History
       </h1>
       {recipes && recipes.length > 0 ? (
@@ -49,6 +49,6 @@ export default async function HistoryPage() {
           </p>
         </>
       )}
-    </div>
+    </>
   )
 }
