@@ -63,7 +63,7 @@ const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
       <Card
         ref={ref}
         className={cn(
-          'my-8 w-[400px] place-self-center md:w-[750px]',
+          'my-8 w-[400px] place-self-center border-0 shadow-none dark:bg-transparent sm:rounded-xl  sm:border sm:border-stone-200 sm:shadow sm:dark:border-stone-800 sm:dark:bg-stone-950 md:w-[750px]',
           className
         )}
       >
@@ -105,22 +105,22 @@ const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
               )}
 
               {mealType !== 'any' && (
-                <div className="flex h-full items-center gap-2 text-stone-600 dark:border-stone-800 dark:bg-stone-950 dark:text-stone-400">
+                <div className="mt-4 flex h-full items-center gap-2 text-stone-600 dark:border-stone-800 dark:text-stone-400">
                   Perfect for
                   {mealType === 'breakfast' && (
-                    <div className="flex">
+                    <div className="flex gap-1">
                       <EggFried />
                       <span>Breakfast</span>
                     </div>
                   )}
                   {mealType === 'lunch' && (
-                    <div className="flex">
+                    <div className="flex gap-1">
                       <LunchIcon />
                       <span>Lunch</span>
                     </div>
                   )}
                   {mealType === 'dinner' && (
-                    <div className="flex">
+                    <div className="flex gap-1">
                       <Drumstick />
                       <span>Dinner</span>
                     </div>

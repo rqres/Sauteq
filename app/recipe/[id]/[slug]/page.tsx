@@ -34,7 +34,7 @@ export default async function RPage({ params }: { params: { id: number } }) {
   const bookmarkCount = await getBookmarkCount({ recipeId: params.id })
 
   return (
-    <div className="flex justify-center ">
+    <div className="flex justify-center">
       <RecipeSheet
         noReturnButton
         noRegen

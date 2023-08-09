@@ -60,6 +60,22 @@ export async function getUserRecipes({
 
   return data
 }
+export async function getUserFavRecipeCount({ userId }: { userId: string }) {
+  const supabase = supabaseClient()
+  const { count, error } = await supabase
+    .from('bookmarks')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', userId)
+
+  if (error) {
+    console.error(error)
+    return 0
+  }
+
+  if (count === null) return 0
+
+  return count
+}
 
 export async function getUserFavoriteRecipes({
   userId,

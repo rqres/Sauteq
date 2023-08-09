@@ -1,6 +1,13 @@
-'use client'
+'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
 import ingredientMap from '@/utils/ingredientData'
 import {
@@ -59,6 +66,52 @@ const LunchIcon = () => (
     <path d="m3 11 7.77-6.04a2 2 0 0 1 2.46 0L21 11H3Z" />
     <path d="M12.97 19.77 7 15h12.5l-3.75 4.5a2 2 0 0 1-2.78.27Z" />
   </svg>
+)
+
+const MealTypeButton = ({
+  mealType,
+  mealTypeState,
+  setMealType,
+}: {
+  mealType: 'breakfast' | 'lunch' | 'dinner'
+  mealTypeState: 'breakfast' | 'lunch' | 'dinner' | 'any'
+  setMealType: Dispatch<
+    SetStateAction<'breakfast' | 'lunch' | 'dinner' | 'any'>
+  >
+}) => (
+  <div
+    className={cn(
+      'grid grow cursor-pointer place-items-center gap-1 rounded-md border border-stone-200 py-3 shadow-sm transition-colors duration-300 ease-in-out hover:bg-stone-100/60 dark:border-stone-800 dark:bg-stone-950 dark:hover:bg-stone-800/60',
+      mealTypeState === mealType &&
+        'border-stone-400 bg-stone-100/50 text-stone-900 dark:border-stone-200 dark:bg-stone-800/50 dark:text-stone-200'
+    )}
+    onClick={() => {
+      if (mealTypeState === mealType) {
+        setMealType('any')
+      } else {
+        setMealType(mealType)
+      }
+    }}
+  >
+    {mealType === 'breakfast' && (
+      <>
+        <EggFried />
+        Breakfast
+      </>
+    )}
+    {mealType === 'lunch' && (
+      <>
+        <LunchIcon />
+        Lunch
+      </>
+    )}
+    {mealType === 'dinner' && (
+      <>
+        <Drumstick />
+        Dinner
+      </>
+    )}
+  </div>
 )
 
 export default function EatPage() {
@@ -171,58 +224,22 @@ export default function EatPage() {
                   <CardDescription>What will you cook next?</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-3 gap-4 text-sm text-stone-600 dark:text-stone-400">
-                    <div
-                      className={cn(
-                        'grid grow cursor-pointer place-items-center gap-1 rounded-md border border-stone-200 py-3 shadow-sm transition-colors duration-300 ease-in-out hover:bg-stone-100/60 dark:border-stone-800 dark:bg-stone-950',
-                        mealType === 'breakfast' &&
-                          'border-stone-400 bg-stone-100/50 text-stone-900'
-                      )}
-                      onClick={() => {
-                        if (mealType === 'breakfast') {
-                          setMealType('any')
-                        } else {
-                          setMealType('breakfast')
-                        }
-                      }}
-                    >
-                      <EggFried />
-                      Breakfast
-                    </div>
-                    <div
-                      className={cn(
-                        'grid grow cursor-pointer place-items-center gap-1 rounded-md border border-stone-200 py-3 shadow-sm transition-colors duration-300 ease-in-out hover:bg-stone-100/60 dark:border-stone-800 dark:bg-stone-950',
-                        mealType === 'lunch' &&
-                          'border-stone-400 bg-stone-100/50 text-stone-900'
-                      )}
-                      onClick={() => {
-                        if (mealType === 'lunch') {
-                          setMealType('any')
-                        } else {
-                          setMealType('lunch')
-                        }
-                      }}
-                    >
-                      <LunchIcon />
-                      Lunch
-                    </div>
-                    <div
-                      className={cn(
-                        'grid grow cursor-pointer place-items-center gap-1 rounded-md border border-stone-200 py-3 shadow-sm transition-colors duration-300 ease-in-out hover:bg-stone-100/60 dark:border-stone-800 dark:bg-stone-950',
-                        mealType === 'dinner' &&
-                          'border-stone-400 bg-stone-100/50 text-stone-900'
-                      )}
-                      onClick={() => {
-                        if (mealType === 'dinner') {
-                          setMealType('any')
-                        } else {
-                          setMealType('dinner')
-                        }
-                      }}
-                    >
-                      <Drumstick />
-                      Dinner
-                    </div>
+                  <div className="grid grid-cols-3 gap-4 text-sm text-stone-600 dark:text-stone-500">
+                    <MealTypeButton
+                      mealType={'breakfast'}
+                      mealTypeState={mealType}
+                      setMealType={setMealType}
+                    />
+                    <MealTypeButton
+                      mealType={'lunch'}
+                      mealTypeState={mealType}
+                      setMealType={setMealType}
+                    />
+                    <MealTypeButton
+                      mealType={'dinner'}
+                      mealTypeState={mealType}
+                      setMealType={setMealType}
+                    />
                   </div>
                   <Input
                     type="search"

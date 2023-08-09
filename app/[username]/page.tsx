@@ -1,11 +1,12 @@
-import Link from 'next/link'
+import { Suspense } from 'react'
+
 import { notFound } from 'next/navigation'
 
 import {
   checkFollower,
   getFollowerCount,
   getFollowingCount,
-  getUserFavoriteRecipes,
+  getUserFavRecipeCount,
 } from '@/utils/supabaseRequests'
 import { auth, clerkClient } from '@clerk/nextjs'
 
@@ -18,14 +19,15 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
 
 import FollowersSheet from '@/components/FollowersSheet'
 import FollowingSheet from '@/components/FollowingSheet'
-import { GalleryItem } from '@/components/PreviewGallery'
+
+import UserCardContent from './UserCardContent'
+import UserCardContentSkeleton from './UserCardContentSkeleton'
 
 export default async function ProfilePage({
   params,
@@ -48,13 +50,13 @@ export default async function ProfilePage({
     followeeId: user.id,
   })
 
-  const userRecipes = await getUserFavoriteRecipes({ userId: user.id })
   const followerCount = await getFollowerCount({ userId: user.id })
   const followingCount = await getFollowingCount({ userId: user.id })
+  const userRecipeCount = await getUserFavRecipeCount({ userId: user.id })
 
   return (
     <div className="flex justify-center">
-      <Card className="w-[400px] border-0 shadow-none sm:my-8 sm:w-[620px] sm:rounded-xl sm:border sm:border-stone-200 sm:shadow sm:dark:border-stone-800 md:w-[750px] lg:w-[960px] xl:w-[1250px]">
+      <Card className="w-[400px] border-0 shadow-none dark:bg-transparent sm:my-8 sm:w-[620px] sm:rounded-xl sm:border sm:border-stone-200 sm:shadow sm:dark:border-stone-800 sm:dark:bg-stone-950 md:w-[750px] lg:w-[960px] xl:w-[1250px]">
         <CardHeader className="grid grid-cols-3 grid-rows-3 items-center gap-x-8 px-10 sm:grid-cols-4">
           <Avatar className="col-span-1 row-span-2 h-20 w-20 self-center md:row-span-3 md:h-40 md:w-40 lg:h-40 lg:w-40">
             <AvatarImage src={user.imageUrl} />
@@ -84,8 +86,8 @@ export default async function ProfilePage({
             </div>
           )}
           <div className="hidden font-medium md:block">
-            {userRecipes?.length} recipe
-            {userRecipes && userRecipes.length !== 1 && <span>s</span>}
+            {userRecipeCount} recipe
+            {userRecipeCount !== 1 && <span>s</span>}
           </div>
           {/* @ts-expect-error Server Component */}
           <FollowersSheet user={user.id}>
@@ -119,8 +121,8 @@ export default async function ProfilePage({
           )}
           <div className="col-span-4 flex items-center justify-between gap-8 font-medium md:hidden">
             <div>
-              {userRecipes?.length} recipe
-              {userRecipes && userRecipes.length !== 1 && <span>s</span>}
+              {userRecipeCount} recipe
+              {userRecipeCount !== 1 && <span>s</span>}
             </div>
 
             {/* @ts-expect-error Server Component */}
@@ -138,23 +140,14 @@ export default async function ProfilePage({
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {userRecipes?.map((r) => (
-              <Link
-                href={`recipe/${r?.id}/${r?.title
-                  .replace(/\s+/g, '-')
-                  .toLowerCase()}`}
-                key={r?.id}
-              >
-                <GalleryItem
-                  title={r?.title || ''}
-                  description={r?.body.description || ''}
-                  imageSrc={r?.image_url || ''}
-                  key={r?.title}
-                />
-              </Link>
-            ))}
-          </div>
+          <Suspense
+            fallback={
+              <UserCardContentSkeleton numberOfSkeletons={userRecipeCount} />
+            }
+          >
+            {/* @ts-expect-error Server Component */}
+            <UserCardContent userId={user.id} />
+          </Suspense>
         </CardContent>
       </Card>
     </div>

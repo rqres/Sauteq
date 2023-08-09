@@ -20,7 +20,7 @@ export default async function FavoritesPage() {
 
   const recipes = await getUserFavoriteRecipes({ userId: userId, token: token })
   return (
-    <>
+    <div className='mb-6'>
       <h1 className="my-6 scroll-m-20 text-center text-3xl font-extrabold tracking-tight lg:text-5xl">
         Favorites
       </h1>
@@ -32,6 +32,6 @@ export default async function FavoritesPage() {
           <FavoriteItem recipe={r} />
         ))}
       </div>
-    </>
+    </div>
   )
 }

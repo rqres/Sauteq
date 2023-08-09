@@ -152,7 +152,12 @@ export default function RecipeMenubar({
               </TooltipTrigger>
               <MenubarContent>
                 <MenubarItem
-                  onClick={copyToClipboard}
+                  onClick={() => {
+                    copyToClipboard()
+                    toast({
+                      description: 'Copied to clipboard!',
+                    })
+                  }}
                   className="flex w-full items-center justify-between"
                 >
                   Copy

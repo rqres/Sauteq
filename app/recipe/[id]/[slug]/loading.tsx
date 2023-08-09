@@ -7,7 +7,7 @@ import { RecipeContentSkeleton } from '@/components/RecipeSheet'
 export default function RPageLoading() {
   return (
     <div className="flex justify-center ">
-      <Card className="my-8 w-[400px] place-self-center md:w-[750px]">
+      <Card className="my-8 w-[400px] place-self-center border-0 px-4 shadow-none dark:bg-transparent sm:rounded-xl sm:border sm:border-stone-200 sm:shadow sm:dark:border-stone-800 sm:dark:bg-stone-950 md:w-[750px]">
         <CardHeader>
           <div className="space-y-8 md:flex md:justify-between md:gap-x-4 md:space-y-0">
             <div>
@@ -21,7 +21,7 @@ export default function RPageLoading() {
               </div>
             </div>
             <div className="md:shrink-0">
-              <Skeleton className="h-[350px] w-[350px]" />
+              <Skeleton className="h-[350px] w-[320px]" />
             </div>
           </div>
         </CardHeader>
