@@ -41,7 +41,7 @@ import {
   getRecipeTitle,
 } from '../actions'
 
-export const LunchIcon = () => (
+const LunchIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -323,3 +323,5 @@ export default function EatPage() {
     </>
   )
 }
+
+export { LunchIcon }
