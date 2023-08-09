@@ -87,6 +87,7 @@ export default async function ProfilePage({
             {userRecipes?.length} recipe
             {userRecipes && userRecipes.length !== 1 && <span>s</span>}
           </div>
+          {/* @ts-expect-error Server Component */}
           <FollowersSheet user={user.id}>
             <div className="hidden cursor-pointer font-medium md:block">
               {followerCount} follower
@@ -94,6 +95,7 @@ export default async function ProfilePage({
             </div>
           </FollowersSheet>
 
+          {/* @ts-expect-error Server Component */}
           <FollowingSheet user={user.id}>
             <div className="hidden cursor-pointer font-medium md:block">
               {followingCount} following
@@ -121,6 +123,7 @@ export default async function ProfilePage({
               {userRecipes && userRecipes.length !== 1 && <span>s</span>}
             </div>
 
+            {/* @ts-expect-error Server Component */}
             <FollowersSheet user={user.id}>
               <div className="cursor-pointer">
                 {followerCount} follower
@@ -128,6 +131,7 @@ export default async function ProfilePage({
               </div>
             </FollowersSheet>
 
+            {/* @ts-expect-error Server Component */}
             <FollowingSheet user={user.id}>
               <div className="cursor-pointer">{followingCount} following</div>
             </FollowingSheet>

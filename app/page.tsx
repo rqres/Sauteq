@@ -27,6 +27,7 @@ export default function IndexPage() {
           Get Started
         </Link>
       </div>
+      {/* @ts-expect-error Server Component */}
       <PreviewGallery />
     </section>
   )
