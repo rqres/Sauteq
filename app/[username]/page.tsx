@@ -147,7 +147,6 @@ export default async function ProfilePage({
                   description={r?.body.description || ''}
                   imageSrc={r?.image_url || ''}
                   key={r?.title}
-                  imageClassName="w-32 h-32"
                 />
               </Link>
             ))}

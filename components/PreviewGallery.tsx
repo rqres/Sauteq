@@ -3,8 +3,6 @@ import Link from 'next/link'
 
 import { getRecipe } from '@/utils/supabaseRequests'
 
-import { cn } from '@/lib/utils'
-
 import { Card, CardDescription, CardHeader, CardTitle } from './ui/card'
 
 const PreviewRecipes = [194, 211, 209, 210]
@@ -13,12 +11,10 @@ export const GalleryItem = ({
   title,
   description,
   imageSrc,
-  imageClassName,
 }: {
   title: string
   description: string
   imageSrc: string
-  imageClassName?: string
 }) => (
   <Card className="h-full transition duration-200 ease-in-out hover:scale-105">
     <CardHeader className="grid h-full grid-cols-4 items-center justify-center gap-4">
@@ -33,7 +29,7 @@ export const GalleryItem = ({
           width={533}
           height={500}
           alt={'Recipe Image'}
-          className={cn('rounded-xl shadow', imageClassName)}
+          className="rounded-xl shadow"
         />
       </div>
       <CardDescription className="col-span-4 text-sm md:text-base">
