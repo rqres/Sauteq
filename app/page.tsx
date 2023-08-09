@@ -2,6 +2,8 @@ import Link from 'next/link'
 
 import { siteConfig } from '@/config/site'
 
+import { cn } from '@/lib/utils'
+
 import { buttonVariants } from '@/components/ui/button'
 
 import PreviewGallery from '@/components/PreviewGallery'
@@ -23,7 +25,7 @@ export default function IndexPage() {
         </p>
       </div>
       <div className="mb-8 flex justify-center">
-        <Link href="/eat" className={buttonVariants()}>
+        <Link href="/eat" className={cn(buttonVariants(), 'h-12 w-52')}>
           Get Started
         </Link>
       </div>
