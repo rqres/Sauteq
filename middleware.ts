@@ -1,7 +1,7 @@
 import { authMiddleware } from '@clerk/nextjs'
 
 export default authMiddleware({
-  publicRoutes: ['/', '/r/(.*)', '/eat', '/api/openai/(.*)'],
+  publicRoutes: ['/', '/recipe/(.*)', '/eat', '/api/openai/(.*)'],
 })
 
 export const config = {

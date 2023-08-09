@@ -1,46 +1,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
+import { getRecipe } from '@/utils/supabaseRequests'
+
 import { cn } from '@/lib/utils'
 
 import { Card, CardDescription, CardHeader, CardTitle } from './ui/card'
 
-const recipes = [
-  {
-    id: 147,
-    title: 'Asparagus and Feta Salad with Olive Oil Dressing',
-    description:
-      'A refreshing salad featuring asparagus and feta cheese, dressed with a delicious olive oil dressing.',
-    imageSrc:
-      'https://outggvemqdylkseydkof.supabase.co/storage/v1/object/public/recipe-images/147.png',
-  },
-  {
-    id: 194,
-    title:
-      'Dark Chocolate Cardamom Truffles with Edamer Cheese and Dandelion Honey',
-    description:
-      'Decadent dark chocolate truffles infused with cardamom, served with a creamy Edamer cheese filling and drizzled with sweet dandelion honey.',
-    imageSrc:
-      'https://outggvemqdylkseydkof.supabase.co/storage/v1/object/public/recipe-images/194.png',
-  },
-  {
-    id: 152,
-    title:
-      'Lemon Herb Roasted Chicken with Lavender Potatoes and Yoghurt Drizzle',
-    description:
-      'A flavorful and aromatic roasted chicken with a hint of citrus, served with lavender-infused potatoes and a tangy yoghurt drizzle.',
-    imageSrc:
-      'https://outggvemqdylkseydkof.supabase.co/storage/v1/object/public/recipe-images/152.png',
-  },
-  {
-    id: 162,
-    title: 'Apricot Mint Lemonade',
-    description:
-      'A refreshing and tangy twist on classic lemonade with the sweetness of apricots and the freshness of mint.',
-    imageSrc:
-      'https://outggvemqdylkseydkof.supabase.co/storage/v1/object/public/recipe-images/162.png',
-  },
-]
+const PreviewRecipes = [194, 211, 209, 210]
 
 export const GalleryItem = ({
   title,
@@ -76,19 +43,25 @@ export const GalleryItem = ({
   </Card>
 )
 
-export default function PreviewGallery() {
+export default async function PreviewGallery() {
+  const recipes = await Promise.all(
+    PreviewRecipes.map((id) => getRecipe({ recipeId: id }))
+  )
+
   return (
     <div className="grid grid-cols-2 gap-4">
       {recipes.map((r) => (
         <Link
-          href={`recipe/${r.id}/${r?.title.replace(/\s+/g, '-').toLowerCase()}`}
-          key={r.id}
+          href={`recipe/${r?.id}/${r?.title
+            .replace(/\s+/g, '-')
+            .toLowerCase()}`}
+          key={r?.id}
         >
           <GalleryItem
-            title={r.title}
-            description={r.description}
-            imageSrc={r.imageSrc}
-            key={r.title}
+            title={r?.title || ''}
+            description={r?.body.description || ''}
+            imageSrc={r?.image_url || ''}
+            key={r?.title}
           />
         </Link>
       ))}
