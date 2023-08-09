@@ -1,6 +1,11 @@
 import { notFound } from 'next/navigation'
 
-import { getBookmark, getRecipe, getRecipes } from '@/utils/supabaseRequests'
+import {
+  getBookmark,
+  getBookmarkCount,
+  getRecipe,
+  getRecipes,
+} from '@/utils/supabaseRequests'
 import { auth } from '@clerk/nextjs'
 
 import RecipeSheet from '@/components/RecipeSheet'
@@ -26,6 +31,8 @@ export default async function RPage({ params }: { params: { id: number } }) {
     }
   }
 
+  const bookmarkCount = await getBookmarkCount({ recipeId: params.id })
+
   return (
     <div className="flex justify-center ">
       <RecipeSheet
@@ -37,6 +44,7 @@ export default async function RPage({ params }: { params: { id: number } }) {
         recipeId={params.id}
         initialBookmark={bookmark}
         mealType={recipe?.meal_type}
+        bookmarkCount={bookmarkCount}
       />
     </div>
   )

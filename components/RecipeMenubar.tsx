@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react'
 
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 import { SignInButton } from '@clerk/nextjs'
 import {
@@ -58,6 +59,7 @@ interface RecipeMenubarProps {
   body?: RecipeBody
   image?: string
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
+  bookmarkCount?: number
 }
 
 export default function RecipeMenubar({
@@ -71,7 +73,9 @@ export default function RecipeMenubar({
   body,
   image,
   mealType,
+  bookmarkCount,
 }: RecipeMenubarProps) {
+  const router = useRouter()
   const [isBookmark, setBookmark] = useState<boolean>(initialBookmark)
   const { toast } = useToast()
   const currentURL = `https://www.domainname.com/recipe/${recipeId}/${title
@@ -254,6 +258,7 @@ export default function RecipeMenubar({
                       return
                     }
                     setBookmark(!isBookmark)
+                    router.refresh()
                   }}
                   disabled={loading}
                   className={`${
@@ -269,6 +274,9 @@ export default function RecipeMenubar({
                         : 'fill-transparent'
                     } transition`}
                   />
+                  {bookmarkCount !== undefined &&
+                    bookmarkCount !== 0 &&
+                    bookmarkCount}
                 </MenubarTrigger>
               </TooltipTrigger>
               <TooltipContent>

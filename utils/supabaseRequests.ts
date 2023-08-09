@@ -1,14 +1,8 @@
-'use server';
+'use server'
 
-import { RecipeBody } from '@/types/recipe';
+import { RecipeBody } from '@/types/recipe'
 
-
-
-import supabaseClient from './supabaseClient';
-
-
-
-
+import supabaseClient from './supabaseClient'
 
 export async function getRecipes() {
   const supabase = supabaseClient()
@@ -239,6 +233,23 @@ export async function getBookmark({
   if (!data) return false
 
   return data.length > 0 ? true : false
+}
+
+export async function getBookmarkCount({ recipeId }: { recipeId: number }) {
+  const supabase = supabaseClient()
+  const { count, error } = await supabase
+    .from('bookmarks')
+    .select('*', { count: 'exact', head: true })
+    .eq('recipe_id', recipeId)
+
+  if (error) {
+    console.error(error)
+    return 0
+  }
+
+  if (count === null) return 0
+
+  return count
 }
 
 export async function addFollower({

@@ -30,6 +30,7 @@ interface RecipeSheetProps {
   body: RecipeBody | null
   image: string
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
+  bookmarkCount?: number
   regen?: () => Promise<void>
   loading?: boolean
   initialBookmark: boolean
@@ -47,6 +48,7 @@ const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
       body,
       image,
       mealType,
+      bookmarkCount,
       regen,
       loading,
       initialBookmark,
@@ -77,6 +79,7 @@ const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
             body={body || undefined}
             image={image}
             mealType={mealType}
+            bookmarkCount={bookmarkCount}
           />
         )}
 

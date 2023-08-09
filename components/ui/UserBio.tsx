@@ -18,7 +18,6 @@ export default function UserBio({ editable, metadata }: UserBioProps) {
   const [textValue, setTextValue] = useState(metadata.bio as string)
   const { isLoaded, isSignedIn, user } = useUser()
 
-  console.log(user)
   const handleSubmit = () => {
     try {
       user?.update({
@@ -43,6 +42,7 @@ export default function UserBio({ editable, metadata }: UserBioProps) {
             value={textValue}
             onChange={(e) => setTextValue(e.target.value)}
             placeholder="Tell us something about yourself..."
+            className='resize-none'
           />
           <Button
             onClick={() => {
