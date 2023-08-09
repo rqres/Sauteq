@@ -32,31 +32,21 @@ export default function UserButton() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <Link href={`/${user?.username}`}>
-            <DropdownMenuItem>
-              Profile
-              {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
-            </DropdownMenuItem>
+            <DropdownMenuItem>Profile</DropdownMenuItem>
           </Link>
           <Link href={'/history'}>
-            <DropdownMenuItem>
-              History
-              {/* <DropdownMenuShortcut>⌘B</DropdownMenuShortcut> */}
-            </DropdownMenuItem>
+            <DropdownMenuItem>History</DropdownMenuItem>
           </Link>
-          <DropdownMenuItem>
-            Favorites
-            {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
-          </DropdownMenuItem>
+          <DropdownMenuItem>Favorites</DropdownMenuItem>
           <Link href={'/settings'}>
-            <DropdownMenuItem>
-              Settings
-              {/* <DropdownMenuShortcut>⌘B</DropdownMenuShortcut> */}
-            </DropdownMenuItem>
+            <DropdownMenuItem>Settings</DropdownMenuItem>
           </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <SignOutButton />
+          <SignOutButton>
+            <button className='w-full text-start'>Sign out</button>
+          </SignOutButton>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

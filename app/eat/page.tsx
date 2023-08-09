@@ -87,15 +87,12 @@ export default function EatPage() {
       return ''
     }
 
-    // if (!recipeRef.current)
-    window.addEventListener('beforeunload', unloadCallback)
-    // if (recipeRef.current)
-    // window.removeEventListener('beforeunload', unloadCallback)
+    if (recipeRef.current && (!isLoaded || !userId)) {
+      window.addEventListener('beforeunload', unloadCallback)
+    }
     return () => window.removeEventListener('beforeunload', unloadCallback)
   })
-  //  [recipeRef])
 
-  // TODO: move this to server actions
   const generateRecipe = useCallback(async () => {
     setLoading(true)
     selection.sort(function (a, b) {
@@ -271,7 +268,6 @@ export default function EatPage() {
             <div className="flex flex-col items-center">
               <div className="flex flex-col-reverse gap-2 md:grid md:grid-flow-col md:grid-rows-4">
                 {selection.length > 0 &&
-                  //TODO: reverse?
                   selection.slice(0, 12).map((ingredientId) => (
                     <AnimatedIngredientItem key={ingredientId}>
                       <div className="flex h-full w-44 items-center gap-4 rounded-xl border px-4 py-2 transition md:w-32 lg:w-44">
