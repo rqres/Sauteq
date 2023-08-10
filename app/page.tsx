@@ -25,7 +25,13 @@ export default function IndexPage() {
         </p>
       </div>
       <div className="mb-8 flex justify-center">
-        <Link href="/eat" className={cn(buttonVariants(), 'h-12 w-52')}>
+        <Link
+          href="/eat"
+          className={cn(
+            buttonVariants(),
+            'gradient-button h-12 w-52 text-stone-800 shadow-lg'
+          )}
+        >
           Get Started
         </Link>
       </div>

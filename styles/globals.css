@@ -2,12 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-.text-gradient{
+.text-gradient {
   --start-color: oklch(93% 0.207 123.87);
-  --end-color: oklch(75.0% 0.152 175.72);
+  --end-color: oklch(75% 0.152 175.72);
 
   background: -webkit-linear-gradient(var(--start-color), var(--end-color));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.gradient-button {
+  --start-color: oklch(93% 0.194 111.04);
+  --end-color: oklch(76.43% 0.103 212.69);
+
+  background-image: linear-gradient(
+    to right,
+    var(--start-color),
+    var(--end-color)
+  );
+  transition: 0.5s;
+  background-size: 200% auto;
+}
+
+.gradient-button:hover {
+  background-position: right center; /* change the direction of the change here */
 }

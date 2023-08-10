@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   Dispatch,
@@ -219,10 +219,25 @@ export default function EatPage() {
           <div className="flex min-h-[calc(100vh-4.1rem)] flex-col items-center justify-center gap-8 py-16 md:flex-row md:py-0">
             <motion.div layout>
               <Card className="w-80 md:w-72 lg:w-96">
-                <CardHeader>
-                  <CardTitle>Choose ingredients</CardTitle>
-                  <CardDescription>What will you cook next?</CardDescription>
-                </CardHeader>
+                <div className="flex items-center">
+                  <CardHeader>
+                    <CardTitle>Choose ingredients</CardTitle>
+                    <CardDescription>What will you cook next?</CardDescription>
+                  </CardHeader>
+                  <Button
+                    className={`gradient-button text-stone-800 transition-opacity ease-in-out md:hidden ${
+                      selection.length > 0 ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    onClick={(e) => {
+                      setRecipeView(true)
+                      setFormView(false)
+                      e.preventDefault()
+                      generateRecipe()
+                    }}
+                  >
+                    Generate!
+                  </Button>
+                </div>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-3 gap-4 text-sm text-stone-600 dark:text-stone-500">
                     <MealTypeButton
@@ -306,7 +321,7 @@ export default function EatPage() {
               {selection.length > 12 && <p className="mt-4">& more</p>}
             </div>
             <Button
-              className={`absolute bottom-1 right-1 transition-opacity ease-in-out md:bottom-14 md:right-44 ${
+              className={`gradient-button absolute bottom-1 right-1 hidden h-12 w-40 text-stone-800 transition-opacity ease-in-out md:bottom-14 md:right-40 md:block ${
                 selection.length > 0 ? 'opacity-100' : 'opacity-0'
               }`}
               onClick={(e) => {

@@ -2,11 +2,13 @@ import { Button } from '@/components/ui/button'
 
 export const CreateAnotherButton = ({ loading }: { loading?: boolean }) => (
   <Button
-    className={`${loading ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+    className={`${
+      loading ? 'cursor-not-allowed' : 'cursor-pointer'
+    } text-xs sm:text-sm`}
     disabled={loading}
     onClick={() => window.location.reload()}
   >
-    <div className="flex justify-between gap-2">
+    <div className="flex items-center justify-between gap-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="20"
