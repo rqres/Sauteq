@@ -58,6 +58,7 @@ export interface Database {
         Row: {
           body: RecipeBody
           created_at: string | null
+          description: string
           id: number
           image_url: string | null
           ingredients: string
@@ -68,6 +69,7 @@ export interface Database {
         Insert: {
           body: RecipeBody
           created_at?: string | null
+          description?: string
           id?: number
           image_url?: string | null
           ingredients: string
@@ -78,6 +80,7 @@ export interface Database {
         Update: {
           body?: RecipeBody
           created_at?: string | null
+          description?: string
           id?: number
           image_url?: string | null
           ingredients?: string

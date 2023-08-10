@@ -1,32 +1,44 @@
-import { forwardRef } from 'react'
+import { forwardRef } from 'react';
 
-import Image from 'next/image'
 
-import { Drumstick, EggFried } from 'lucide-react'
 
-import { RecipeBody } from '@/types/recipe'
+import Image from 'next/image';
 
-import { cn } from '@/lib/utils'
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
-import { Skeleton } from '@/components/ui/skeleton'
 
-import { LunchIcon } from '@/app/eat/page'
+import { Drumstick, EggFried } from 'lucide-react';
 
-import RecipeMenubar from './RecipeMenubar'
-import { CreateAnotherButton } from './ui/CreateAnotherButton'
+
+
+import { RecipeBody } from '@/types/recipe';
+
+
+
+import { cn } from '@/lib/utils';
+
+
+
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+
+
+
+import { LunchIcon } from '@/app/eat/page';
+
+
+
+import RecipeMenubar from './RecipeMenubar';
+import { CreateAnotherButton } from './ui/CreateAnotherButton';
+
+
+
+
 
 interface RecipeSheetProps {
   recipeId: number
   title: string
+  description: string
   body: RecipeBody | null
   image: string
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
@@ -45,6 +57,7 @@ const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
     {
       recipeId,
       title,
+      description,
       body,
       image,
       mealType,
@@ -77,6 +90,7 @@ const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
             noReturnButton={noReturnButton}
             title={title}
             body={body || undefined}
+            description={description}
             image={image}
             mealType={mealType}
             bookmarkCount={bookmarkCount}
@@ -95,13 +109,13 @@ const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
                   </span>
                 )}
               </CardTitle>
-              {!body ? (
+              {!description ? (
                 <div className="space-y-2">
                   <Skeleton className="h-4 w-full" />
                   <Skeleton className="h-4 w-full" />
                 </div>
               ) : (
-                <RecipeDescription recipeDescription={body.description} />
+                <RecipeDescription recipeDescription={description} />
               )}
 
               {mealType !== 'any' && (

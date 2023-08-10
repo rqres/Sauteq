@@ -1,8 +1,14 @@
-'use server'
+'use server';
 
-import { RecipeBody } from '@/types/recipe'
+import { RecipeBody } from '@/types/recipe';
 
-import supabaseClient from './supabaseClient'
+
+
+import supabaseClient from './supabaseClient';
+
+
+
+
 
 export async function getRecipes() {
   const supabase = supabaseClient()
@@ -99,6 +105,7 @@ export async function getUserFavoriteRecipes({
   let dataPromises: Promise<
     | {
         body: RecipeBody
+        description: string
         created_at: string | null
         id: number
         image_url: string | null
@@ -126,6 +133,7 @@ export async function addRecipe({
   token,
   ingredients,
   title,
+  description,
   recipeBody,
   image_url,
   mealType,
@@ -133,6 +141,7 @@ export async function addRecipe({
   token?: string
   ingredients: string
   title: string
+  description: string
   recipeBody: RecipeBody
   image_url?: string
   mealType?: 'breakfast' | 'lunch' | 'dinner' | 'any'
@@ -144,6 +153,7 @@ export async function addRecipe({
     .insert([
       {
         ingredients: ingredients,
+        description: description,
         title: title,
         body: recipeBody,
         image_url: image_url,

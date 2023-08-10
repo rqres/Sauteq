@@ -13,12 +13,46 @@ export const flushCache = () => {
 
 const getRecipeBody = async (
   title: string,
+  description: string,
   ingredients: string[],
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
 ): Promise<RecipeBody> => {
   console.warn('Connecting to GPT body')
   const res = await fetch(
     process.env.NEXT_PUBLIC_DOMAIN_NAME + '/api/openai/body',
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application.json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: title,
+        description: description,
+        ingredients: ingredients,
+        mealType: mealType,
+      }),
+    }
+  )
+
+  if (!res.ok) {
+    throw new Error('Failed to connect to OpenAI/text ' + res.statusText)
+  }
+
+  const GPTText: string = await res.json()
+  const parsedRecipe = sanitizeAndParseGPTText(GPTText)
+
+  return parsedRecipe
+}
+
+const getRecipeDescription = async (
+  title: string,
+  ingredients: string[],
+  mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
+): Promise<string> => {
+  console.warn('Connecting to GPT description')
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_DOMAIN_NAME + '/api/openai/description',
     {
       method: 'POST',
       headers: {
@@ -34,13 +68,12 @@ const getRecipeBody = async (
   )
 
   if (!res.ok) {
-    throw new Error('Failed to connect to OpenAI/text ' + res.statusText)
+    throw new Error('Failed to connect to OpenAI/desc ' + res.statusText)
   }
 
-  const GPTText: string = await res.json()
-  const parsedRecipe = sanitizeAndParseGPTText(GPTText)
+  const GPTDesc: string = await res.json()
 
-  return parsedRecipe
+  return GPTDesc
 }
 
 const getRecipeTitle = async (
@@ -160,4 +193,4 @@ export const bookmarkRecipe = async (recipeId: number, isBookmark: boolean) => {
   })
 }
 
-export { getRecipeBody, getRecipeImage, getRecipeTitle }
+export { getRecipeBody, getRecipeImage, getRecipeDescription, getRecipeTitle }

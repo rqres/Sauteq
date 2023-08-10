@@ -1,25 +1,33 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
-import { RecipeBody } from '@/types/recipe'
 
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from '@/components/ui/context-menu'
 
-import { GalleryItem } from '@/components/PreviewGallery'
+import { RecipeBody } from '@/types/recipe';
 
-import { bookmarkRecipe } from '../actions'
+
+
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu';
+
+
+
+import { GalleryItem } from '@/components/PreviewGallery';
+
+
+
+import { bookmarkRecipe } from '../actions';
+
+
+
+
 
 interface FavoriteItemProps {
   recipe:
     | {
         body: RecipeBody
+        description: string
         created_at: string | null
         id: number
         image_url: string | null
@@ -44,7 +52,7 @@ export default function FavoriteItem({ recipe }: FavoriteItemProps) {
         >
           <GalleryItem
             title={recipe?.title || ''}
-            description={recipe?.body.description || ''}
+            description={recipe?.description || ''}
             imageSrc={recipe?.image_url || ''}
             key={recipe?.title}
             noDescription

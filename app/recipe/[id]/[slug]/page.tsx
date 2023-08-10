@@ -4,7 +4,6 @@ import {
   getBookmark,
   getBookmarkCount,
   getRecipe,
-  getRecipes,
 } from '@/utils/supabaseRequests'
 import { auth } from '@clerk/nextjs'
 
@@ -38,13 +37,14 @@ export default async function RPage({ params }: { params: { id: number } }) {
       <RecipeSheet
         noReturnButton
         noRegen
-        title={recipe?.title || ''}
-        body={recipe?.body || null}
-        image={recipe?.image_url || ''}
+        title={recipe.title}
+        body={recipe.body}
+        image={recipe.image_url || ''}
         recipeId={params.id}
         initialBookmark={bookmark}
-        mealType={recipe?.meal_type}
+        mealType={recipe.meal_type}
         bookmarkCount={bookmarkCount}
+        description={recipe.description}
       />
     </div>
   )

@@ -44,6 +44,7 @@ import RecipeSheet from '@/components/RecipeSheet'
 import {
   flushCache,
   getRecipeBody,
+  getRecipeDescription,
   getRecipeImage,
   getRecipeTitle,
 } from '../actions'
@@ -124,6 +125,7 @@ export default function EatPage() {
   const [recipeView, setRecipeView] = useState<boolean>(false)
   const [formView, setFormView] = useState<boolean>(true)
   const [title, setTitle] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
   const [body, setBody] = useState<RecipeBody | null>(null)
   const [image, setImage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
@@ -168,7 +170,14 @@ export default function EatPage() {
     }
     setImage(rImage)
 
-    const rBody = await getRecipeBody(rTitle, ingredients, mealType)
+    const rDesc = await getRecipeDescription(rTitle, ingredients, mealType)
+
+    if (!rDesc) {
+      throw new Error('Error generating description')
+    }
+    setDescription(rDesc)
+
+    const rBody = await getRecipeBody(rTitle, rDesc, ingredients, mealType)
     if (!rBody) {
       throw new Error('Error generating body')
     }
@@ -184,6 +193,7 @@ export default function EatPage() {
     const newRecipe = await addRecipe({
       ingredients: String(ingredients),
       title: rTitle,
+      description: rDesc,
       recipeBody: rBody,
       token: token,
       mealType: mealType,
@@ -341,6 +351,7 @@ export default function EatPage() {
           {recipeView && (
             <RecipeSheet
               title={title}
+              description={description}
               body={body}
               image={image}
               regen={regenRecipe}

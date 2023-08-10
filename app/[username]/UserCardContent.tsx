@@ -17,7 +17,7 @@ export default async function UserCardContent({ userId }: { userId: string }) {
         >
           <GalleryItem
             title={r?.title || ''}
-            description={r?.body.description || ''}
+            description={r?.description || ''}
             imageSrc={r?.image_url || ''}
             key={r?.title}
           />
