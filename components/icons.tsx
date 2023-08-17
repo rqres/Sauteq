@@ -1,5 +1,4 @@
 import {
-  ChefHat,
   LucideProps,
   Moon,
   SunMedium,
@@ -13,7 +12,40 @@ export const Icons = {
   sun: SunMedium,
   moon: Moon,
   twitter: Twitter,
-  logo: ChefHat,
+  logo: (props: LucideProps) => (
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <defs>
+        <radialGradient
+          gradientUnits="userSpaceOnUse"
+          cx="416.729"
+          cy="249.357"
+          r="9.165"
+          id="gradient-1"
+          gradientTransform="matrix(1.411569, 1.555297, -0.865345, 0.785377, -361.296204, -833.534302)"
+          spreadMethod="pad"
+        >
+          <stop offset="0" style={{ stopColor: 'rgb(204, 254, 70)' }}></stop>
+          <stop offset="1" style={{ stopColor: 'rgb(0, 202, 170)' }}></stop>
+        </radialGradient>
+      </defs>
+      <path
+        // style={{ paintOrder: 'fill', fill: 'none', stroke: 'url(#gradient-1)' }}
+        d="M 6 17 L 17.6 17"
+        strokeWidth={1.7}
+        paintOrder="fill"
+        fill="none"
+        stroke="url(#gradient-1)"
+      ></path>
+      <path
+        d="M 5.81 13.724 C 2.8 13.078 1.618 9.415 3.683 7.131 C 4.576 6.143 5.902 5.665 7.22 5.854 C 7.473 5.281 7.829 4.759 8.27 4.314 C 10.224 2.356 13.397 2.356 15.35 4.314 C 15.792 4.759 16.148 5.281 16.4 5.854 C 19.448 5.416 21.828 8.44 20.684 11.299 C 20.19 12.536 19.112 13.445 17.81 13.724 L 17.81 20.854 L 5.81 20.854 L 5.81 13.724 Z"
+        // style={{ paintOrder: 'fill', fill: 'none', stroke: 'url(#gradient-1)' }}
+        strokeWidth={1.7}
+        paintOrder="fill"
+        fill="none"
+        stroke="url(#gradient-1)"
+      ></path>
+    </svg>
+  ),
   gitHub: (props: LucideProps) => (
     <svg viewBox="0 0 438.549 438.549" {...props}>
       <path

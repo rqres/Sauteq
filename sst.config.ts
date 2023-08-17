@@ -1,5 +1,9 @@
-import { SSTConfig } from 'sst'
-import { Config, NextjsSite } from 'sst/constructs'
+import { SSTConfig } from 'sst';
+import { Config, NextjsSite } from 'sst/constructs';
+
+
+
+
 
 export default {
   config(_input) {
@@ -22,7 +26,6 @@ export default {
             process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
           NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
           NEXT_PUBLIC_DOMAIN_NAME: 'https://sauteq.com',
-          CLERK_TRUST_HOST: 'true',
         },
         timeout: '50 seconds',
         memorySize: '2048 MB',
