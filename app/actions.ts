@@ -13,7 +13,6 @@ export const flushCache = () => {
 
 const getRecipeBody = async (
   title: string,
-  description: string,
   ingredients: string[],
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
 ): Promise<RecipeBody> => {
@@ -28,7 +27,6 @@ const getRecipeBody = async (
       },
       body: JSON.stringify({
         title: title,
-        description: description,
         ingredients: ingredients,
         mealType: mealType,
       }),

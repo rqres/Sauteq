@@ -191,7 +191,7 @@ export default function EatPage() {
     }
     setDescription(rDesc)
 
-    const rBody = await getRecipeBody(rTitle, rDesc, ingredients, mealType)
+    const rBody = await getRecipeBody(rTitle, ingredients, mealType)
     if (!rBody) {
       throw new Error('Error generating body')
     }
