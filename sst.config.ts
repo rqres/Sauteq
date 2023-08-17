@@ -12,6 +12,7 @@ export default {
     app.stack(function Site({ stack }) {
       const OPENAI_KEY = new Config.Secret(stack, 'OPENAI_KEY')
       const site = new NextjsSite(stack, 'site', {
+        customDomain: 'sauteq.com',
         bind: [OPENAI_KEY],
         environment: {
           CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY!,
@@ -20,14 +21,14 @@ export default {
           NEXT_PUBLIC_SUPABASE_ANON_KEY:
             process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
           NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-          NEXT_PUBLIC_DOMAIN_NAME: 'https://d10w1g97siypj3.cloudfront.net',
+          NEXT_PUBLIC_DOMAIN_NAME: 'https://sauteq.com',
         },
         timeout: '50 seconds',
         memorySize: '2048 MB',
       })
 
       stack.addOutputs({
-        SiteUrl: site.url,
+        Url: site.customDomainUrl || site.url,
       })
     })
   },
