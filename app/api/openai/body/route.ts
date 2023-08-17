@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { Configuration, OpenAIApi, ResponseTypes } from 'openai-edge'
-
-export const runtime = 'edge'
+import { Configuration, OpenAIApi } from 'openai'
+import { Config } from 'sst/node/config'
 
 interface Payload {
   title: string
@@ -12,7 +11,7 @@ interface Payload {
 }
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_KEY,
+  apiKey: Config.OPENAI_KEY,
 })
 
 const openai = new OpenAIApi(configuration)
@@ -42,13 +41,9 @@ export const POST = async (req: NextRequest) => {
     frequency_penalty: 0.5,
   })
 
-  const data =
-    (await aiTextResult.json()) as ResponseTypes['createChatCompletion']
-
   const textResponse =
-    data.choices[0].message?.content?.trim() || 'Problem fetching OpenAI data.'
-
-  console.log(`TOKENS USED FOR COMPLETION: ${data.usage?.completion_tokens}`)
+    aiTextResult.data.choices[0].message?.content?.trim() ||
+    'Problem fetching OpenAI data.'
 
   return NextResponse.json(textResponse)
 }

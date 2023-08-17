@@ -44,7 +44,7 @@ export default async function RPage({ params }: { params: { id: number } }) {
         initialBookmark={bookmark}
         mealType={recipe.meal_type}
         bookmarkCount={bookmarkCount}
-        description={recipe.description}
+        description={recipe.description || recipe.body.description || ''}
       />
     </div>
   )

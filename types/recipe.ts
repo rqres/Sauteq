@@ -1,6 +1,5 @@
 export interface RecipeBody {
-  // 'recipe-name': string
-  // description: string
+  description?: string
   'prep-time': string
   'cook-time': string
   serves: number

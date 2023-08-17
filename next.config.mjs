@@ -9,14 +9,22 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'oaidalleapiprodscus.blob.core.windows.net',
+        hostname: '**',
+        port: '',
         pathname: '**',
       },
-      {
-        protocol: 'https',
-        hostname: 'outggvemqdylkseydkof.supabase.co',
-        pathname: '**',
-      },
+      // {
+      //   protocol: 'https',
+      //   hostname: 'oaidalleapiprodscus.blob.core.windows.net',
+      //   port: '',
+      //   pathname: '**',
+      // },
+      // {
+      //   protocol: 'https',
+      //   hostname: 'outggvemqdylkseydkof.supabase.co',
+      //   port: '',
+      //   pathname: '**',
+      // },
     ],
   },
 }

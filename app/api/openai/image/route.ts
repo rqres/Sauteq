@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { Configuration, OpenAIApi, ResponseTypes } from 'openai-edge'
+import { Configuration, OpenAIApi } from 'openai'
+import { Config } from 'sst/node/config'
 
-export const runtime = 'edge'
 interface Payload {
   title: string
 }
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_KEY,
+  apiKey: Config.OPENAI_KEY,
 })
 
 const openai = new OpenAIApi(configuration)
@@ -22,9 +22,8 @@ export const POST = async (req: NextRequest) => {
     size: '512x512',
   })
 
-  const data = (await aiImageResult.json()) as ResponseTypes['createImage']
-
-  const imageResponse = data.data[0].url || 'Problem fetching OpenAI data.'
+  const imageResponse =
+    aiImageResult.data.data[0].url || 'Problem fetching OpenAI data.'
 
   console.log('IMAGE API CALLED!')
 

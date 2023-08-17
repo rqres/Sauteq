@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { Configuration, OpenAIApi, ResponseTypes } from 'openai-edge'
-
-export const runtime = 'edge'
+import { Configuration, OpenAIApi } from 'openai'
+import { Config } from 'sst/node/config'
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_KEY,
+  apiKey: Config.OPENAI_KEY,
 })
 
 interface Payload {
@@ -35,12 +34,9 @@ export const POST = async (req: NextRequest) => {
     ],
   })
 
-  const data = (await res.json()) as ResponseTypes['createChatCompletion']
-
-  console.log('CALLED TITLE GPT')
-
   const textResponse =
-    data.choices[0].message?.content?.trim() || 'Problem fetching OpenAI data.'
+    res.data.choices[0].message?.content?.trim() ||
+    'Problem fetching OpenAI data.'
 
   return NextResponse.json(textResponse)
 }

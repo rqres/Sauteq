@@ -66,7 +66,7 @@ export default async function PreviewGallery() {
         >
           <GalleryItem
             title={r?.title || ''}
-            description={r?.description || ''}
+            description={r?.description || r?.body.description || ''}
             imageSrc={r?.image_url || ''}
             key={r?.title}
           />
