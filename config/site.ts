@@ -15,6 +15,6 @@ export const siteConfig = {
     // },
   ],
   links: {
-    github: 'https://github.com/rqres',
+    github: 'https://github.com/rqres/sauteq',
   },
 }
