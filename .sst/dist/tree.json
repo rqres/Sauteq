@@ -4,21 +4,21 @@
     "id": "App",
     "path": "",
     "children": {
-      "prod-recipe-ai-Site": {
-        "id": "prod-recipe-ai-Site",
-        "path": "prod-recipe-ai-Site",
+      "dev-recipe-ai-Site": {
+        "id": "dev-recipe-ai-Site",
+        "path": "dev-recipe-ai-Site",
         "children": {
           "CustomResourceHandler": {
             "id": "CustomResourceHandler",
-            "path": "prod-recipe-ai-Site/CustomResourceHandler",
+            "path": "dev-recipe-ai-Site/CustomResourceHandler",
             "children": {
               "ServiceRole": {
                 "id": "ServiceRole",
-                "path": "prod-recipe-ai-Site/CustomResourceHandler/ServiceRole",
+                "path": "dev-recipe-ai-Site/CustomResourceHandler/ServiceRole",
                 "children": {
                   "ImportServiceRole": {
                     "id": "ImportServiceRole",
-                    "path": "prod-recipe-ai-Site/CustomResourceHandler/ServiceRole/ImportServiceRole",
+                    "path": "dev-recipe-ai-Site/CustomResourceHandler/ServiceRole/ImportServiceRole",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.Resource",
                       "version": "2.91.0"
@@ -26,7 +26,7 @@
                   },
                   "Resource": {
                     "id": "Resource",
-                    "path": "prod-recipe-ai-Site/CustomResourceHandler/ServiceRole/Resource",
+                    "path": "dev-recipe-ai-Site/CustomResourceHandler/ServiceRole/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                       "aws:cdk:cloudformation:props": {
@@ -63,7 +63,7 @@
                           },
                           {
                             "key": "sst:stage",
-                            "value": "prod"
+                            "value": "dev"
                           }
                         ]
                       }
@@ -81,11 +81,11 @@
               },
               "Code": {
                 "id": "Code",
-                "path": "prod-recipe-ai-Site/CustomResourceHandler/Code",
+                "path": "dev-recipe-ai-Site/CustomResourceHandler/Code",
                 "children": {
                   "Stage": {
                     "id": "Stage",
-                    "path": "prod-recipe-ai-Site/CustomResourceHandler/Code/Stage",
+                    "path": "dev-recipe-ai-Site/CustomResourceHandler/Code/Stage",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.AssetStaging",
                       "version": "2.91.0"
@@ -93,7 +93,7 @@
                   },
                   "AssetBucket": {
                     "id": "AssetBucket",
-                    "path": "prod-recipe-ai-Site/CustomResourceHandler/Code/AssetBucket",
+                    "path": "dev-recipe-ai-Site/CustomResourceHandler/Code/AssetBucket",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.aws_s3.BucketBase",
                       "version": "2.91.0"
@@ -107,13 +107,13 @@
               },
               "Resource": {
                 "id": "Resource",
-                "path": "prod-recipe-ai-Site/CustomResourceHandler/Resource",
+                "path": "dev-recipe-ai-Site/CustomResourceHandler/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
                   "aws:cdk:cloudformation:props": {
                     "code": {
                       "s3Bucket": "cdk-hnb659fds-assets-244274341413-us-east-1",
-                      "s3Key": "8783071897b193cee639c149c9975cc9326f3d39a8b0aa31202b023eb2f9123f.zip"
+                      "s3Key": "4e1933142e7f06fec667f7d89cf530804f135e6bb6e8a6fcb206d26f1b87f361.zip"
                     },
                     "handler": "index.handler",
                     "memorySize": 1024,
@@ -131,7 +131,7 @@
                       },
                       {
                         "key": "sst:stage",
-                        "value": "prod"
+                        "value": "dev"
                       }
                     ],
                     "timeout": 900
@@ -150,7 +150,7 @@
           },
           "OPENAI_KEY": {
             "id": "OPENAI_KEY",
-            "path": "prod-recipe-ai-Site/OPENAI_KEY",
+            "path": "dev-recipe-ai-Site/OPENAI_KEY",
             "constructInfo": {
               "fqn": "constructs.Construct",
               "version": "10.2.69"
@@ -158,175 +158,155 @@
           },
           "site": {
             "id": "site",
-            "path": "prod-recipe-ai-Site/site",
+            "path": "dev-recipe-ai-Site/site",
             "children": {
-              "S3Bucket": {
-                "id": "S3Bucket",
-                "path": "prod-recipe-ai-Site/site/S3Bucket",
+              "ServerFunctionRole": {
+                "id": "ServerFunctionRole",
+                "path": "dev-recipe-ai-Site/site/ServerFunctionRole",
                 "children": {
+                  "ImportServerFunctionRole": {
+                    "id": "ImportServerFunctionRole",
+                    "path": "dev-recipe-ai-Site/site/ServerFunctionRole/ImportServerFunctionRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.91.0"
+                    }
+                  },
                   "Resource": {
                     "id": "Resource",
-                    "path": "prod-recipe-ai-Site/site/S3Bucket/Resource",
+                    "path": "dev-recipe-ai-Site/site/ServerFunctionRole/Resource",
                     "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                       "aws:cdk:cloudformation:props": {
-                        "publicAccessBlockConfiguration": {
-                          "blockPublicAcls": true,
-                          "blockPublicPolicy": true,
-                          "ignorePublicAcls": true,
-                          "restrictPublicBuckets": true
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "AWS": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:",
+                                      {
+                                        "Ref": "AWS::Partition"
+                                      },
+                                      ":iam::244274341413:root"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
                         },
+                        "maxSessionDuration": 43200,
                         "tags": [
-                          {
-                            "key": "aws-cdk:auto-delete-objects",
-                            "value": "true"
-                          },
                           {
                             "key": "sst:app",
                             "value": "recipe-ai"
                           },
                           {
                             "key": "sst:stage",
-                            "value": "prod"
+                            "value": "dev"
                           }
                         ]
                       }
                     },
                     "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_s3.CfnBucket",
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
                       "version": "2.91.0"
                     }
                   },
-                  "Policy": {
-                    "id": "Policy",
-                    "path": "prod-recipe-ai-Site/site/S3Bucket/Policy",
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "dev-recipe-ai-Site/site/ServerFunctionRole/DefaultPolicy",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "prod-recipe-ai-Site/site/S3Bucket/Policy/Resource",
+                        "path": "dev-recipe-ai-Site/site/ServerFunctionRole/DefaultPolicy/Resource",
                         "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::S3::BucketPolicy",
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                           "aws:cdk:cloudformation:props": {
-                            "bucket": {
-                              "Ref": "siteS3Bucket2B2851F3"
-                            },
                             "policyDocument": {
                               "Statement": [
                                 {
-                                  "Action": [
-                                    "s3:GetBucket*",
-                                    "s3:List*",
-                                    "s3:DeleteObject*"
-                                  ],
+                                  "Action": "ssm:GetParameters",
                                   "Effect": "Allow",
-                                  "Principal": {
-                                    "AWS": {
-                                      "Fn::GetAtt": [
-                                        "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
-                                        "Arn"
-                                      ]
-                                    }
-                                  },
                                   "Resource": [
                                     {
-                                      "Fn::GetAtt": [
-                                        "siteS3Bucket2B2851F3",
-                                        "Arn"
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:",
+                                          {
+                                            "Ref": "AWS::Partition"
+                                          },
+                                          ":ssm:us-east-1:244274341413:parameter/sst/recipe-ai/dev/Secret/OPENAI_KEY/value"
+                                        ]
                                       ]
                                     },
                                     {
                                       "Fn::Join": [
                                         "",
                                         [
+                                          "arn:",
                                           {
-                                            "Fn::GetAtt": [
-                                              "siteS3Bucket2B2851F3",
-                                              "Arn"
-                                            ]
+                                            "Ref": "AWS::Partition"
                                           },
-                                          "/*"
+                                          ":ssm:us-east-1:244274341413:parameter/sst/recipe-ai/.fallback/Secret/OPENAI_KEY/value"
                                         ]
                                       ]
                                     }
                                   ]
-                                },
-                                {
-                                  "Action": "s3:GetObject",
-                                  "Effect": "Allow",
-                                  "Principal": {
-                                    "CanonicalUser": {
-                                      "Fn::GetAtt": [
-                                        "siteDistributionOrigin3S3Origin7C72BBD7",
-                                        "S3CanonicalUserId"
-                                      ]
-                                    }
-                                  },
-                                  "Resource": {
-                                    "Fn::Join": [
-                                      "",
-                                      [
-                                        {
-                                          "Fn::GetAtt": [
-                                            "siteS3Bucket2B2851F3",
-                                            "Arn"
-                                          ]
-                                        },
-                                        "/*"
-                                      ]
-                                    ]
-                                  }
                                 }
                               ],
                               "Version": "2012-10-17"
-                            }
+                            },
+                            "policyName": "siteServerFunctionRoleDefaultPolicy213DB8A5",
+                            "roles": [
+                              {
+                                "Ref": "siteServerFunctionRole1F8F4FAC"
+                              }
+                            ]
                           }
                         },
                         "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_s3.CfnBucketPolicy",
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
                           "version": "2.91.0"
                         }
                       }
                     },
                     "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_s3.BucketPolicy",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "AutoDeleteObjectsCustomResource": {
-                    "id": "AutoDeleteObjectsCustomResource",
-                    "path": "prod-recipe-ai-Site/site/S3Bucket/AutoDeleteObjectsCustomResource",
-                    "children": {
-                      "Default": {
-                        "id": "Default",
-                        "path": "prod-recipe-ai-Site/site/S3Bucket/AutoDeleteObjectsCustomResource/Default",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.CfnResource",
-                          "version": "2.91.0"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.CustomResource",
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
                       "version": "2.91.0"
                     }
                   }
                 },
                 "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_s3.Bucket",
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
                   "version": "2.91.0"
                 }
               },
               "ServerFunction": {
                 "id": "ServerFunction",
-                "path": "prod-recipe-ai-Site/site/ServerFunction",
+                "path": "dev-recipe-ai-Site/site/ServerFunction",
                 "children": {
                   "AssetReplacerPolicy": {
                     "id": "AssetReplacerPolicy",
-                    "path": "prod-recipe-ai-Site/site/ServerFunction/AssetReplacerPolicy",
+                    "path": "dev-recipe-ai-Site/site/ServerFunction/AssetReplacerPolicy",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "prod-recipe-ai-Site/site/ServerFunction/AssetReplacerPolicy/Resource",
+                        "path": "dev-recipe-ai-Site/site/ServerFunction/AssetReplacerPolicy/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                           "aws:cdk:cloudformation:props": {
@@ -375,11 +355,11 @@
                   },
                   "AssetReplacer": {
                     "id": "AssetReplacer",
-                    "path": "prod-recipe-ai-Site/site/ServerFunction/AssetReplacer",
+                    "path": "dev-recipe-ai-Site/site/ServerFunction/AssetReplacer",
                     "children": {
                       "Default": {
                         "id": "Default",
-                        "path": "prod-recipe-ai-Site/site/ServerFunction/AssetReplacer/Default",
+                        "path": "dev-recipe-ai-Site/site/ServerFunction/AssetReplacer/Default",
                         "constructInfo": {
                           "fqn": "aws-cdk-lib.CfnResource",
                           "version": "2.91.0"
@@ -393,7 +373,7 @@
                   },
                   "IServerFunctionBucket": {
                     "id": "IServerFunctionBucket",
-                    "path": "prod-recipe-ai-Site/site/ServerFunction/IServerFunctionBucket",
+                    "path": "dev-recipe-ai-Site/site/ServerFunction/IServerFunctionBucket",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.aws_s3.BucketBase",
                       "version": "2.91.0"
@@ -401,193 +381,11 @@
                   },
                   "ServerFunction": {
                     "id": "ServerFunction",
-                    "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction",
+                    "path": "dev-recipe-ai-Site/site/ServerFunction/ServerFunction",
                     "children": {
-                      "ServiceRole": {
-                        "id": "ServiceRole",
-                        "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/ServiceRole",
-                        "children": {
-                          "ImportServiceRole": {
-                            "id": "ImportServiceRole",
-                            "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/ServiceRole/ImportServiceRole",
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.Resource",
-                              "version": "2.91.0"
-                            }
-                          },
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/ServiceRole/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::IAM::Role",
-                              "aws:cdk:cloudformation:props": {
-                                "assumeRolePolicyDocument": {
-                                  "Statement": [
-                                    {
-                                      "Action": "sts:AssumeRole",
-                                      "Effect": "Allow",
-                                      "Principal": {
-                                        "Service": "lambda.amazonaws.com"
-                                      }
-                                    }
-                                  ],
-                                  "Version": "2012-10-17"
-                                },
-                                "managedPolicyArns": [
-                                  {
-                                    "Fn::Join": [
-                                      "",
-                                      [
-                                        "arn:",
-                                        {
-                                          "Ref": "AWS::Partition"
-                                        },
-                                        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-                                      ]
-                                    ]
-                                  }
-                                ],
-                                "tags": [
-                                  {
-                                    "key": "sst:app",
-                                    "value": "recipe-ai"
-                                  },
-                                  {
-                                    "key": "sst:stage",
-                                    "value": "prod"
-                                  }
-                                ]
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_iam.CfnRole",
-                              "version": "2.91.0"
-                            }
-                          },
-                          "DefaultPolicy": {
-                            "id": "DefaultPolicy",
-                            "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/ServiceRole/DefaultPolicy",
-                            "children": {
-                              "Resource": {
-                                "id": "Resource",
-                                "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/ServiceRole/DefaultPolicy/Resource",
-                                "attributes": {
-                                  "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                                  "aws:cdk:cloudformation:props": {
-                                    "policyDocument": {
-                                      "Statement": [
-                                        {
-                                          "Action": "ssm:GetParameters",
-                                          "Effect": "Allow",
-                                          "Resource": [
-                                            {
-                                              "Fn::Join": [
-                                                "",
-                                                [
-                                                  "arn:",
-                                                  {
-                                                    "Ref": "AWS::Partition"
-                                                  },
-                                                  ":ssm:us-east-1:244274341413:parameter/sst/recipe-ai/prod/Secret/OPENAI_KEY/value"
-                                                ]
-                                              ]
-                                            },
-                                            {
-                                              "Fn::Join": [
-                                                "",
-                                                [
-                                                  "arn:",
-                                                  {
-                                                    "Ref": "AWS::Partition"
-                                                  },
-                                                  ":ssm:us-east-1:244274341413:parameter/sst/recipe-ai/.fallback/Secret/OPENAI_KEY/value"
-                                                ]
-                                              ]
-                                            }
-                                          ]
-                                        },
-                                        {
-                                          "Action": [
-                                            "s3:GetObject*",
-                                            "s3:GetBucket*",
-                                            "s3:List*",
-                                            "s3:DeleteObject*",
-                                            "s3:PutObject",
-                                            "s3:PutObjectLegalHold",
-                                            "s3:PutObjectRetention",
-                                            "s3:PutObjectTagging",
-                                            "s3:PutObjectVersionTagging",
-                                            "s3:Abort*"
-                                          ],
-                                          "Effect": "Allow",
-                                          "Resource": [
-                                            {
-                                              "Fn::GetAtt": [
-                                                "siteS3Bucket2B2851F3",
-                                                "Arn"
-                                              ]
-                                            },
-                                            {
-                                              "Fn::Join": [
-                                                "",
-                                                [
-                                                  {
-                                                    "Fn::GetAtt": [
-                                                      "siteS3Bucket2B2851F3",
-                                                      "Arn"
-                                                    ]
-                                                  },
-                                                  "/*"
-                                                ]
-                                              ]
-                                            }
-                                          ]
-                                        },
-                                        {
-                                          "Action": [
-                                            "sqs:SendMessage",
-                                            "sqs:GetQueueAttributes",
-                                            "sqs:GetQueueUrl"
-                                          ],
-                                          "Effect": "Allow",
-                                          "Resource": {
-                                            "Fn::GetAtt": [
-                                              "siteRevalidationQueue355EB7DA",
-                                              "Arn"
-                                            ]
-                                          }
-                                        }
-                                      ],
-                                      "Version": "2012-10-17"
-                                    },
-                                    "policyName": "siteServerFunctionServiceRoleDefaultPolicy6EA49472",
-                                    "roles": [
-                                      {
-                                        "Ref": "siteServerFunctionServiceRole8328A688"
-                                      }
-                                    ]
-                                  }
-                                },
-                                "constructInfo": {
-                                  "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
-                                  "version": "2.91.0"
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_iam.Policy",
-                              "version": "2.91.0"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_iam.Role",
-                          "version": "2.91.0"
-                        }
-                      },
                       "Resource": {
                         "id": "Resource",
-                        "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/Resource",
+                        "path": "dev-recipe-ai-Site/site/ServerFunction/ServerFunction/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
                           "aws:cdk:cloudformation:props": {
@@ -596,9 +394,9 @@
                             ],
                             "code": {
                               "s3Bucket": "cdk-hnb659fds-assets-244274341413-us-east-1",
-                              "s3Key": "f5d5aa69b7e80a7afcb7abcaad04216b7abe492e133e3c2aade0c25800deffe0.zip"
+                              "s3Key": "9cce69262ed8c8e9a1f8cbce22449534400b438451794f960f3071c2f23353e2.zip"
                             },
-                            "description": "Next.js server",
+                            "description": "Server handler placeholder",
                             "environment": {
                               "variables": {
                                 "CLERK_SECRET_KEY": "sk_test_zvJFVz7pzvm2FFdVdn2o6s17WkRkFT4LMnyT6VN95H",
@@ -606,26 +404,17 @@
                                 "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91dGdndmVtcWR5bGtzZXlka29mIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODcwODUzMjgsImV4cCI6MjAwMjY2MTMyOH0.sHDNyOumaJsFdQrMQK05nPeFJfAZsOvwiDqpUF4zgAQ",
                                 "NEXT_PUBLIC_SUPABASE_URL": "https://outggvemqdylkseydkof.supabase.co",
                                 "NEXT_PUBLIC_DOMAIN_NAME": "https://d10w1g97siypj3.cloudfront.net",
-                                "CACHE_BUCKET_NAME": {
-                                  "Ref": "siteS3Bucket2B2851F3"
-                                },
-                                "CACHE_BUCKET_KEY_PREFIX": "_cache",
-                                "CACHE_BUCKET_REGION": "us-east-1",
                                 "SST_APP": "recipe-ai",
-                                "SST_STAGE": "prod",
-                                "SST_SSM_PREFIX": "/sst/recipe-ai/prod/",
-                                "SST_Secret_value_OPENAI_KEY": "__FETCH_FROM_SSM__",
-                                "REVALIDATION_QUEUE_URL": {
-                                  "Ref": "siteRevalidationQueue355EB7DA"
-                                },
-                                "REVALIDATION_QUEUE_REGION": "us-east-1"
+                                "SST_STAGE": "dev",
+                                "SST_SSM_PREFIX": "/sst/recipe-ai/dev/",
+                                "SST_Secret_value_OPENAI_KEY": "__FETCH_FROM_SSM__"
                               }
                             },
                             "handler": "index.handler",
                             "memorySize": 2048,
                             "role": {
                               "Fn::GetAtt": [
-                                "siteServerFunctionServiceRole8328A688",
+                                "siteServerFunctionRole1F8F4FAC",
                                 "Arn"
                               ]
                             },
@@ -637,7 +426,7 @@
                               },
                               {
                                 "key": "sst:stage",
-                                "value": "prod"
+                                "value": "dev"
                               }
                             ],
                             "timeout": 50
@@ -650,11 +439,11 @@
                       },
                       "LogRetention": {
                         "id": "LogRetention",
-                        "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/LogRetention",
+                        "path": "dev-recipe-ai-Site/site/ServerFunction/ServerFunction/LogRetention",
                         "children": {
                           "Resource": {
                             "id": "Resource",
-                            "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/LogRetention/Resource",
+                            "path": "dev-recipe-ai-Site/site/ServerFunction/ServerFunction/LogRetention/Resource",
                             "constructInfo": {
                               "fqn": "aws-cdk-lib.CfnResource",
                               "version": "2.91.0"
@@ -668,71 +457,19 @@
                       },
                       "LogGroup": {
                         "id": "LogGroup",
-                        "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/LogGroup",
+                        "path": "dev-recipe-ai-Site/site/ServerFunction/ServerFunction/LogGroup",
                         "constructInfo": {
                           "fqn": "aws-cdk-lib.Resource",
                           "version": "2.91.0"
                         }
                       },
-                      "FunctionUrl": {
-                        "id": "FunctionUrl",
-                        "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/FunctionUrl",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/FunctionUrl/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::Lambda::Url",
-                              "aws:cdk:cloudformation:props": {
-                                "authType": "NONE",
-                                "targetFunctionArn": {
-                                  "Fn::GetAtt": [
-                                    "siteServerFunction6DFA6F1B",
-                                    "Arn"
-                                  ]
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_lambda.CfnUrl",
-                              "version": "2.91.0"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_lambda.FunctionUrl",
-                          "version": "2.91.0"
-                        }
-                      },
-                      "invoke-function-url": {
-                        "id": "invoke-function-url",
-                        "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/invoke-function-url",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
-                          "aws:cdk:cloudformation:props": {
-                            "action": "lambda:InvokeFunctionUrl",
-                            "functionName": {
-                              "Fn::GetAtt": [
-                                "siteServerFunction6DFA6F1B",
-                                "Arn"
-                              ]
-                            },
-                            "functionUrlAuthType": "NONE",
-                            "principal": "*"
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
-                          "version": "2.91.0"
-                        }
-                      },
                       "Code": {
                         "id": "Code",
-                        "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/Code",
+                        "path": "dev-recipe-ai-Site/site/ServerFunction/ServerFunction/Code",
                         "children": {
                           "Stage": {
                             "id": "Stage",
-                            "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/Code/Stage",
+                            "path": "dev-recipe-ai-Site/site/ServerFunction/ServerFunction/Code/Stage",
                             "constructInfo": {
                               "fqn": "aws-cdk-lib.AssetStaging",
                               "version": "2.91.0"
@@ -740,7 +477,7 @@
                           },
                           "AssetBucket": {
                             "id": "AssetBucket",
-                            "path": "prod-recipe-ai-Site/site/ServerFunction/ServerFunction/Code/AssetBucket",
+                            "path": "dev-recipe-ai-Site/site/ServerFunction/ServerFunction/Code/AssetBucket",
                             "constructInfo": {
                               "fqn": "aws-cdk-lib.aws_s3.BucketBase",
                               "version": "2.91.0"
@@ -764,1854 +501,23 @@
                   "version": "10.2.69"
                 }
               },
-              "CloudFrontFunction": {
-                "id": "CloudFrontFunction",
-                "path": "prod-recipe-ai-Site/site/CloudFrontFunction",
-                "children": {
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "prod-recipe-ai-Site/site/CloudFrontFunction/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::CloudFront::Function",
-                      "aws:cdk:cloudformation:props": {
-                        "autoPublish": true,
-                        "functionCode": "\nfunction handler(event) {\n  var request = event.request;\n  request.headers[\"x-forwarded-host\"] = request.headers.host;\n  \n  return request;\n}",
-                        "functionConfig": {
-                          "comment": "us-east-1prodrecipeaiSitesiteCloudFrontFunctionC92070C1",
-                          "runtime": "cloudfront-js-1.0"
-                        },
-                        "name": "us-east-1prodrecipeaiSitesiteCloudFrontFunctionC92070C1"
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_cloudfront.CfnFunction",
-                      "version": "2.91.0"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_cloudfront.Function",
-                  "version": "2.91.0"
-                }
-              },
-              "ServerCache": {
-                "id": "ServerCache",
-                "path": "prod-recipe-ai-Site/site/ServerCache",
-                "children": {
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "prod-recipe-ai-Site/site/ServerCache/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::CloudFront::CachePolicy",
-                      "aws:cdk:cloudformation:props": {
-                        "cachePolicyConfig": {
-                          "name": "prodrecipeaiSitesiteServerCacheE6BCF101-us-east-1",
-                          "comment": "SST server response cache policy",
-                          "minTtl": 0,
-                          "maxTtl": 31536000,
-                          "defaultTtl": 0,
-                          "parametersInCacheKeyAndForwardedToOrigin": {
-                            "cookiesConfig": {
-                              "cookieBehavior": "none"
-                            },
-                            "headersConfig": {
-                              "headerBehavior": "whitelist",
-                              "headers": [
-                                "accept",
-                                "rsc",
-                                "next-router-prefetch",
-                                "next-router-state-tree",
-                                "next-url"
-                              ]
-                            },
-                            "enableAcceptEncodingGzip": true,
-                            "enableAcceptEncodingBrotli": true,
-                            "queryStringsConfig": {
-                              "queryStringBehavior": "all"
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_cloudfront.CfnCachePolicy",
-                      "version": "2.91.0"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_cloudfront.CachePolicy",
-                  "version": "2.91.0"
-                }
-              },
-              "ServerOriginRequestPolicy": {
-                "id": "ServerOriginRequestPolicy",
-                "path": "prod-recipe-ai-Site/site/ServerOriginRequestPolicy",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.Resource",
-                  "version": "2.91.0"
-                }
-              },
-              "ImageFunction": {
-                "id": "ImageFunction",
-                "path": "prod-recipe-ai-Site/site/ImageFunction",
-                "children": {
-                  "ServiceRole": {
-                    "id": "ServiceRole",
-                    "path": "prod-recipe-ai-Site/site/ImageFunction/ServiceRole",
-                    "children": {
-                      "ImportServiceRole": {
-                        "id": "ImportServiceRole",
-                        "path": "prod-recipe-ai-Site/site/ImageFunction/ServiceRole/ImportServiceRole",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.Resource",
-                          "version": "2.91.0"
-                        }
-                      },
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "prod-recipe-ai-Site/site/ImageFunction/ServiceRole/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::IAM::Role",
-                          "aws:cdk:cloudformation:props": {
-                            "assumeRolePolicyDocument": {
-                              "Statement": [
-                                {
-                                  "Action": "sts:AssumeRole",
-                                  "Effect": "Allow",
-                                  "Principal": {
-                                    "Service": "lambda.amazonaws.com"
-                                  }
-                                }
-                              ],
-                              "Version": "2012-10-17"
-                            },
-                            "managedPolicyArns": [
-                              {
-                                "Fn::Join": [
-                                  "",
-                                  [
-                                    "arn:",
-                                    {
-                                      "Ref": "AWS::Partition"
-                                    },
-                                    ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-                                  ]
-                                ]
-                              }
-                            ],
-                            "tags": [
-                              {
-                                "key": "sst:app",
-                                "value": "recipe-ai"
-                              },
-                              {
-                                "key": "sst:stage",
-                                "value": "prod"
-                              }
-                            ]
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_iam.CfnRole",
-                          "version": "2.91.0"
-                        }
-                      },
-                      "DefaultPolicy": {
-                        "id": "DefaultPolicy",
-                        "path": "prod-recipe-ai-Site/site/ImageFunction/ServiceRole/DefaultPolicy",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "prod-recipe-ai-Site/site/ImageFunction/ServiceRole/DefaultPolicy/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                              "aws:cdk:cloudformation:props": {
-                                "policyDocument": {
-                                  "Statement": [
-                                    {
-                                      "Action": "s3:GetObject",
-                                      "Effect": "Allow",
-                                      "Resource": {
-                                        "Fn::Join": [
-                                          "",
-                                          [
-                                            {
-                                              "Fn::GetAtt": [
-                                                "siteS3Bucket2B2851F3",
-                                                "Arn"
-                                              ]
-                                            },
-                                            "/*"
-                                          ]
-                                        ]
-                                      }
-                                    }
-                                  ],
-                                  "Version": "2012-10-17"
-                                },
-                                "policyName": "siteImageFunctionServiceRoleDefaultPolicy39F33332",
-                                "roles": [
-                                  {
-                                    "Ref": "siteImageFunctionServiceRoleAD5B95E2"
-                                  }
-                                ]
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
-                              "version": "2.91.0"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_iam.Policy",
-                          "version": "2.91.0"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_iam.Role",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "prod-recipe-ai-Site/site/ImageFunction/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
-                      "aws:cdk:cloudformation:props": {
-                        "architectures": [
-                          "arm64"
-                        ],
-                        "code": {
-                          "s3Bucket": "cdk-hnb659fds-assets-244274341413-us-east-1",
-                          "s3Key": "980a5cdef75b89b7cabc9057048e33162296534850b120e274a942d040215b0c.zip"
-                        },
-                        "description": "Next.js image optimizer",
-                        "environment": {
-                          "variables": {
-                            "BUCKET_NAME": {
-                              "Ref": "siteS3Bucket2B2851F3"
-                            },
-                            "BUCKET_KEY_PREFIX": "_assets"
-                          }
-                        },
-                        "handler": "index.handler",
-                        "memorySize": 1536,
-                        "role": {
-                          "Fn::GetAtt": [
-                            "siteImageFunctionServiceRoleAD5B95E2",
-                            "Arn"
-                          ]
-                        },
-                        "runtime": "nodejs18.x",
-                        "tags": [
-                          {
-                            "key": "sst:app",
-                            "value": "recipe-ai"
-                          },
-                          {
-                            "key": "sst:stage",
-                            "value": "prod"
-                          }
-                        ],
-                        "timeout": 25
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "LogRetention": {
-                    "id": "LogRetention",
-                    "path": "prod-recipe-ai-Site/site/ImageFunction/LogRetention",
-                    "children": {
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "prod-recipe-ai-Site/site/ImageFunction/LogRetention/Resource",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.CfnResource",
-                          "version": "2.91.0"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_logs.LogRetention",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "LogGroup": {
-                    "id": "LogGroup",
-                    "path": "prod-recipe-ai-Site/site/ImageFunction/LogGroup",
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.Resource",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "FunctionUrl": {
-                    "id": "FunctionUrl",
-                    "path": "prod-recipe-ai-Site/site/ImageFunction/FunctionUrl",
-                    "children": {
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "prod-recipe-ai-Site/site/ImageFunction/FunctionUrl/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::Lambda::Url",
-                          "aws:cdk:cloudformation:props": {
-                            "authType": "NONE",
-                            "targetFunctionArn": {
-                              "Fn::GetAtt": [
-                                "siteImageFunctionD6B403E9",
-                                "Arn"
-                              ]
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_lambda.CfnUrl",
-                          "version": "2.91.0"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_lambda.FunctionUrl",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "invoke-function-url": {
-                    "id": "invoke-function-url",
-                    "path": "prod-recipe-ai-Site/site/ImageFunction/invoke-function-url",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
-                      "aws:cdk:cloudformation:props": {
-                        "action": "lambda:InvokeFunctionUrl",
-                        "functionName": {
-                          "Fn::GetAtt": [
-                            "siteImageFunctionD6B403E9",
-                            "Arn"
-                          ]
-                        },
-                        "functionUrlAuthType": "NONE",
-                        "principal": "*"
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "Code": {
-                    "id": "Code",
-                    "path": "prod-recipe-ai-Site/site/ImageFunction/Code",
-                    "children": {
-                      "Stage": {
-                        "id": "Stage",
-                        "path": "prod-recipe-ai-Site/site/ImageFunction/Code/Stage",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.AssetStaging",
-                          "version": "2.91.0"
-                        }
-                      },
-                      "AssetBucket": {
-                        "id": "AssetBucket",
-                        "path": "prod-recipe-ai-Site/site/ImageFunction/Code/AssetBucket",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_s3.BucketBase",
-                          "version": "2.91.0"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
-                      "version": "2.91.0"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_lambda.Function",
-                  "version": "2.91.0"
-                }
-              },
-              "CDN": {
-                "id": "CDN",
-                "path": "prod-recipe-ai-Site/site/CDN",
-                "constructInfo": {
-                  "fqn": "constructs.Construct",
-                  "version": "10.2.69"
-                }
-              },
-              "Distribution": {
-                "id": "Distribution",
-                "path": "prod-recipe-ai-Site/site/Distribution",
-                "children": {
-                  "Origin1": {
-                    "id": "Origin1",
-                    "path": "prod-recipe-ai-Site/site/Distribution/Origin1",
-                    "constructInfo": {
-                      "fqn": "constructs.Construct",
-                      "version": "10.2.69"
-                    }
-                  },
-                  "Origin2": {
-                    "id": "Origin2",
-                    "path": "prod-recipe-ai-Site/site/Distribution/Origin2",
-                    "constructInfo": {
-                      "fqn": "constructs.Construct",
-                      "version": "10.2.69"
-                    }
-                  },
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "prod-recipe-ai-Site/site/Distribution/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::CloudFront::Distribution",
-                      "aws:cdk:cloudformation:props": {
-                        "distributionConfig": {
-                          "enabled": true,
-                          "origins": [
-                            {
-                              "domainName": {
-                                "Fn::Select": [
-                                  0,
-                                  {
-                                    "Fn::Split": [
-                                      "/",
-                                      {
-                                        "Fn::Select": [
-                                          1,
-                                          {
-                                            "Fn::Split": [
-                                              "//",
-                                              {
-                                                "Fn::GetAtt": [
-                                                  "siteServerFunctionFunctionUrl1B09C490",
-                                                  "FunctionUrl"
-                                                ]
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              "id": "prodrecipeaiSitesiteDistributionOrigin13E1BF612",
-                              "customOriginConfig": {
-                                "originSslProtocols": [
-                                  "TLSv1.2"
-                                ],
-                                "originProtocolPolicy": "https-only",
-                                "originReadTimeout": 50
-                              }
-                            },
-                            {
-                              "domainName": {
-                                "Fn::Select": [
-                                  0,
-                                  {
-                                    "Fn::Split": [
-                                      "/",
-                                      {
-                                        "Fn::Select": [
-                                          1,
-                                          {
-                                            "Fn::Split": [
-                                              "//",
-                                              {
-                                                "Fn::GetAtt": [
-                                                  "siteImageFunctionFunctionUrl110B87E7",
-                                                  "FunctionUrl"
-                                                ]
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              "id": "prodrecipeaiSitesiteDistributionOrigin27CCCA95F",
-                              "customOriginConfig": {
-                                "originSslProtocols": [
-                                  "TLSv1.2"
-                                ],
-                                "originProtocolPolicy": "https-only"
-                              }
-                            },
-                            {
-                              "domainName": {
-                                "Fn::GetAtt": [
-                                  "siteS3Bucket2B2851F3",
-                                  "RegionalDomainName"
-                                ]
-                              },
-                              "id": "prodrecipeaiSitesiteDistributionOrigin34A53F825",
-                              "originPath": "/_assets",
-                              "s3OriginConfig": {
-                                "originAccessIdentity": {
-                                  "Fn::Join": [
-                                    "",
-                                    [
-                                      "origin-access-identity/cloudfront/",
-                                      {
-                                        "Ref": "siteDistributionOrigin3S3Origin7C72BBD7"
-                                      }
-                                    ]
-                                  ]
-                                }
-                              }
-                            }
-                          ],
-                          "defaultCacheBehavior": {
-                            "pathPattern": "*",
-                            "targetOriginId": "prodrecipeaiSitesiteDistributionOrigin13E1BF612",
-                            "allowedMethods": [
-                              "GET",
-                              "HEAD",
-                              "OPTIONS",
-                              "PUT",
-                              "PATCH",
-                              "POST",
-                              "DELETE"
-                            ],
-                            "cachedMethods": [
-                              "GET",
-                              "HEAD",
-                              "OPTIONS"
-                            ],
-                            "cachePolicyId": {
-                              "Ref": "siteServerCacheDD54ACDF"
-                            },
-                            "compress": true,
-                            "originRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac",
-                            "viewerProtocolPolicy": "redirect-to-https",
-                            "functionAssociations": [
-                              {
-                                "functionArn": {
-                                  "Fn::GetAtt": [
-                                    "siteCloudFrontFunctionE91DD486",
-                                    "FunctionARN"
-                                  ]
-                                },
-                                "eventType": "viewer-request"
-                              }
-                            ],
-                            "lambdaFunctionAssociations": []
-                          },
-                          "aliases": [],
-                          "cacheBehaviors": [
-                            {
-                              "pathPattern": "api/*",
-                              "targetOriginId": "prodrecipeaiSitesiteDistributionOrigin13E1BF612",
-                              "allowedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS",
-                                "PUT",
-                                "PATCH",
-                                "POST",
-                                "DELETE"
-                              ],
-                              "cachedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachePolicyId": {
-                                "Ref": "siteServerCacheDD54ACDF"
-                              },
-                              "compress": true,
-                              "originRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac",
-                              "viewerProtocolPolicy": "redirect-to-https",
-                              "functionAssociations": [
-                                {
-                                  "functionArn": {
-                                    "Fn::GetAtt": [
-                                      "siteCloudFrontFunctionE91DD486",
-                                      "FunctionARN"
-                                    ]
-                                  },
-                                  "eventType": "viewer-request"
-                                }
-                              ],
-                              "lambdaFunctionAssociations": []
-                            },
-                            {
-                              "pathPattern": "_next/data/*",
-                              "targetOriginId": "prodrecipeaiSitesiteDistributionOrigin13E1BF612",
-                              "allowedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS",
-                                "PUT",
-                                "PATCH",
-                                "POST",
-                                "DELETE"
-                              ],
-                              "cachedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachePolicyId": {
-                                "Ref": "siteServerCacheDD54ACDF"
-                              },
-                              "compress": true,
-                              "originRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac",
-                              "viewerProtocolPolicy": "redirect-to-https",
-                              "functionAssociations": [
-                                {
-                                  "functionArn": {
-                                    "Fn::GetAtt": [
-                                      "siteCloudFrontFunctionE91DD486",
-                                      "FunctionARN"
-                                    ]
-                                  },
-                                  "eventType": "viewer-request"
-                                }
-                              ],
-                              "lambdaFunctionAssociations": []
-                            },
-                            {
-                              "pathPattern": "_next/image*",
-                              "targetOriginId": "prodrecipeaiSitesiteDistributionOrigin27CCCA95F",
-                              "allowedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS",
-                                "PUT",
-                                "PATCH",
-                                "POST",
-                                "DELETE"
-                              ],
-                              "cachedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachePolicyId": {
-                                "Ref": "siteServerCacheDD54ACDF"
-                              },
-                              "compress": true,
-                              "viewerProtocolPolicy": "redirect-to-https",
-                              "lambdaFunctionAssociations": []
-                            },
-                            {
-                              "pathPattern": "BUILD_ID",
-                              "targetOriginId": "prodrecipeaiSitesiteDistributionOrigin34A53F825",
-                              "allowedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
-                              "compress": true,
-                              "viewerProtocolPolicy": "redirect-to-https"
-                            },
-                            {
-                              "pathPattern": "_next/*",
-                              "targetOriginId": "prodrecipeaiSitesiteDistributionOrigin34A53F825",
-                              "allowedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
-                              "compress": true,
-                              "viewerProtocolPolicy": "redirect-to-https"
-                            },
-                            {
-                              "pathPattern": "english_ingredients.json",
-                              "targetOriginId": "prodrecipeaiSitesiteDistributionOrigin34A53F825",
-                              "allowedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
-                              "compress": true,
-                              "viewerProtocolPolicy": "redirect-to-https"
-                            },
-                            {
-                              "pathPattern": "favicon.ico",
-                              "targetOriginId": "prodrecipeaiSitesiteDistributionOrigin34A53F825",
-                              "allowedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
-                              "compress": true,
-                              "viewerProtocolPolicy": "redirect-to-https"
-                            },
-                            {
-                              "pathPattern": "next.svg",
-                              "targetOriginId": "prodrecipeaiSitesiteDistributionOrigin34A53F825",
-                              "allowedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
-                              "compress": true,
-                              "viewerProtocolPolicy": "redirect-to-https"
-                            },
-                            {
-                              "pathPattern": "thirteen.svg",
-                              "targetOriginId": "prodrecipeaiSitesiteDistributionOrigin34A53F825",
-                              "allowedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
-                              "compress": true,
-                              "viewerProtocolPolicy": "redirect-to-https"
-                            },
-                            {
-                              "pathPattern": "vercel.svg",
-                              "targetOriginId": "prodrecipeaiSitesiteDistributionOrigin34A53F825",
-                              "allowedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
-                              "compress": true,
-                              "viewerProtocolPolicy": "redirect-to-https"
-                            },
-                            {
-                              "pathPattern": "whatsapp.svg",
-                              "targetOriginId": "prodrecipeaiSitesiteDistributionOrigin34A53F825",
-                              "allowedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS"
-                              ],
-                              "cachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
-                              "compress": true,
-                              "viewerProtocolPolicy": "redirect-to-https"
-                            }
-                          ],
-                          "defaultRootObject": "",
-                          "httpVersion": "http2",
-                          "ipv6Enabled": true
-                        },
-                        "tags": [
-                          {
-                            "key": "sst:app",
-                            "value": "recipe-ai"
-                          },
-                          {
-                            "key": "sst:stage",
-                            "value": "prod"
-                          }
-                        ]
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_cloudfront.CfnDistribution",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "Origin3": {
-                    "id": "Origin3",
-                    "path": "prod-recipe-ai-Site/site/Distribution/Origin3",
-                    "children": {
-                      "S3Origin": {
-                        "id": "S3Origin",
-                        "path": "prod-recipe-ai-Site/site/Distribution/Origin3/S3Origin",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "prod-recipe-ai-Site/site/Distribution/Origin3/S3Origin/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
-                              "aws:cdk:cloudformation:props": {
-                                "cloudFrontOriginAccessIdentityConfig": {
-                                  "comment": "Identity for prodrecipeaiSitesiteDistributionOrigin34A53F825"
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_cloudfront.CfnCloudFrontOriginAccessIdentity",
-                              "version": "2.91.0"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_cloudfront.OriginAccessIdentity",
-                          "version": "2.91.0"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "constructs.Construct",
-                      "version": "10.2.69"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_cloudfront.Distribution",
-                  "version": "2.91.0"
-                }
-              },
-              "ServerFunctionInvalidatorPolicy": {
-                "id": "ServerFunctionInvalidatorPolicy",
-                "path": "prod-recipe-ai-Site/site/ServerFunctionInvalidatorPolicy",
-                "children": {
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "prod-recipe-ai-Site/site/ServerFunctionInvalidatorPolicy/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                      "aws:cdk:cloudformation:props": {
-                        "policyDocument": {
-                          "Statement": [
-                            {
-                              "Action": "cloudfront:CreateInvalidation",
-                              "Effect": "Allow",
-                              "Resource": {
-                                "Fn::Join": [
-                                  "",
-                                  [
-                                    "arn:",
-                                    {
-                                      "Ref": "AWS::Partition"
-                                    },
-                                    ":cloudfront::244274341413:distribution/",
-                                    {
-                                      "Ref": "siteDistribution706F5265"
-                                    }
-                                  ]
-                                ]
-                              }
-                            }
-                          ],
-                          "Version": "2012-10-17"
-                        },
-                        "policyName": "siteServerFunctionInvalidatorPolicy004B2ED1",
-                        "roles": [
-                          {
-                            "Ref": "siteServerFunctionServiceRole8328A688"
-                          }
-                        ]
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
-                      "version": "2.91.0"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_iam.Policy",
-                  "version": "2.91.0"
-                }
-              },
-              "AwsCliLayer": {
-                "id": "AwsCliLayer",
-                "path": "prod-recipe-ai-Site/site/AwsCliLayer",
-                "children": {
-                  "Code": {
-                    "id": "Code",
-                    "path": "prod-recipe-ai-Site/site/AwsCliLayer/Code",
-                    "children": {
-                      "Stage": {
-                        "id": "Stage",
-                        "path": "prod-recipe-ai-Site/site/AwsCliLayer/Code/Stage",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.AssetStaging",
-                          "version": "2.91.0"
-                        }
-                      },
-                      "AssetBucket": {
-                        "id": "AssetBucket",
-                        "path": "prod-recipe-ai-Site/site/AwsCliLayer/Code/AssetBucket",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_s3.BucketBase",
-                          "version": "2.91.0"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "prod-recipe-ai-Site/site/AwsCliLayer/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::Lambda::LayerVersion",
-                      "aws:cdk:cloudformation:props": {
-                        "content": {
-                          "s3Bucket": "cdk-hnb659fds-assets-244274341413-us-east-1",
-                          "s3Key": "e2277687077a2abf9ae1af1cc9565e6715e2ebb62f79ec53aa75a1af9298f642.zip"
-                        },
-                        "description": "/opt/awscli/aws"
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_lambda.CfnLayerVersion",
-                      "version": "2.91.0"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.lambda_layer_awscli.AwsCliLayer",
-                  "version": "2.91.0"
-                }
-              },
-              "Asset0": {
-                "id": "Asset0",
-                "path": "prod-recipe-ai-Site/site/Asset0",
-                "children": {
-                  "Stage": {
-                    "id": "Stage",
-                    "path": "prod-recipe-ai-Site/site/Asset0/Stage",
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.AssetStaging",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "AssetBucket": {
-                    "id": "AssetBucket",
-                    "path": "prod-recipe-ai-Site/site/Asset0/AssetBucket",
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
-                      "version": "2.91.0"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
-                  "version": "2.91.0"
-                }
-              },
-              "S3Uploader": {
-                "id": "S3Uploader",
-                "path": "prod-recipe-ai-Site/site/S3Uploader",
-                "children": {
-                  "ServiceRole": {
-                    "id": "ServiceRole",
-                    "path": "prod-recipe-ai-Site/site/S3Uploader/ServiceRole",
-                    "children": {
-                      "ImportServiceRole": {
-                        "id": "ImportServiceRole",
-                        "path": "prod-recipe-ai-Site/site/S3Uploader/ServiceRole/ImportServiceRole",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.Resource",
-                          "version": "2.91.0"
-                        }
-                      },
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "prod-recipe-ai-Site/site/S3Uploader/ServiceRole/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::IAM::Role",
-                          "aws:cdk:cloudformation:props": {
-                            "assumeRolePolicyDocument": {
-                              "Statement": [
-                                {
-                                  "Action": "sts:AssumeRole",
-                                  "Effect": "Allow",
-                                  "Principal": {
-                                    "Service": "lambda.amazonaws.com"
-                                  }
-                                }
-                              ],
-                              "Version": "2012-10-17"
-                            },
-                            "managedPolicyArns": [
-                              {
-                                "Fn::Join": [
-                                  "",
-                                  [
-                                    "arn:",
-                                    {
-                                      "Ref": "AWS::Partition"
-                                    },
-                                    ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-                                  ]
-                                ]
-                              }
-                            ],
-                            "tags": [
-                              {
-                                "key": "sst:app",
-                                "value": "recipe-ai"
-                              },
-                              {
-                                "key": "sst:stage",
-                                "value": "prod"
-                              }
-                            ]
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_iam.CfnRole",
-                          "version": "2.91.0"
-                        }
-                      },
-                      "DefaultPolicy": {
-                        "id": "DefaultPolicy",
-                        "path": "prod-recipe-ai-Site/site/S3Uploader/ServiceRole/DefaultPolicy",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "prod-recipe-ai-Site/site/S3Uploader/ServiceRole/DefaultPolicy/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                              "aws:cdk:cloudformation:props": {
-                                "policyDocument": {
-                                  "Statement": [
-                                    {
-                                      "Action": [
-                                        "s3:GetObject*",
-                                        "s3:GetBucket*",
-                                        "s3:List*",
-                                        "s3:DeleteObject*",
-                                        "s3:PutObject",
-                                        "s3:PutObjectLegalHold",
-                                        "s3:PutObjectRetention",
-                                        "s3:PutObjectTagging",
-                                        "s3:PutObjectVersionTagging",
-                                        "s3:Abort*"
-                                      ],
-                                      "Effect": "Allow",
-                                      "Resource": [
-                                        {
-                                          "Fn::GetAtt": [
-                                            "siteS3Bucket2B2851F3",
-                                            "Arn"
-                                          ]
-                                        },
-                                        {
-                                          "Fn::Join": [
-                                            "",
-                                            [
-                                              {
-                                                "Fn::GetAtt": [
-                                                  "siteS3Bucket2B2851F3",
-                                                  "Arn"
-                                                ]
-                                              },
-                                              "/*"
-                                            ]
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "Action": [
-                                        "s3:GetObject*",
-                                        "s3:GetBucket*",
-                                        "s3:List*"
-                                      ],
-                                      "Effect": "Allow",
-                                      "Resource": [
-                                        {
-                                          "Fn::Join": [
-                                            "",
-                                            [
-                                              "arn:",
-                                              {
-                                                "Ref": "AWS::Partition"
-                                              },
-                                              ":s3:::cdk-hnb659fds-assets-244274341413-us-east-1"
-                                            ]
-                                          ]
-                                        },
-                                        {
-                                          "Fn::Join": [
-                                            "",
-                                            [
-                                              "arn:",
-                                              {
-                                                "Ref": "AWS::Partition"
-                                              },
-                                              ":s3:::cdk-hnb659fds-assets-244274341413-us-east-1/*"
-                                            ]
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  ],
-                                  "Version": "2012-10-17"
-                                },
-                                "policyName": "siteS3UploaderServiceRoleDefaultPolicy8BA893D3",
-                                "roles": [
-                                  {
-                                    "Ref": "siteS3UploaderServiceRole973F5A0B"
-                                  }
-                                ]
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
-                              "version": "2.91.0"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_iam.Policy",
-                          "version": "2.91.0"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_iam.Role",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "Code": {
-                    "id": "Code",
-                    "path": "prod-recipe-ai-Site/site/S3Uploader/Code",
-                    "children": {
-                      "Stage": {
-                        "id": "Stage",
-                        "path": "prod-recipe-ai-Site/site/S3Uploader/Code/Stage",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.AssetStaging",
-                          "version": "2.91.0"
-                        }
-                      },
-                      "AssetBucket": {
-                        "id": "AssetBucket",
-                        "path": "prod-recipe-ai-Site/site/S3Uploader/Code/AssetBucket",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_s3.BucketBase",
-                          "version": "2.91.0"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "prod-recipe-ai-Site/site/S3Uploader/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
-                      "aws:cdk:cloudformation:props": {
-                        "code": {
-                          "s3Bucket": "cdk-hnb659fds-assets-244274341413-us-east-1",
-                          "s3Key": "5314dd0b83a9c16d227872e4b881e96d2361ae01b02d8bdc3b24c30fd31aa758.zip"
-                        },
-                        "handler": "s3-upload.handler",
-                        "layers": [
-                          {
-                            "Ref": "siteAwsCliLayer359A0EF0"
-                          }
-                        ],
-                        "memorySize": 1024,
-                        "role": {
-                          "Fn::GetAtt": [
-                            "siteS3UploaderServiceRole973F5A0B",
-                            "Arn"
-                          ]
-                        },
-                        "runtime": "python3.7",
-                        "tags": [
-                          {
-                            "key": "sst:app",
-                            "value": "recipe-ai"
-                          },
-                          {
-                            "key": "sst:stage",
-                            "value": "prod"
-                          }
-                        ],
-                        "timeout": 900
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
-                      "version": "2.91.0"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_lambda.Function",
-                  "version": "2.91.0"
-                }
-              },
-              "S3Handler": {
-                "id": "S3Handler",
-                "path": "prod-recipe-ai-Site/site/S3Handler",
-                "children": {
-                  "ServiceRole": {
-                    "id": "ServiceRole",
-                    "path": "prod-recipe-ai-Site/site/S3Handler/ServiceRole",
-                    "children": {
-                      "ImportServiceRole": {
-                        "id": "ImportServiceRole",
-                        "path": "prod-recipe-ai-Site/site/S3Handler/ServiceRole/ImportServiceRole",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.Resource",
-                          "version": "2.91.0"
-                        }
-                      },
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "prod-recipe-ai-Site/site/S3Handler/ServiceRole/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::IAM::Role",
-                          "aws:cdk:cloudformation:props": {
-                            "assumeRolePolicyDocument": {
-                              "Statement": [
-                                {
-                                  "Action": "sts:AssumeRole",
-                                  "Effect": "Allow",
-                                  "Principal": {
-                                    "Service": "lambda.amazonaws.com"
-                                  }
-                                }
-                              ],
-                              "Version": "2012-10-17"
-                            },
-                            "managedPolicyArns": [
-                              {
-                                "Fn::Join": [
-                                  "",
-                                  [
-                                    "arn:",
-                                    {
-                                      "Ref": "AWS::Partition"
-                                    },
-                                    ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-                                  ]
-                                ]
-                              }
-                            ],
-                            "tags": [
-                              {
-                                "key": "sst:app",
-                                "value": "recipe-ai"
-                              },
-                              {
-                                "key": "sst:stage",
-                                "value": "prod"
-                              }
-                            ]
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_iam.CfnRole",
-                          "version": "2.91.0"
-                        }
-                      },
-                      "DefaultPolicy": {
-                        "id": "DefaultPolicy",
-                        "path": "prod-recipe-ai-Site/site/S3Handler/ServiceRole/DefaultPolicy",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "prod-recipe-ai-Site/site/S3Handler/ServiceRole/DefaultPolicy/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                              "aws:cdk:cloudformation:props": {
-                                "policyDocument": {
-                                  "Statement": [
-                                    {
-                                      "Action": [
-                                        "s3:GetObject*",
-                                        "s3:GetBucket*",
-                                        "s3:List*",
-                                        "s3:DeleteObject*",
-                                        "s3:PutObject",
-                                        "s3:PutObjectLegalHold",
-                                        "s3:PutObjectRetention",
-                                        "s3:PutObjectTagging",
-                                        "s3:PutObjectVersionTagging",
-                                        "s3:Abort*"
-                                      ],
-                                      "Effect": "Allow",
-                                      "Resource": [
-                                        {
-                                          "Fn::GetAtt": [
-                                            "siteS3Bucket2B2851F3",
-                                            "Arn"
-                                          ]
-                                        },
-                                        {
-                                          "Fn::Join": [
-                                            "",
-                                            [
-                                              {
-                                                "Fn::GetAtt": [
-                                                  "siteS3Bucket2B2851F3",
-                                                  "Arn"
-                                                ]
-                                              },
-                                              "/*"
-                                            ]
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "Action": "lambda:InvokeFunction",
-                                      "Effect": "Allow",
-                                      "Resource": [
-                                        {
-                                          "Fn::GetAtt": [
-                                            "siteS3Uploader2837C218",
-                                            "Arn"
-                                          ]
-                                        },
-                                        {
-                                          "Fn::Join": [
-                                            "",
-                                            [
-                                              {
-                                                "Fn::GetAtt": [
-                                                  "siteS3Uploader2837C218",
-                                                  "Arn"
-                                                ]
-                                              },
-                                              ":*"
-                                            ]
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  ],
-                                  "Version": "2012-10-17"
-                                },
-                                "policyName": "siteS3HandlerServiceRoleDefaultPolicy1BD27252",
-                                "roles": [
-                                  {
-                                    "Ref": "siteS3HandlerServiceRole6D2CC8E3"
-                                  }
-                                ]
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
-                              "version": "2.91.0"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_iam.Policy",
-                          "version": "2.91.0"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_iam.Role",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "Code": {
-                    "id": "Code",
-                    "path": "prod-recipe-ai-Site/site/S3Handler/Code",
-                    "children": {
-                      "Stage": {
-                        "id": "Stage",
-                        "path": "prod-recipe-ai-Site/site/S3Handler/Code/Stage",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.AssetStaging",
-                          "version": "2.91.0"
-                        }
-                      },
-                      "AssetBucket": {
-                        "id": "AssetBucket",
-                        "path": "prod-recipe-ai-Site/site/S3Handler/Code/AssetBucket",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_s3.BucketBase",
-                          "version": "2.91.0"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "prod-recipe-ai-Site/site/S3Handler/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
-                      "aws:cdk:cloudformation:props": {
-                        "code": {
-                          "s3Bucket": "cdk-hnb659fds-assets-244274341413-us-east-1",
-                          "s3Key": "5314dd0b83a9c16d227872e4b881e96d2361ae01b02d8bdc3b24c30fd31aa758.zip"
-                        },
-                        "environment": {
-                          "variables": {
-                            "UPLOADER_FUNCTION_NAME": {
-                              "Ref": "siteS3Uploader2837C218"
-                            }
-                          }
-                        },
-                        "handler": "s3-handler.handler",
-                        "layers": [
-                          {
-                            "Ref": "siteAwsCliLayer359A0EF0"
-                          }
-                        ],
-                        "memorySize": 1024,
-                        "role": {
-                          "Fn::GetAtt": [
-                            "siteS3HandlerServiceRole6D2CC8E3",
-                            "Arn"
-                          ]
-                        },
-                        "runtime": "python3.7",
-                        "tags": [
-                          {
-                            "key": "sst:app",
-                            "value": "recipe-ai"
-                          },
-                          {
-                            "key": "sst:stage",
-                            "value": "prod"
-                          }
-                        ],
-                        "timeout": 900
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
-                      "version": "2.91.0"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_lambda.Function",
-                  "version": "2.91.0"
-                }
-              },
-              "S3Deployment": {
-                "id": "S3Deployment",
-                "path": "prod-recipe-ai-Site/site/S3Deployment",
-                "children": {
-                  "Default": {
-                    "id": "Default",
-                    "path": "prod-recipe-ai-Site/site/S3Deployment/Default",
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.CfnResource",
-                      "version": "2.91.0"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CustomResource",
-                  "version": "2.91.0"
-                }
-              },
-              "CloudFrontInvalidatorPolicy": {
-                "id": "CloudFrontInvalidatorPolicy",
-                "path": "prod-recipe-ai-Site/site/CloudFrontInvalidatorPolicy",
-                "children": {
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "prod-recipe-ai-Site/site/CloudFrontInvalidatorPolicy/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                      "aws:cdk:cloudformation:props": {
-                        "policyDocument": {
-                          "Statement": [
-                            {
-                              "Action": [
-                                "cloudfront:GetInvalidation",
-                                "cloudfront:CreateInvalidation"
-                              ],
-                              "Effect": "Allow",
-                              "Resource": {
-                                "Fn::Join": [
-                                  "",
-                                  [
-                                    "arn:",
-                                    {
-                                      "Ref": "AWS::Partition"
-                                    },
-                                    ":cloudfront::244274341413:distribution/",
-                                    {
-                                      "Ref": "siteDistribution706F5265"
-                                    }
-                                  ]
-                                ]
-                              }
-                            }
-                          ],
-                          "Version": "2012-10-17"
-                        },
-                        "policyName": "siteCloudFrontInvalidatorPolicyEE18C654",
-                        "roles": [
-                          {
-                            "Ref": "CustomResourceHandlerServiceRole41AEC181"
-                          }
-                        ]
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
-                      "version": "2.91.0"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_iam.Policy",
-                  "version": "2.91.0"
-                }
-              },
-              "CloudFrontInvalidator": {
-                "id": "CloudFrontInvalidator",
-                "path": "prod-recipe-ai-Site/site/CloudFrontInvalidator",
-                "children": {
-                  "Default": {
-                    "id": "Default",
-                    "path": "prod-recipe-ai-Site/site/CloudFrontInvalidator/Default",
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.CfnResource",
-                      "version": "2.91.0"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CustomResource",
-                  "version": "2.91.0"
-                }
-              },
-              "RevalidationQueue": {
-                "id": "RevalidationQueue",
-                "path": "prod-recipe-ai-Site/site/RevalidationQueue",
-                "children": {
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "prod-recipe-ai-Site/site/RevalidationQueue/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
-                      "aws:cdk:cloudformation:props": {
-                        "fifoQueue": true,
-                        "receiveMessageWaitTimeSeconds": 20,
-                        "tags": [
-                          {
-                            "key": "sst:app",
-                            "value": "recipe-ai"
-                          },
-                          {
-                            "key": "sst:stage",
-                            "value": "prod"
-                          }
-                        ]
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_sqs.CfnQueue",
-                      "version": "2.91.0"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_sqs.Queue",
-                  "version": "2.91.0"
-                }
-              },
-              "RevalidationFunction": {
-                "id": "RevalidationFunction",
-                "path": "prod-recipe-ai-Site/site/RevalidationFunction",
-                "children": {
-                  "ServiceRole": {
-                    "id": "ServiceRole",
-                    "path": "prod-recipe-ai-Site/site/RevalidationFunction/ServiceRole",
-                    "children": {
-                      "ImportServiceRole": {
-                        "id": "ImportServiceRole",
-                        "path": "prod-recipe-ai-Site/site/RevalidationFunction/ServiceRole/ImportServiceRole",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.Resource",
-                          "version": "2.91.0"
-                        }
-                      },
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "prod-recipe-ai-Site/site/RevalidationFunction/ServiceRole/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::IAM::Role",
-                          "aws:cdk:cloudformation:props": {
-                            "assumeRolePolicyDocument": {
-                              "Statement": [
-                                {
-                                  "Action": "sts:AssumeRole",
-                                  "Effect": "Allow",
-                                  "Principal": {
-                                    "Service": "lambda.amazonaws.com"
-                                  }
-                                }
-                              ],
-                              "Version": "2012-10-17"
-                            },
-                            "managedPolicyArns": [
-                              {
-                                "Fn::Join": [
-                                  "",
-                                  [
-                                    "arn:",
-                                    {
-                                      "Ref": "AWS::Partition"
-                                    },
-                                    ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-                                  ]
-                                ]
-                              }
-                            ],
-                            "tags": [
-                              {
-                                "key": "sst:app",
-                                "value": "recipe-ai"
-                              },
-                              {
-                                "key": "sst:stage",
-                                "value": "prod"
-                              }
-                            ]
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_iam.CfnRole",
-                          "version": "2.91.0"
-                        }
-                      },
-                      "DefaultPolicy": {
-                        "id": "DefaultPolicy",
-                        "path": "prod-recipe-ai-Site/site/RevalidationFunction/ServiceRole/DefaultPolicy",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "prod-recipe-ai-Site/site/RevalidationFunction/ServiceRole/DefaultPolicy/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                              "aws:cdk:cloudformation:props": {
-                                "policyDocument": {
-                                  "Statement": [
-                                    {
-                                      "Action": [
-                                        "sqs:ReceiveMessage",
-                                        "sqs:ChangeMessageVisibility",
-                                        "sqs:GetQueueUrl",
-                                        "sqs:DeleteMessage",
-                                        "sqs:GetQueueAttributes"
-                                      ],
-                                      "Effect": "Allow",
-                                      "Resource": {
-                                        "Fn::GetAtt": [
-                                          "siteRevalidationQueue355EB7DA",
-                                          "Arn"
-                                        ]
-                                      }
-                                    }
-                                  ],
-                                  "Version": "2012-10-17"
-                                },
-                                "policyName": "siteRevalidationFunctionServiceRoleDefaultPolicy57C55CA4",
-                                "roles": [
-                                  {
-                                    "Ref": "siteRevalidationFunctionServiceRole02D71DA1"
-                                  }
-                                ]
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
-                              "version": "2.91.0"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_iam.Policy",
-                          "version": "2.91.0"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_iam.Role",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "Code": {
-                    "id": "Code",
-                    "path": "prod-recipe-ai-Site/site/RevalidationFunction/Code",
-                    "children": {
-                      "Stage": {
-                        "id": "Stage",
-                        "path": "prod-recipe-ai-Site/site/RevalidationFunction/Code/Stage",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.AssetStaging",
-                          "version": "2.91.0"
-                        }
-                      },
-                      "AssetBucket": {
-                        "id": "AssetBucket",
-                        "path": "prod-recipe-ai-Site/site/RevalidationFunction/Code/AssetBucket",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_s3.BucketBase",
-                          "version": "2.91.0"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "prod-recipe-ai-Site/site/RevalidationFunction/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
-                      "aws:cdk:cloudformation:props": {
-                        "code": {
-                          "s3Bucket": "cdk-hnb659fds-assets-244274341413-us-east-1",
-                          "s3Key": "d15688d5f1b39603b757eedd99bf5c3db203e1bd94b7efd760202af78baeda1f.zip"
-                        },
-                        "description": "Next.js revalidator",
-                        "handler": "index.handler",
-                        "role": {
-                          "Fn::GetAtt": [
-                            "siteRevalidationFunctionServiceRole02D71DA1",
-                            "Arn"
-                          ]
-                        },
-                        "runtime": "nodejs18.x",
-                        "tags": [
-                          {
-                            "key": "sst:app",
-                            "value": "recipe-ai"
-                          },
-                          {
-                            "key": "sst:stage",
-                            "value": "prod"
-                          }
-                        ],
-                        "timeout": 30
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
-                      "version": "2.91.0"
-                    }
-                  },
-                  "SqsEventSource:prodrecipeaiSitesiteRevalidationQueue3FB8631D": {
-                    "id": "SqsEventSource:prodrecipeaiSitesiteRevalidationQueue3FB8631D",
-                    "path": "prod-recipe-ai-Site/site/RevalidationFunction/SqsEventSource:prodrecipeaiSitesiteRevalidationQueue3FB8631D",
-                    "children": {
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "prod-recipe-ai-Site/site/RevalidationFunction/SqsEventSource:prodrecipeaiSitesiteRevalidationQueue3FB8631D/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::Lambda::EventSourceMapping",
-                          "aws:cdk:cloudformation:props": {
-                            "batchSize": 5,
-                            "eventSourceArn": {
-                              "Fn::GetAtt": [
-                                "siteRevalidationQueue355EB7DA",
-                                "Arn"
-                              ]
-                            },
-                            "functionName": {
-                              "Ref": "siteRevalidationFunctionEB84F6D0"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_lambda.CfnEventSourceMapping",
-                          "version": "2.91.0"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_lambda.EventSourceMapping",
-                      "version": "2.91.0"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_lambda.Function",
-                  "version": "2.91.0"
-                }
-              },
               "Parameter_url": {
                 "id": "Parameter_url",
-                "path": "prod-recipe-ai-Site/site/Parameter_url",
+                "path": "dev-recipe-ai-Site/site/Parameter_url",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "prod-recipe-ai-Site/site/Parameter_url/Resource",
+                    "path": "dev-recipe-ai-Site/site/Parameter_url/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::SSM::Parameter",
                       "aws:cdk:cloudformation:props": {
-                        "name": "/sst/recipe-ai/prod/NextjsSite/site/url",
+                        "name": "/sst/recipe-ai/dev/NextjsSite/site/url",
                         "tags": {
                           "sst:app": "recipe-ai",
-                          "sst:stage": "prod"
+                          "sst:stage": "dev"
                         },
                         "type": "String",
-                        "value": {
-                          "Fn::Join": [
-                            "",
-                            [
-                              "https://",
-                              {
-                                "Fn::GetAtt": [
-                                  "siteDistribution706F5265",
-                                  "DomainName"
-                                ]
-                              }
-                            ]
-                          ]
-                        }
+                        "value": "localhost"
                       }
                     },
                     "constructInfo": {
@@ -2631,51 +537,17 @@
               "version": "10.2.69"
             }
           },
-          "Custom::S3AutoDeleteObjectsCustomResourceProvider": {
-            "id": "Custom::S3AutoDeleteObjectsCustomResourceProvider",
-            "path": "prod-recipe-ai-Site/Custom::S3AutoDeleteObjectsCustomResourceProvider",
-            "children": {
-              "Staging": {
-                "id": "Staging",
-                "path": "prod-recipe-ai-Site/Custom::S3AutoDeleteObjectsCustomResourceProvider/Staging",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.AssetStaging",
-                  "version": "2.91.0"
-                }
-              },
-              "Role": {
-                "id": "Role",
-                "path": "prod-recipe-ai-Site/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnResource",
-                  "version": "2.91.0"
-                }
-              },
-              "Handler": {
-                "id": "Handler",
-                "path": "prod-recipe-ai-Site/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnResource",
-                  "version": "2.91.0"
-                }
-              }
-            },
-            "constructInfo": {
-              "fqn": "aws-cdk-lib.CustomResourceProvider",
-              "version": "2.91.0"
-            }
-          },
           "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a": {
             "id": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a",
-            "path": "prod-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a",
+            "path": "dev-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a",
             "children": {
               "Code": {
                 "id": "Code",
-                "path": "prod-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Code",
+                "path": "dev-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Code",
                 "children": {
                   "Stage": {
                     "id": "Stage",
-                    "path": "prod-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Code/Stage",
+                    "path": "dev-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Code/Stage",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.AssetStaging",
                       "version": "2.91.0"
@@ -2683,7 +555,7 @@
                   },
                   "AssetBucket": {
                     "id": "AssetBucket",
-                    "path": "prod-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Code/AssetBucket",
+                    "path": "dev-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Code/AssetBucket",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.aws_s3.BucketBase",
                       "version": "2.91.0"
@@ -2697,11 +569,11 @@
               },
               "ServiceRole": {
                 "id": "ServiceRole",
-                "path": "prod-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole",
+                "path": "dev-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole",
                 "children": {
                   "ImportServiceRole": {
                     "id": "ImportServiceRole",
-                    "path": "prod-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/ImportServiceRole",
+                    "path": "dev-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/ImportServiceRole",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.Resource",
                       "version": "2.91.0"
@@ -2709,7 +581,7 @@
                   },
                   "Resource": {
                     "id": "Resource",
-                    "path": "prod-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource",
+                    "path": "dev-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                       "aws:cdk:cloudformation:props": {
@@ -2746,7 +618,7 @@
                           },
                           {
                             "key": "sst:stage",
-                            "value": "prod"
+                            "value": "dev"
                           }
                         ]
                       }
@@ -2758,11 +630,11 @@
                   },
                   "DefaultPolicy": {
                     "id": "DefaultPolicy",
-                    "path": "prod-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy",
+                    "path": "dev-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "prod-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource",
+                        "path": "dev-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                           "aws:cdk:cloudformation:props": {
@@ -2806,7 +678,7 @@
               },
               "Resource": {
                 "id": "Resource",
-                "path": "prod-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource",
+                "path": "dev-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnResource",
                   "version": "2.91.0"
@@ -2818,17 +690,9 @@
               "version": "10.2.69"
             }
           },
-          "SSTStackOutputSiteUrl": {
-            "id": "SSTStackOutputSiteUrl",
-            "path": "prod-recipe-ai-Site/SSTStackOutputSiteUrl",
-            "constructInfo": {
-              "fqn": "aws-cdk-lib.CfnOutput",
-              "version": "2.91.0"
-            }
-          },
           "SSTStackOutputSSTMetadata": {
             "id": "SSTStackOutputSSTMetadata",
-            "path": "prod-recipe-ai-Site/SSTStackOutputSSTMetadata",
+            "path": "dev-recipe-ai-Site/SSTStackOutputSSTMetadata",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.91.0"
@@ -2836,7 +700,7 @@
           },
           "BootstrapVersion": {
             "id": "BootstrapVersion",
-            "path": "prod-recipe-ai-Site/BootstrapVersion",
+            "path": "dev-recipe-ai-Site/BootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnParameter",
               "version": "2.91.0"
@@ -2844,7 +708,7 @@
           },
           "CheckBootstrapVersion": {
             "id": "CheckBootstrapVersion",
-            "path": "prod-recipe-ai-Site/CheckBootstrapVersion",
+            "path": "dev-recipe-ai-Site/CheckBootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnRule",
               "version": "2.91.0"

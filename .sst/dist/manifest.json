@@ -1,31 +1,31 @@
 {
   "version": "33.0.0",
   "artifacts": {
-    "prod-recipe-ai-Site.assets": {
+    "dev-recipe-ai-Site.assets": {
       "type": "cdk:asset-manifest",
       "properties": {
-        "file": "prod-recipe-ai-Site.assets.json",
+        "file": "dev-recipe-ai-Site.assets.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
       }
     },
-    "prod-recipe-ai-Site": {
+    "dev-recipe-ai-Site": {
       "type": "aws:cloudformation:stack",
       "environment": "aws://244274341413/us-east-1",
       "properties": {
-        "templateFile": "prod-recipe-ai-Site.template.json",
+        "templateFile": "dev-recipe-ai-Site.template.json",
         "tags": {
           "sst:app": "recipe-ai",
-          "sst:stage": "prod"
+          "sst:stage": "dev"
         },
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::244274341413:role/cdk-hnb659fds-deploy-role-244274341413-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::244274341413:role/cdk-hnb659fds-cfn-exec-role-244274341413-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-244274341413-us-east-1/bb47a1061e633aecfc0314c827d825133160c83b92a28952cdca6f36cdf2d2ae.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-244274341413-us-east-1/377b0b52ac03762a41580570a20ab0cda82f91ab5a5f7b8cda49b8073b75f823.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
-          "prod-recipe-ai-Site.assets"
+          "dev-recipe-ai-Site.assets"
         ],
         "lookupRole": {
           "arn": "arn:${AWS::Partition}:iam::244274341413:role/cdk-hnb659fds-lookup-role-244274341413-us-east-1",
@@ -34,10 +34,10 @@
         }
       },
       "dependencies": [
-        "prod-recipe-ai-Site.assets"
+        "dev-recipe-ai-Site.assets"
       ],
       "metadata": {
-        "/prod-recipe-ai-Site": [
+        "/dev-recipe-ai-Site": [
           {
             "type": "aws:cdk:stack-tags",
             "data": [
@@ -47,307 +47,103 @@
               },
               {
                 "Key": "sst:stage",
-                "Value": "prod"
+                "Value": "dev"
               }
             ]
           }
         ],
-        "/prod-recipe-ai-Site/CustomResourceHandler/ServiceRole/Resource": [
+        "/dev-recipe-ai-Site/CustomResourceHandler/ServiceRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CustomResourceHandlerServiceRole41AEC181"
           }
         ],
-        "/prod-recipe-ai-Site/CustomResourceHandler/Resource": [
+        "/dev-recipe-ai-Site/CustomResourceHandler/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CustomResourceHandlerE8FB56BA"
           }
         ],
-        "/prod-recipe-ai-Site/site/S3Bucket/Resource": [
+        "/dev-recipe-ai-Site/site/ServerFunctionRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "siteS3Bucket2B2851F3"
+            "data": "siteServerFunctionRole1F8F4FAC"
           }
         ],
-        "/prod-recipe-ai-Site/site/S3Bucket/Policy/Resource": [
+        "/dev-recipe-ai-Site/site/ServerFunctionRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "siteS3BucketPolicyBB4DF05F"
+            "data": "siteServerFunctionRoleDefaultPolicy213DB8A5"
           }
         ],
-        "/prod-recipe-ai-Site/site/S3Bucket/AutoDeleteObjectsCustomResource/Default": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteS3BucketAutoDeleteObjectsCustomResource3E10A2DE"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/ServerFunction/AssetReplacerPolicy/Resource": [
+        "/dev-recipe-ai-Site/site/ServerFunction/AssetReplacerPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "siteServerFunctionAssetReplacerPolicy304BF125"
           }
         ],
-        "/prod-recipe-ai-Site/site/ServerFunction/AssetReplacer/Default": [
+        "/dev-recipe-ai-Site/site/ServerFunction/AssetReplacer/Default": [
           {
             "type": "aws:cdk:logicalId",
             "data": "siteServerFunctionAssetReplacer9A11D516"
           }
         ],
-        "/prod-recipe-ai-Site/site/ServerFunction/ServerFunction/ServiceRole/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteServerFunctionServiceRole8328A688"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/ServerFunction/ServerFunction/ServiceRole/DefaultPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteServerFunctionServiceRoleDefaultPolicy6EA49472"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/ServerFunction/ServerFunction/Resource": [
+        "/dev-recipe-ai-Site/site/ServerFunction/ServerFunction/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "siteServerFunction6DFA6F1B"
           }
         ],
-        "/prod-recipe-ai-Site/site/ServerFunction/ServerFunction/LogRetention/Resource": [
+        "/dev-recipe-ai-Site/site/ServerFunction/ServerFunction/LogRetention/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "siteServerFunctionLogRetention7123678D"
           }
         ],
-        "/prod-recipe-ai-Site/site/ServerFunction/ServerFunction/FunctionUrl/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteServerFunctionFunctionUrl1B09C490"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/ServerFunction/ServerFunction/invoke-function-url": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteServerFunctioninvokefunctionurlEABB57E1"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/CloudFrontFunction/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteCloudFrontFunctionE91DD486"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/ServerCache/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteServerCacheDD54ACDF"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/ImageFunction/ServiceRole/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteImageFunctionServiceRoleAD5B95E2"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/ImageFunction/ServiceRole/DefaultPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteImageFunctionServiceRoleDefaultPolicy39F33332"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/ImageFunction/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteImageFunctionD6B403E9"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/ImageFunction/LogRetention/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteImageFunctionLogRetentionD1B5BECE"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/ImageFunction/FunctionUrl/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteImageFunctionFunctionUrl110B87E7"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/ImageFunction/invoke-function-url": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteImageFunctioninvokefunctionurl443403A1"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/Distribution/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteDistribution706F5265"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/Distribution/Origin3/S3Origin/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteDistributionOrigin3S3Origin7C72BBD7"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/ServerFunctionInvalidatorPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteServerFunctionInvalidatorPolicy004B2ED1"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/AwsCliLayer/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteAwsCliLayer359A0EF0"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/S3Uploader/ServiceRole/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteS3UploaderServiceRole973F5A0B"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/S3Uploader/ServiceRole/DefaultPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteS3UploaderServiceRoleDefaultPolicy8BA893D3"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/S3Uploader/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteS3Uploader2837C218"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/S3Handler/ServiceRole/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteS3HandlerServiceRole6D2CC8E3"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/S3Handler/ServiceRole/DefaultPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteS3HandlerServiceRoleDefaultPolicy1BD27252"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/S3Handler/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteS3Handler84D19388"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/S3Deployment/Default": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteS3DeploymentB932FFDB"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/CloudFrontInvalidatorPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteCloudFrontInvalidatorPolicyEE18C654"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/CloudFrontInvalidator/Default": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteCloudFrontInvalidator18BEA866"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/RevalidationQueue/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteRevalidationQueue355EB7DA"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/RevalidationFunction/ServiceRole/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteRevalidationFunctionServiceRole02D71DA1"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/RevalidationFunction/ServiceRole/DefaultPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteRevalidationFunctionServiceRoleDefaultPolicy57C55CA4"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/RevalidationFunction/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteRevalidationFunctionEB84F6D0"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/RevalidationFunction/SqsEventSource:prodrecipeaiSitesiteRevalidationQueue3FB8631D/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "siteRevalidationFunctionSqsEventSourceprodrecipeaiSitesiteRevalidationQueue3FB8631D9331A8A0"
-          }
-        ],
-        "/prod-recipe-ai-Site/site/Parameter_url/Resource": [
+        "/dev-recipe-ai-Site/site/Parameter_url/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "siteParameterurl3D1716BC"
           }
         ],
-        "/prod-recipe-ai-Site/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
-          }
-        ],
-        "/prod-recipe-ai-Site/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
-          }
-        ],
-        "/prod-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource": [
+        "/dev-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
           }
         ],
-        "/prod-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource": [
+        "/dev-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB"
           }
         ],
-        "/prod-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource": [
+        "/dev-recipe-ai-Site/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A"
           }
         ],
-        "/prod-recipe-ai-Site/SSTStackOutputSiteUrl": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "SiteUrl"
-          }
-        ],
-        "/prod-recipe-ai-Site/SSTStackOutputSSTMetadata": [
+        "/dev-recipe-ai-Site/SSTStackOutputSSTMetadata": [
           {
             "type": "aws:cdk:logicalId",
             "data": "SSTMetadata"
           }
         ],
-        "/prod-recipe-ai-Site/BootstrapVersion": [
+        "/dev-recipe-ai-Site/BootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "BootstrapVersion"
           }
         ],
-        "/prod-recipe-ai-Site/CheckBootstrapVersion": [
+        "/dev-recipe-ai-Site/CheckBootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CheckBootstrapVersion"
           }
         ]
       },
-      "displayName": "prod-recipe-ai-Site"
+      "displayName": "dev-recipe-ai-Site"
     },
     "Tree": {
       "type": "cdk:tree",

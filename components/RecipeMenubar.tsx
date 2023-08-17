@@ -1,43 +1,52 @@
-'use client';
+'use client'
 
-import { useRef, useState } from 'react';
+import { useRef, useState } from 'react'
 
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
+import { SignInButton } from '@clerk/nextjs'
+import {
+  Bookmark,
+  Facebook,
+  Link,
+  Mail,
+  Printer,
+  RefreshCcw,
+  Share,
+  Twitter,
+} from 'lucide-react'
+import whatsappIcon from 'public/whatsapp.svg'
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+} from 'react-share'
+import { useReactToPrint } from 'react-to-print'
 
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { RecipeBody } from '@/types/recipe'
 
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from '@/components/ui/menubar'
 
+import { bookmarkRecipe } from '@/app/actions'
 
-import { SignInButton } from '@clerk/nextjs';
-import { Bookmark, Facebook, Link, Mail, Printer, RefreshCcw, Share, Twitter } from 'lucide-react';
-import whatsappIcon from 'public/whatsapp.svg';
-import { EmailShareButton, FacebookShareButton, TwitterShareButton, WhatsappShareButton } from 'react-share';
-import { useReactToPrint } from 'react-to-print';
-
-
-
-import { RecipeBody } from '@/types/recipe';
-
-
-
-import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from '@/components/ui/menubar';
-
-
-
-import { bookmarkRecipe } from '@/app/actions';
-
-
-
-import RecipeSheet from './RecipeSheet';
-import { CreateAnotherButton } from './ui/CreateAnotherButton';
-import { ToastAction } from './ui/toast';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
-import { useToast } from './ui/use-toast';
-
-
-
-
+import RecipeSheet from './RecipeSheet'
+import { CreateAnotherButton } from './ui/CreateAnotherButton'
+import { ToastAction } from './ui/toast'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './ui/tooltip'
+import { useToast } from './ui/use-toast'
 
 interface RecipeMenubarProps {
   recipeId: number
@@ -100,7 +109,7 @@ export default function RecipeMenubar({
           initialBookmark={false}
           noMenuBar
           noReturnButton
-          className="border-0 shadow-none"
+          className="ml-6 mt-12 border-0 shadow-none sm:border-0 sm:shadow-none md:border-0 md:shadow-none"
           mealType={mealType}
           description={description || ''}
         />

@@ -224,16 +224,18 @@
      },
      {
       "files": "**/*.@(*js|json|html)",
-      "search": "{{ NEXT_PUBLIC_SUPABASE_ANON_KEY }}"
+      "search": "{{ NEXT_PUBLIC_SUPABASE_ANON_KEY }}",
+      "replace": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91dGdndmVtcWR5bGtzZXlka29mIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODcwODUzMjgsImV4cCI6MjAwMjY2MTMyOH0.sHDNyOumaJsFdQrMQK05nPeFJfAZsOvwiDqpUF4zgAQ"
      },
      {
       "files": "**/*.@(*js|json|html)",
-      "search": "{{ NEXT_PUBLIC_SUPABASE_URL }}"
+      "search": "{{ NEXT_PUBLIC_SUPABASE_URL }}",
+      "replace": "https://outggvemqdylkseydkof.supabase.co"
      },
      {
       "files": "**/*.@(*js|json|html)",
       "search": "{{ NEXT_PUBLIC_DOMAIN_NAME }}",
-      "replace": "http://localhost:3000"
+      "replace": "https://d10w1g97siypj3.cloudfront.net"
      }
     ]
    },
@@ -258,7 +260,9 @@
      "Variables": {
       "CLERK_SECRET_KEY": "sk_test_zvJFVz7pzvm2FFdVdn2o6s17WkRkFT4LMnyT6VN95H",
       "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_Y29tbXVuYWwtbW9uaXRvci01OS5jbGVyay5hY2NvdW50cy5kZXYk",
-      "NEXT_PUBLIC_DOMAIN_NAME": "http://localhost:3000",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91dGdndmVtcWR5bGtzZXlka29mIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODcwODUzMjgsImV4cCI6MjAwMjY2MTMyOH0.sHDNyOumaJsFdQrMQK05nPeFJfAZsOvwiDqpUF4zgAQ",
+      "NEXT_PUBLIC_SUPABASE_URL": "https://outggvemqdylkseydkof.supabase.co",
+      "NEXT_PUBLIC_DOMAIN_NAME": "https://d10w1g97siypj3.cloudfront.net",
       "SST_APP": "recipe-ai",
       "SST_STAGE": "dev",
       "SST_SSM_PREFIX": "/sst/recipe-ai/dev/",

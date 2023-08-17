@@ -610,6 +610,14 @@
     { "UsdaId": 2058, "name": "YOGHURT" },
     { "UsdaId": 2062, "name": "LOW-FAT YOGHURT" },
     { "UsdaId": 2064, "name": "CANE SUGAR" },
-    { "UsdaId": 2067, "name": "VANILLA SUGAR" }
+    { "UsdaId": 2067, "name": "VANILLA SUGAR" },
+    { "UsdaId": 10024, "name": "SPAGHETTI" },
+    { "UsdaId": 10025, "name": "FETTUCCINE PASTA" },
+    { "UsdaId": 10026, "name": "LINGUINE PASTA" },
+    { "UsdaId": 10027, "name": "PAPPARDELLE PASTA" },
+    { "UsdaId": 10028, "name": "TAGLIATELLE PASTA" },
+    { "UsdaId": 10029, "name": "FUSILLI PASTA" },
+    { "UsdaId": 10030, "name": "GNOCCHI" },
+    { "UsdaId": 10031, "name": "RIGATONI PASTA" }
   ]
 }
