@@ -246,12 +246,12 @@
      {
       "files": "**/*.@(*js|json|html)",
       "search": "{{ CLERK_SECRET_KEY }}",
-      "replace": "sk_test_zvJFVz7pzvm2FFdVdn2o6s17WkRkFT4LMnyT6VN95H"
+      "replace": "sk_live_QpzebMNm2O1sw07i0dcNquK4YgJY9ux09qz4wSfK6P"
      },
      {
       "files": "**/*.@(*js|json|html)",
       "search": "{{ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}",
-      "replace": "pk_test_Y29tbXVuYWwtbW9uaXRvci01OS5jbGVyay5hY2NvdW50cy5kZXYk"
+      "replace": "pk_live_Y2xlcmsuc2F1dGVxLmNvbSQ"
      },
      {
       "files": "**/*.@(*js|json|html)",
@@ -450,8 +450,8 @@
     "Description": "Next.js server",
     "Environment": {
      "Variables": {
-      "CLERK_SECRET_KEY": "sk_test_zvJFVz7pzvm2FFdVdn2o6s17WkRkFT4LMnyT6VN95H",
-      "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_Y29tbXVuYWwtbW9uaXRvci01OS5jbGVyay5hY2NvdW50cy5kZXYk",
+      "CLERK_SECRET_KEY": "sk_live_QpzebMNm2O1sw07i0dcNquK4YgJY9ux09qz4wSfK6P",
+      "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuc2F1dGVxLmNvbSQ",
       "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91dGdndmVtcWR5bGtzZXlka29mIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODcwODUzMjgsImV4cCI6MjAwMjY2MTMyOH0.sHDNyOumaJsFdQrMQK05nPeFJfAZsOvwiDqpUF4zgAQ",
       "NEXT_PUBLIC_SUPABASE_URL": "https://outggvemqdylkseydkof.supabase.co",
       "NEXT_PUBLIC_DOMAIN_NAME": "https://sauteq.com",
