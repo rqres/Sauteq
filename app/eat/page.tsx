@@ -17,7 +17,7 @@ import {
 } from '@/utils/supabaseRequests'
 import { useAuth } from '@clerk/nextjs'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Drumstick, EggFried, X } from 'lucide-react'
+import { Drumstick, EggFried, X, Zap } from 'lucide-react'
 import ingredients from 'public/english_ingredients.json'
 
 import { RecipeBody } from '@/types/recipe'
@@ -37,6 +37,12 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 import { AnimatedIngredientItem } from '@/components/AnimatedIngredientItem'
 import RecipeSheet from '@/components/RecipeSheet'
@@ -115,6 +121,14 @@ const MealTypeButton = ({
   </div>
 )
 
+const PopularIngredients = [
+  { UsdaId: 1840, name: 'CHICKEN BREAST' },
+  { UsdaId: 10024, name: 'SPAGHETTI' },
+  { UsdaId: 2015, name: 'EGGS' },
+  { UsdaId: 1767, name: 'WALNUTS' },
+  { UsdaId: 186, name: 'MILK CHOCOLATE' },
+]
+
 export default function EatPage() {
   const { isLoaded, userId, getToken } = useAuth()
   const { searchQuery, setSearchQuery, results } = useSearch({
@@ -183,6 +197,8 @@ export default function EatPage() {
     }
     setBody(rBody)
 
+    setLoading(false)
+
     let token = undefined
     if (isLoaded && userId) {
       const tkn = await getToken({ template: 'supabase' })
@@ -208,8 +224,6 @@ export default function EatPage() {
       console.log('Saved recipe to db')
       recipeRef.current = newRecipe.id
     }
-
-    setLoading(false)
   }, [getToken, isLoaded, mealType, selection, userId])
 
   const regenRecipe = async () => {
@@ -217,6 +231,7 @@ export default function EatPage() {
     setTitle('')
     setBody(null)
     setImage('')
+    setDescription('')
     flushCache()
     await generateRecipe()
     setLoading(false)
@@ -274,6 +289,50 @@ export default function EatPage() {
                     ref={searchBoxRef}
                   />
                   <div className="h-40 space-y-2 overflow-y-auto pl-1">
+                    {results.length === 0 &&
+                      searchQuery === '' &&
+                      PopularIngredients.map((ingr) => (
+                        <AnimatedIngredientItem key={'f' + ingr.UsdaId}>
+                          <div className="flex items-center gap-4">
+                            <Checkbox
+                              className="transition"
+                              id={ingr.name}
+                              checked={selection.includes(ingr.UsdaId)}
+                              onCheckedChange={(checked) => {
+                                checked
+                                  ? setSelection([...selection, ingr.UsdaId])
+                                  : setSelection(
+                                      selection.filter(
+                                        (val) => val !== ingr.UsdaId
+                                      )
+                                    )
+                                searchBoxRef?.current?.focus()
+                                searchBoxRef?.current?.select()
+                              }}
+                            />
+                            <Label
+                              htmlFor={ingr.name}
+                              className="flex items-center gap-1 text-sm lowercase"
+                            >
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger>
+                                    <Zap
+                                      strokeWidth={1.7}
+                                      size={23}
+                                      color={'oklch(83% 0.194 111.04)'}
+                                    />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Popular</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                              {ingr.name}
+                            </Label>
+                          </div>
+                        </AnimatedIngredientItem>
+                      ))}
                     {results.length > 0 &&
                       results.map((result) => (
                         <AnimatedIngredientItem key={'f' + result.UsdaId}>

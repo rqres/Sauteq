@@ -1,11 +1,18 @@
-import { forwardRef } from 'react'
+import { forwardRef } from 'react';
 
-import Image from 'next/image'
 
-import { Drumstick, EggFried } from 'lucide-react'
+
+import Image from 'next/image';
+
+
+
+import { Drumstick, EggFried } from 'lucide-react';
+
+
 
 import { RecipeBody } from '@/types/recipe'
 
+import { MotionLi, MotionSection, MotionSpan } from '@/lib/motion'
 import { cn } from '@/lib/utils'
 
 import {
@@ -93,9 +100,22 @@ const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
                 {title === '' ? (
                   <Skeleton className="h-20 w-full md:w-64" />
                 ) : (
-                  <span className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+                  <MotionSpan
+                    layout
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{
+                      height: 'auto',
+                      opacity: 1,
+                      transition: {
+                        type: 'spring',
+                        bounce: 0.25,
+                        opacity: { delay: 0.2 },
+                      },
+                    }}
+                    className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-all first:mt-0"
+                  >
                     {title}
-                  </span>
+                  </MotionSpan>
                 )}
               </CardTitle>
               {!description ? (
@@ -160,23 +180,69 @@ function RecipeDescription({
 }: {
   recipeDescription: string
 }) {
-  return <CardDescription>{recipeDescription}</CardDescription>
+  return (
+    <CardDescription>
+      <MotionSpan
+        layout
+        initial={{ height: 0, opacity: 0 }}
+        animate={{
+          height: 'auto',
+          opacity: 1,
+          transition: {
+            type: 'spring',
+            bounce: 0.25,
+            opacity: { delay: 0.2 },
+          },
+        }}
+      >
+        {recipeDescription}
+      </MotionSpan>
+    </CardDescription>
+  )
 }
 
 function RecipeContent({ body }: { body: RecipeBody }) {
   return (
     <CardContent>
-      <section className="mb-4">
+      <MotionSection
+        layout
+        initial={{ height: 0, opacity: 0 }}
+        animate={{
+          height: 'auto',
+          opacity: 1,
+          transition: {
+            type: 'spring',
+            bounce: 0.25,
+            opacity: { delay: 0.2 },
+          },
+        }}
+        className="mb-4"
+      >
         <p className=" ">Prep Time: {body['prep-time']}</p>
         <p className=" ">Cook Time: {body['cook-time']}</p>
         <p className=" ">Serves: {body['serves']}</p>
-      </section>
+      </MotionSection>
       <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
         Ingredients
       </h4>
       <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
         {body.ingredients.map((ingredient) => (
-          <li key={ingredient}>{ingredient}</li>
+          <MotionLi
+            layout
+            initial={{ height: 0, opacity: 0 }}
+            animate={{
+              height: 'auto',
+              opacity: 1,
+              transition: {
+                type: 'spring',
+                bounce: 0.25,
+                opacity: { delay: 0.2 },
+              },
+            }}
+            key={ingredient}
+          >
+            {ingredient}
+          </MotionLi>
         ))}
       </ul>
       <Separator className="my-4" />
