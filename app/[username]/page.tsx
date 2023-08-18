@@ -70,7 +70,8 @@ export default async function ProfilePage({
             )}
           >
             <CardTitle className="text-xl md:text-2xl lg:text-4xl">
-              {user.firstName + ' ' + user.lastName}
+              {user.firstName !== null && user.firstName}{' '}
+              {user.lastName !== null && user.lastName}
             </CardTitle>
             <CardDescription className="text-md md:text-xl lg:text-2xl">
               @{user.username}

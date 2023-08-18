@@ -1,9 +1,5 @@
-import { SSTConfig } from 'sst';
-import { Config, NextjsSite } from 'sst/constructs';
-
-
-
-
+import { SSTConfig } from 'sst'
+import { Config, NextjsSite } from 'sst/constructs'
 
 export default {
   config(_input) {
