@@ -54,6 +54,7 @@ import {
   getRecipeImage,
   getRecipeTitle,
 } from '../actions'
+import { ProgressBar } from './ProgressBar'
 
 const LunchIcon = () => (
   <svg
@@ -149,6 +150,8 @@ export default function EatPage() {
   const searchBoxRef = useRef<HTMLInputElement | null>(null)
   const recipeRef = useRef<number | null>(null)
 
+  const [progress, setProgress] = useState<number>(13)
+
   useEffect(() => {
     const unloadCallback = (event: BeforeUnloadEvent) => {
       event.preventDefault()
@@ -172,13 +175,14 @@ export default function EatPage() {
 
     const rTitle = await getRecipeTitle(ingredients, mealType)
 
+    setProgress((p) => p + 30)
     if (!rTitle) {
       throw new Error('Error generating title')
     }
     setTitle(rTitle)
-    console.log(rTitle)
 
     const rImage = await getRecipeImage(rTitle)
+    setProgress((p) => p + 25)
     if (!rImage) {
       throw new Error('Error generating image')
     }
@@ -186,12 +190,14 @@ export default function EatPage() {
 
     const rDesc = await getRecipeDescription(rTitle, ingredients, mealType)
 
+    setProgress((p) => p + 20)
     if (!rDesc) {
       throw new Error('Error generating description')
     }
     setDescription(rDesc)
 
     const rBody = await getRecipeBody(rTitle, ingredients, mealType)
+    setProgress(100)
     if (!rBody) {
       throw new Error('Error generating body')
     }
@@ -228,6 +234,7 @@ export default function EatPage() {
 
   const regenRecipe = async () => {
     setLoading(true)
+    setProgress(13)
     setTitle('')
     setBody(null)
     setImage('')
@@ -240,7 +247,7 @@ export default function EatPage() {
   return (
     <>
       {formView ? (
-        <AnimatePresence initial={false}>
+        <AnimatePresence>
           <div className="flex min-h-[calc(100vh-4.1rem)] flex-col items-center justify-center gap-8 py-16 md:flex-row md:py-0">
             <motion.div layout>
               <Card className="w-80 md:w-72 lg:w-96">
@@ -406,19 +413,22 @@ export default function EatPage() {
         </AnimatePresence>
       ) : (
         // recipeView
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center justify-center">
           {recipeView && (
-            <RecipeSheet
-              title={title}
-              description={description}
-              body={body}
-              image={image}
-              regen={regenRecipe}
-              loading={loading}
-              recipeId={recipeRef.current!}
-              initialBookmark={false}
-              mealType={mealType}
-            />
+            <>
+              <ProgressBar progress={progress} />
+              <RecipeSheet
+                title={title}
+                description={description}
+                body={body}
+                image={image}
+                regen={regenRecipe}
+                loading={loading}
+                recipeId={recipeRef.current!}
+                initialBookmark={false}
+                mealType={mealType}
+              />
+            </>
           )}
         </div>
       )}
