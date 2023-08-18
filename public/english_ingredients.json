@@ -618,6 +618,12 @@
     { "UsdaId": 10028, "name": "TAGLIATELLE PASTA" },
     { "UsdaId": 10029, "name": "FUSILLI PASTA" },
     { "UsdaId": 10030, "name": "GNOCCHI" },
-    { "UsdaId": 10031, "name": "RIGATONI PASTA" }
+    { "UsdaId": 10031, "name": "RIGATONI PASTA" },
+    { "UsdaId": 10032, "name": "PEANUT BUTTER" },
+    { "UsdaId": 10033, "name": "GREEK YOGHURT" },
+    { "UsdaId": 10034, "name": "PLUMS" },
+    { "UsdaId": 10035, "name": "BLUEBERRIES" },
+    { "UsdaId": 10036, "name": "RASPBERRIES" },
+    { "UsdaId": 10037, "name": "KIWI" }
   ]
 }
