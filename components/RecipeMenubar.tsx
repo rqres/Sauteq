@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useRef, useState } from 'react'
+import { Suspense, useRef, useState } from 'react'
 
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -9,7 +9,7 @@ import { SignInButton } from '@clerk/nextjs'
 import {
   Bookmark,
   Facebook,
-  Link,
+  Link as LinkIcon,
   Mail,
   Printer,
   RefreshCcw,
@@ -37,6 +37,7 @@ import {
 
 import { bookmarkRecipe } from '@/app/actions'
 
+import CreatedByBadge from './CreatedByBadge'
 import RecipeSheet from './RecipeSheet'
 import { CreateAnotherButton } from './ui/CreateAnotherButton'
 import { ToastAction } from './ui/toast'
@@ -61,6 +62,8 @@ interface RecipeMenubarProps {
   image?: string
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
   bookmarkCount?: number
+  creatorUsername?: string
+  creatorAvatar?: string
 }
 
 export default function RecipeMenubar({
@@ -76,6 +79,8 @@ export default function RecipeMenubar({
   image,
   mealType,
   bookmarkCount,
+  creatorUsername,
+  creatorAvatar,
 }: RecipeMenubarProps) {
   const router = useRouter()
   const [isBookmark, setBookmark] = useState<boolean>(initialBookmark)
@@ -97,7 +102,7 @@ export default function RecipeMenubar({
     <Menubar
       className={`ml-5 mr-3 mt-6 ${
         noReturnButton ? 'justify-end' : 'justify-between'
-      }`}
+      } ${creatorUsername !== undefined ? 'justify-between' : 'justify-end'}`}
     >
       <div className="hidden">
         <RecipeSheet
@@ -115,6 +120,9 @@ export default function RecipeMenubar({
         />
       </div>
       {!noReturnButton && <CreateAnotherButton loading={loading} />}
+      {creatorUsername !== undefined && (
+        <CreatedByBadge username={creatorUsername} avatarSrc={creatorAvatar} />
+      )}
       <div className="flex">
         <MenubarMenu>
           <TooltipProvider>
@@ -164,7 +172,7 @@ export default function RecipeMenubar({
                   className="flex w-full items-center justify-between"
                 >
                   Copy
-                  <Link />
+                  <LinkIcon />
                 </MenubarItem>
                 <MenubarItem>
                   <FacebookShareButton

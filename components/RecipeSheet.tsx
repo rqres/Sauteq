@@ -46,6 +46,8 @@ interface RecipeSheetProps {
   noRegen?: boolean
   noMenuBar?: boolean
   className?: string
+  creatorUsername?: string
+  creatorAvatar?: string
 }
 
 const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
@@ -65,6 +67,8 @@ const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
       noRegen,
       noMenuBar,
       className,
+      creatorUsername,
+      creatorAvatar,
     },
     ref
   ) {
@@ -90,6 +94,8 @@ const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
             image={image}
             mealType={mealType}
             bookmarkCount={bookmarkCount}
+            creatorUsername={creatorUsername}
+            creatorAvatar={creatorAvatar}
           />
         )}
 
