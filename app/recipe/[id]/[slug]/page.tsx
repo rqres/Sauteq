@@ -1,11 +1,10 @@
-import { notFound } from 'next/navigation'
+import { notFound } from 'next/navigation';
 
-import {
-  getBookmark,
-  getBookmarkCount,
-  getRecipe,
-} from '@/utils/supabaseRequests'
-import { auth, clerkClient } from '@clerk/nextjs'
+
+
+import { getBookmark, getBookmarkCount, getRecipe } from '@/utils/supabaseRequests';
+import { auth, clerkClient } from '@clerk/nextjs';
+import { User } from '@clerk/nextjs/dist/types/server'
 
 import RecipeSheet from '@/components/RecipeSheet'
 
@@ -32,13 +31,18 @@ export default async function RPage({ params }: { params: { id: number } }) {
 
   const bookmarkCount = await getBookmarkCount({ recipeId: params.id })
 
-  const creator =
-    recipe.user_id === 'server'
-      ? undefined
-      : await clerkClient.users.getUser(recipe.user_id)
+  let creator: User | undefined = undefined
+  try {
+    creator =
+      recipe.user_id === 'server'
+        ? undefined
+        : await clerkClient.users.getUser(recipe.user_id)
+  } catch (error) {
+    creator = undefined
+  }
+
   const creatorUsername = creator ? creator.username! : undefined
   const creatorAvatar = creator ? creator.imageUrl : undefined
-
   return (
     <div className="flex justify-center">
       <RecipeSheet
