@@ -279,6 +279,7 @@ export default function EatPage() {
                     placeholder={'Search...'}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    className='text-base'
                     ref={searchBoxRef}
                   />
                   <div className="h-40 space-y-2 overflow-y-auto pl-1">
@@ -305,7 +306,7 @@ export default function EatPage() {
                             />
                             <Label
                               htmlFor={ingr.name}
-                              className="flex items-center gap-1 text-sm lowercase"
+                              className="flex items-center gap-1 text-base lowercase"
                             >
                               <TooltipProvider>
                                 <Tooltip>
@@ -348,7 +349,7 @@ export default function EatPage() {
                             />
                             <Label
                               htmlFor={result.name}
-                              className="text-sm lowercase"
+                              className="text-base lowercase"
                             >
                               {result.name}
                             </Label>
@@ -390,7 +391,7 @@ export default function EatPage() {
                             )
                           }
                         />
-                        <Label className="text-sm lowercase md:text-xs lg:text-sm">
+                        <Label className="text-base lowercase md:text-xs lg:text-sm">
                           {ingredientMap[ingredientId]}
                         </Label>
                       </div>
