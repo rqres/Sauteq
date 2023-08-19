@@ -101,8 +101,8 @@ export default function RecipeMenubar({
   return (
     <Menubar
       className={`ml-5 mr-3 mt-6 ${
-        noReturnButton ? 'justify-end' : 'justify-between'
-      } ${creatorUsername !== undefined ? 'justify-between' : 'justify-end'}`}
+        noReturnButton && creatorUsername === undefined ? 'justify-end' : 'justify-between'
+      }`}
     >
       <div className="hidden">
         <RecipeSheet
