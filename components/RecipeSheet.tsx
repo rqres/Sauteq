@@ -1,14 +1,8 @@
-import { forwardRef } from 'react';
+import { forwardRef } from 'react'
 
+import Image from 'next/image'
 
-
-import Image from 'next/image';
-
-
-
-import { Drumstick, EggFried } from 'lucide-react';
-
-
+import { Drumstick, EggFried } from 'lucide-react'
 
 import { RecipeBody } from '@/types/recipe'
 
@@ -187,7 +181,7 @@ function RecipeDescription({
   recipeDescription: string
 }) {
   return (
-    <CardDescription>
+    <CardDescription className="text-base">
       <MotionSpan
         layout
         initial={{ height: 0, opacity: 0 }}
@@ -224,9 +218,9 @@ function RecipeContent({ body }: { body: RecipeBody }) {
         }}
         className="mb-4"
       >
-        <p className=" ">Prep Time: {body['prep-time']}</p>
-        <p className=" ">Cook Time: {body['cook-time']}</p>
-        <p className=" ">Serves: {body['serves']}</p>
+        <p>Prep Time: {body['prep-time']}</p>
+        <p>Cook Time: {body['cook-time']}</p>
+        <p>Serves: {body['serves']}</p>
       </MotionSection>
       <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
         Ingredients

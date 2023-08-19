@@ -153,6 +153,17 @@ export default function EatPage() {
 
   const [progress, setProgress] = useState<number>(13)
 
+  const [isDesktop, setDesktop] = useState(window.innerWidth >= 768)
+
+  const updateMedia = () => {
+    setDesktop(window.innerWidth >= 768)
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', updateMedia)
+    return () => window.removeEventListener('resize', updateMedia)
+  })
+
   useEffect(() => {
     const unloadCallback = (event: BeforeUnloadEvent) => {
       event.preventDefault()
@@ -246,175 +257,195 @@ export default function EatPage() {
   }
 
   return (
-    <>
+    <AnimatePresence>
       {formView ? (
-        <AnimatePresence>
-          <div className="flex min-h-[calc(100vh-4.1rem)] flex-col items-center justify-center gap-8 py-16 md:flex-row md:py-0">
-            <motion.div layout>
-              <Card className="w-80 md:w-72 lg:w-96">
-                <CardHeader>
-                  <CardTitle>Choose ingredients</CardTitle>
-                  <CardDescription>What will you cook next?</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-3 gap-4 text-sm text-stone-600 dark:text-stone-500">
-                    <MealTypeButton
-                      mealType={'breakfast'}
-                      mealTypeState={mealType}
-                      setMealType={setMealType}
-                    />
-                    <MealTypeButton
-                      mealType={'lunch'}
-                      mealTypeState={mealType}
-                      setMealType={setMealType}
-                    />
-                    <MealTypeButton
-                      mealType={'dinner'}
-                      mealTypeState={mealType}
-                      setMealType={setMealType}
-                    />
-                  </div>
-                  <Input
-                    type="search"
-                    placeholder={'Search...'}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className='text-base'
-                    ref={searchBoxRef}
+        <div className="flex min-h-[calc(100vh-4.1rem)] flex-col items-center justify-center gap-8 py-16 md:flex-row md:py-0">
+          <motion.div layout>
+            <Card className="w-80 md:w-72 lg:w-96">
+              <CardHeader>
+                <CardTitle>Choose ingredients</CardTitle>
+                <CardDescription>What will you cook next?</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-3 gap-4 text-sm text-stone-600 dark:text-stone-500">
+                  <MealTypeButton
+                    mealType={'breakfast'}
+                    mealTypeState={mealType}
+                    setMealType={setMealType}
                   />
-                  <div className="h-40 space-y-2 overflow-y-auto pl-1">
-                    {results.length === 0 &&
-                      searchQuery === '' &&
-                      PopularIngredients.map((ingr) => (
-                        <AnimatedIngredientItem key={'f' + ingr.UsdaId}>
-                          <div className="flex items-center gap-4">
-                            <Checkbox
-                              className="transition"
-                              id={ingr.name}
-                              checked={selection.includes(ingr.UsdaId)}
-                              onCheckedChange={(checked) => {
-                                checked
-                                  ? setSelection([...selection, ingr.UsdaId])
-                                  : setSelection(
-                                      selection.filter(
-                                        (val) => val !== ingr.UsdaId
-                                      )
+                  <MealTypeButton
+                    mealType={'lunch'}
+                    mealTypeState={mealType}
+                    setMealType={setMealType}
+                  />
+                  <MealTypeButton
+                    mealType={'dinner'}
+                    mealTypeState={mealType}
+                    setMealType={setMealType}
+                  />
+                </div>
+                <Input
+                  type="search"
+                  placeholder={'Search...'}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="text-base"
+                  ref={searchBoxRef}
+                />
+                <div className="h-40 space-y-2 overflow-y-auto pl-1">
+                  {results.length === 0 &&
+                    searchQuery === '' &&
+                    PopularIngredients.map((ingr) => (
+                      <AnimatedIngredientItem key={'f' + ingr.UsdaId}>
+                        <div className="flex items-center gap-4">
+                          <Checkbox
+                            className="transition"
+                            id={ingr.name}
+                            checked={selection.includes(ingr.UsdaId)}
+                            onCheckedChange={(checked) => {
+                              checked
+                                ? setSelection([...selection, ingr.UsdaId])
+                                : setSelection(
+                                    selection.filter(
+                                      (val) => val !== ingr.UsdaId
                                     )
-                                searchBoxRef?.current?.focus()
-                                searchBoxRef?.current?.select()
-                              }}
-                            />
-                            <Label
-                              htmlFor={ingr.name}
-                              className="flex items-center gap-1 text-base lowercase"
-                            >
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    <Zap
-                                      strokeWidth={1.7}
-                                      size={23}
-                                      color={'oklch(83% 0.194 111.04)'}
-                                    />
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Popular</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                              {ingr.name}
-                            </Label>
-                          </div>
-                        </AnimatedIngredientItem>
-                      ))}
-                    {results.length > 0 &&
-                      results.map((result) => (
-                        <AnimatedIngredientItem key={'f' + result.UsdaId}>
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              className="transition"
-                              id={result.name}
-                              checked={selection.includes(result.UsdaId)}
-                              onCheckedChange={(checked) => {
-                                checked
-                                  ? setSelection([...selection, result.UsdaId])
-                                  : setSelection(
-                                      selection.filter(
-                                        (val) => val !== result.UsdaId
-                                      )
+                                  )
+                              searchBoxRef?.current?.focus()
+                              searchBoxRef?.current?.select()
+                            }}
+                          />
+                          <Label
+                            htmlFor={ingr.name}
+                            className="flex items-center gap-1 text-base lowercase"
+                          >
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <Zap
+                                    strokeWidth={1.7}
+                                    size={23}
+                                    color={'oklch(83% 0.194 111.04)'}
+                                  />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Popular</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                            {ingr.name}
+                          </Label>
+                        </div>
+                      </AnimatedIngredientItem>
+                    ))}
+                  {results.length > 0 &&
+                    results.map((result) => (
+                      <AnimatedIngredientItem key={'f' + result.UsdaId}>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            className="transition"
+                            id={result.name}
+                            checked={selection.includes(result.UsdaId)}
+                            onCheckedChange={(checked) => {
+                              checked
+                                ? setSelection([...selection, result.UsdaId])
+                                : setSelection(
+                                    selection.filter(
+                                      (val) => val !== result.UsdaId
                                     )
-                                searchBoxRef?.current?.focus()
-                                searchBoxRef?.current?.select()
-                              }}
-                            />
-                            <Label
-                              htmlFor={result.name}
-                              className="text-base lowercase"
-                            >
-                              {result.name}
-                            </Label>
-                          </div>
-                        </AnimatedIngredientItem>
-                      ))}
-                  </div>
-                </CardContent>
-                {selection.length > 0 && (
-                  <AnimatedIngredientItem className="w-full" key="hi">
-                    <CardFooter className="-mt-2">
-                      <Button
-                        className="gradient-button w-full text-stone-800 md:hidden"
-                        onClick={(e) => {
-                          setRecipeView(true)
-                          setFormView(false)
-                          e.preventDefault()
-                          generateRecipe()
-                        }}
-                      >
-                        Generate!
-                      </Button>
-                    </CardFooter>
+                                  )
+                              searchBoxRef?.current?.focus()
+                              searchBoxRef?.current?.select()
+                            }}
+                          />
+                          <Label
+                            htmlFor={result.name}
+                            className="text-base lowercase"
+                          >
+                            {result.name}
+                          </Label>
+                        </div>
+                      </AnimatedIngredientItem>
+                    ))}
+                </div>
+              </CardContent>
+              {selection.length > 0 && (
+                <AnimatedIngredientItem className="w-full" key="hi">
+                  <CardFooter className="-mt-2">
+                    <Button
+                      className="gradient-button w-full text-stone-800 md:hidden"
+                      onClick={(e) => {
+                        setRecipeView(true)
+                        setFormView(false)
+                        e.preventDefault()
+                        generateRecipe()
+                      }}
+                    >
+                      Generate!
+                    </Button>
+                  </CardFooter>
+                </AnimatedIngredientItem>
+              )}
+            </Card>
+          </motion.div>
+          <div className="flex flex-col items-center">
+            <div className="flex flex-wrap gap-2 px-6 md:grid md:grid-flow-col md:grid-rows-4 md:px-0">
+              {isDesktop &&
+                selection.length > 0 &&
+                selection.slice(0, 12).map((ingredientId) => (
+                  <AnimatedIngredientItem key={ingredientId}>
+                    <div className="flex items-center gap-4 rounded-xl border px-4 py-2 transition md:h-full md:w-32 lg:w-44">
+                      <X
+                        className="shrink-0 cursor-pointer rounded-xl border p-1 hover:bg-gray-300"
+                        onClick={() =>
+                          setSelection(
+                            selection.filter((val) => val !== ingredientId)
+                          )
+                        }
+                      />
+                      <Label className="text-base lowercase md:text-xs lg:text-sm">
+                        {ingredientMap[ingredientId]}
+                      </Label>
+                    </div>
                   </AnimatedIngredientItem>
-                )}
-              </Card>
-            </motion.div>
-            <div className="flex flex-col items-center">
-              <div className="flex flex-col-reverse gap-2 md:grid md:grid-flow-col md:grid-rows-4">
-                {selection.length > 0 &&
-                  selection.slice(0, 12).map((ingredientId) => (
-                    <AnimatedIngredientItem key={ingredientId}>
-                      <div className="flex h-full w-44 items-center gap-4 rounded-xl border px-4 py-2 transition md:w-32 lg:w-44">
-                        <X
-                          className="shrink-0 cursor-pointer rounded-xl border p-1 hover:bg-gray-300"
-                          onClick={() =>
-                            setSelection(
-                              selection.filter((val) => val !== ingredientId)
-                            )
-                          }
-                        />
-                        <Label className="text-base lowercase md:text-xs lg:text-sm">
-                          {ingredientMap[ingredientId]}
-                        </Label>
-                      </div>
-                    </AnimatedIngredientItem>
-                  ))}
-              </div>
-              {selection.length > 12 && <p className="mt-4">& more</p>}
+                ))}
+              {!isDesktop &&
+                selection.length > 0 &&
+                selection.map((ingredientId) => (
+                  <AnimatedIngredientItem key={ingredientId}>
+                    <div className="flex items-center gap-4 rounded-xl border px-4 py-2 transition md:h-full md:w-32 lg:w-44">
+                      <X
+                        className="shrink-0 cursor-pointer rounded-xl border p-1 hover:bg-gray-300"
+                        onClick={() =>
+                          setSelection(
+                            selection.filter((val) => val !== ingredientId)
+                          )
+                        }
+                      />
+                      <Label className="text-base lowercase md:text-xs lg:text-sm">
+                        {ingredientMap[ingredientId]}
+                      </Label>
+                    </div>
+                  </AnimatedIngredientItem>
+                ))}
             </div>
-            <Button
-              className={`gradient-button absolute bottom-1 right-1 hidden h-12 w-40 text-stone-800 transition-opacity ease-in-out md:bottom-14 md:right-40 md:block ${
-                selection.length > 0 ? 'opacity-100' : 'opacity-0'
-              }`}
-              onClick={(e) => {
-                setRecipeView(true)
-                setFormView(false)
-                e.preventDefault()
-                generateRecipe()
-              }}
-            >
-              Generate
-            </Button>
+            {isDesktop && selection.length > 12 && (
+              <p className="mt-4">& more</p>
+            )}
           </div>
-        </AnimatePresence>
+          <Button
+            className={`gradient-button absolute bottom-1 right-1 hidden h-12 w-40 text-stone-800 transition-opacity ease-in-out md:bottom-14 md:right-40 md:block ${
+              selection.length > 0 ? 'opacity-100' : 'opacity-0'
+            }`}
+            onClick={(e) => {
+              setRecipeView(true)
+              setFormView(false)
+              e.preventDefault()
+              generateRecipe()
+            }}
+          >
+            Generate
+          </Button>
+        </div>
       ) : (
         // recipeView
         <div className="flex flex-col items-center justify-center">
@@ -436,7 +467,7 @@ export default function EatPage() {
           )}
         </div>
       )}
-    </>
+    </AnimatePresence>
   )
 }
 
