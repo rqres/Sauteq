@@ -1,14 +1,12 @@
-'use server';
+'use server'
 
-import { RecipeBody } from '@/types/recipe';
+import { revalidateTag } from 'next/cache'
 
+import { auth } from '@clerk/nextjs'
 
+import { RecipeBody } from '@/types/recipe'
 
-import supabaseClient from './supabaseClient';
-
-
-
-
+import supabaseClient from './supabaseClient'
 
 export async function getRecipes() {
   const supabase = supabaseClient()
@@ -452,4 +450,29 @@ export async function updateRecipeImage({
   if (error) {
     console.error(error)
   }
+}
+
+export const bookmarkRecipe = async (recipeId: number, isBookmark: boolean) => {
+  const { userId, getToken } = auth()
+  flushCache()
+  if (!userId) {
+    return -1 //no user
+  }
+
+  const token = await getToken({ template: 'supabase' })
+
+  if (!token) {
+    console.error('Unable to fetch token')
+    return -1 //no token
+  }
+
+  toggleBookmark({
+    recipeId: recipeId,
+    userId: userId,
+    token: token,
+    toggle: !isBookmark,
+  })
+}
+export const flushCache = () => {
+  revalidateTag('openai')
 }

@@ -1,10 +1,11 @@
-'use client';
+'use client'
 
-import { Suspense, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
+import { bookmarkRecipe } from '@/utils/supabaseRequests'
 import { SignInButton } from '@clerk/nextjs'
 import {
   Bookmark,
@@ -35,8 +36,6 @@ import {
   MenubarTrigger,
 } from '@/components/ui/menubar'
 
-import { bookmarkRecipe } from '@/app/actions'
-
 import CreatedByBadge from './CreatedByBadge'
 import RecipeSheet from './RecipeSheet'
 import { CreateAnotherButton } from './ui/CreateAnotherButton'
@@ -57,7 +56,7 @@ interface RecipeMenubarProps {
   initialBookmark: boolean
   noReturnButton?: boolean
   title?: string
-  body?: RecipeBody
+  body?: RecipeBody | string
   description?: string
   image?: string
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
@@ -100,8 +99,10 @@ export default function RecipeMenubar({
 
   return (
     <Menubar
-      className={`ml-5 mr-3 mt-6 ${
-        noReturnButton && creatorUsername === undefined ? 'justify-end' : 'justify-between'
+      className={`ml-5 mr-3 mt-6 h-auto ${
+        noReturnButton && creatorUsername === undefined
+          ? 'justify-end'
+          : 'justify-between'
       }`}
     >
       <div className="hidden">

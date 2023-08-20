@@ -14,6 +14,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration)
 
 export const POST = async (req: NextRequest) => {
+  console.log('2. calling image...')
   const { title }: Payload = await req.json()
 
   const aiImageResult = await openai.createImage({
@@ -25,7 +26,7 @@ export const POST = async (req: NextRequest) => {
   const imageResponse =
     aiImageResult.data.data[0].url || 'Problem fetching OpenAI data.'
 
-  console.log('IMAGE API CALLED!')
+  console.log('>> finished 2.')
 
   return NextResponse.json(imageResponse)
 }

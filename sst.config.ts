@@ -21,7 +21,7 @@ export default {
           NEXT_PUBLIC_SUPABASE_ANON_KEY:
             process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
           NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-          NEXT_PUBLIC_DOMAIN_NAME: 'https://sauteq.com',
+          NEXT_PUBLIC_DOMAIN_NAME: process.env.NEXT_PUBLIC_DOMAIN_NAME!,
         },
         timeout: '50 seconds',
         memorySize: '2048 MB',

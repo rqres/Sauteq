@@ -1,30 +1,18 @@
 import { Button } from '@/components/ui/button'
 
+import { Icons } from '../icons'
+
 export const CreateAnotherButton = ({ loading }: { loading?: boolean }) => (
   <Button
     className={`${
       loading ? 'cursor-not-allowed' : 'cursor-pointer'
-    } text-xs sm:text-sm`}
+    } py-2 md:py-0 md:text-sm`}
     disabled={loading}
     onClick={() => window.location.reload()}
   >
+    <Icons.back />
     <div className="flex items-center justify-between gap-2">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="lucide lucide-move-left"
-      >
-        <path d="M6 8L2 12L6 16" />
-        <path d="M2 12H22" />
-      </svg>
-      Create another
+      Change ingredients
     </div>
   </Button>
 )

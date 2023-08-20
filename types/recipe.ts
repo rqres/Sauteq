@@ -5,5 +5,5 @@ export interface RecipeBody {
   serves: number
   ingredients: string[]
   directions: string[]
-  optional: string[]
+  optional?: string[]
 }

@@ -1,35 +1,37 @@
-import { forwardRef } from 'react'
+import { forwardRef } from 'react';
 
-import Image from 'next/image'
 
-import { Drumstick, EggFried } from 'lucide-react'
 
-import { RecipeBody } from '@/types/recipe'
+import Image from 'next/image';
 
-import { MotionLi, MotionSection, MotionSpan } from '@/lib/motion'
-import { cn } from '@/lib/utils'
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
+
+import { Drumstick, EggFried } from 'lucide-react';
+
+
+
+import { RecipeBody } from '@/types/recipe';
+
+
+
+import { MotionLi, MotionSection, MotionSpan } from '@/lib/motion';
+import { cn } from '@/lib/utils';
+
+
+
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton'
 
-import { LunchIcon } from '@/app/eat/page'
-
 import RecipeMenubar from './RecipeMenubar'
+import { Icons } from './icons'
 import { CreateAnotherButton } from './ui/CreateAnotherButton'
 
 interface RecipeSheetProps {
   recipeId: number
   title: string
   description: string
-  body: RecipeBody | null
+  body: RecipeBody | string | null
   image: string
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'any'
   bookmarkCount?: number
@@ -138,7 +140,7 @@ const RecipeSheet = forwardRef<HTMLDivElement, RecipeSheetProps>(
                   )}
                   {mealType === 'lunch' && (
                     <div className="flex gap-1">
-                      <LunchIcon />
+                      <Icons.lunch />
                       <span>Lunch</span>
                     </div>
                   )}
@@ -201,7 +203,30 @@ function RecipeDescription({
   )
 }
 
-function RecipeContent({ body }: { body: RecipeBody }) {
+function RecipeContent({ body }: { body: RecipeBody | string }) {
+  if (typeof body === 'string') {
+    return (
+      <CardContent>
+        <MotionSpan
+          layout
+          initial={{ height: 0, opacity: 0 }}
+          animate={{
+            height: 'auto',
+            opacity: 1,
+            transition: {
+              type: 'spring',
+              bounce: 0.25,
+              opacity: { delay: 0.2 },
+            },
+          }}
+          className="text-red-700"
+        >
+          <p>{body}</p>
+        </MotionSpan>
+      </CardContent>
+    )
+  }
+
   return (
     <CardContent>
       <MotionSection
@@ -226,35 +251,37 @@ function RecipeContent({ body }: { body: RecipeBody }) {
         Ingredients
       </h4>
       <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
-        {body.ingredients.map((ingredient) => (
-          <MotionLi
-            layout
-            initial={{ height: 0, opacity: 0 }}
-            animate={{
-              height: 'auto',
-              opacity: 1,
-              transition: {
-                type: 'spring',
-                bounce: 0.25,
-                opacity: { delay: 0.2 },
-              },
-            }}
-            key={ingredient}
-          >
-            {ingredient}
-          </MotionLi>
-        ))}
+        {body.ingredients !== undefined &&
+          body.ingredients.map((ingredient) => (
+            <MotionLi
+              layout
+              initial={{ height: 0, opacity: 0 }}
+              animate={{
+                height: 'auto',
+                opacity: 1,
+                transition: {
+                  type: 'spring',
+                  bounce: 0.25,
+                  opacity: { delay: 0.2 },
+                },
+              }}
+              key={ingredient}
+            >
+              {ingredient}
+            </MotionLi>
+          ))}
       </ul>
       <Separator className="my-4" />
       <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
         Directions
       </h4>
       <ol className="my-6 ml-6 list-decimal [&>li]:mt-2">
-        {body.directions.map((direction) => (
-          <li key={direction}>{direction}</li>
-        ))}
+        {body.directions !== undefined &&
+          body.directions.map((direction) => (
+            <li key={direction}>{direction}</li>
+          ))}
       </ol>
-      {body.optional.length > 0 && (
+      {body.optional !== undefined && body.optional.length > 0 && (
         <>
           <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
             Optional

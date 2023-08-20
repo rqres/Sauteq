@@ -9,15 +9,18 @@ import {
   useState,
 } from 'react'
 
+import Link from 'next/link'
+
 import ingredientMap from '@/utils/ingredientData'
 import {
   addRecipe,
+  flushCache,
   saveImageToStorage,
   updateRecipeImage,
 } from '@/utils/supabaseRequests'
 import { useAuth } from '@clerk/nextjs'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Drumstick, EggFried, X, Zap } from 'lucide-react'
+import { Clock8, Drumstick, EggFried, X, Zap } from 'lucide-react'
 import ingredients from 'public/english_ingredients.json'
 
 import { RecipeBody } from '@/types/recipe'
@@ -26,7 +29,7 @@ import { cn } from '@/lib/utils'
 
 import useSearch from '@/hooks/useSearch'
 
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -47,35 +50,10 @@ import {
 
 import { AnimatedIngredientItem } from '@/components/AnimatedIngredientItem'
 import RecipeSheet from '@/components/RecipeSheet'
+import { Icons } from '@/components/icons'
 
-import {
-  flushCache,
-  getRecipeBody,
-  getRecipeDescription,
-  getRecipeImage,
-  getRecipeTitle,
-} from '../actions'
+import { fetchBody, fetchDescription, fetchImage, fetchTitle } from '../actions'
 import { ProgressBar } from './ProgressBar'
-
-const LunchIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="lucide lucide-sandwich"
-  >
-    <path d="M3 11v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3" />
-    <path d="M12 19H4a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3.83" />
-    <path d="m3 11 7.77-6.04a2 2 0 0 1 2.46 0L21 11H3Z" />
-    <path d="M12.97 19.77 7 15h12.5l-3.75 4.5a2 2 0 0 1-2.78.27Z" />
-  </svg>
-)
 
 const MealTypeButton = ({
   mealType,
@@ -110,7 +88,7 @@ const MealTypeButton = ({
     )}
     {mealType === 'lunch' && (
       <>
-        <LunchIcon />
+        <Icons.lunch />
         Lunch
       </>
     )}
@@ -142,9 +120,10 @@ export default function EatPage() {
   const [formView, setFormView] = useState<boolean>(true)
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>('')
-  const [body, setBody] = useState<RecipeBody | null>(null)
+  const [body, setBody] = useState<RecipeBody | string | null>(null)
   const [image, setImage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const [limitReached, setLimitReached] = useState<boolean>(false)
   const [mealType, setMealType] = useState<
     'breakfast' | 'lunch' | 'dinner' | 'any'
   >('any')
@@ -178,6 +157,7 @@ export default function EatPage() {
   })
 
   const generateRecipe = useCallback(async () => {
+    window.scrollTo(0, 0)
     setLoading(true)
     selection.sort(function (a, b) {
       return a - b
@@ -185,35 +165,60 @@ export default function EatPage() {
 
     const ingredients = selection.map((id) => ingredientMap[id])
 
-    const rTitle = await getRecipeTitle(ingredients, mealType)
-
-    setProgress((p) => p + 30)
-    if (!rTitle) {
-      throw new Error('Error generating title')
+    const titleResponse = await fetchTitle(ingredients, mealType)
+    const title: string = await titleResponse.json()
+    if (titleResponse.status !== 200) {
+      if (titleResponse.status === 429) {
+        // rate limit
+        setLimitReached(true)
+      } else {
+        setTitle('Error generating title. Please try again.')
+      }
+      return
     }
-    setTitle(rTitle)
-
-    const rImage = await getRecipeImage(rTitle)
-    setProgress((p) => p + 25)
-    if (!rImage) {
-      throw new Error('Error generating image')
-    }
-    setImage(rImage)
-
-    const rDesc = await getRecipeDescription(rTitle, ingredients, mealType)
 
     setProgress((p) => p + 20)
-    if (!rDesc) {
-      throw new Error('Error generating description')
-    }
-    setDescription(rDesc)
+    setTitle(title)
 
-    const rBody = await getRecipeBody(rTitle, ingredients, mealType)
-    setProgress(100)
-    if (!rBody) {
-      throw new Error('Error generating body')
+    const bodyFetch = fetchBody(title, ingredients, mealType)
+    const imageFetch = fetchImage(title)
+    const descriptionResponse = await fetchDescription(
+      title,
+      ingredients,
+      mealType
+    )
+    if (descriptionResponse.status !== 200) {
+      setDescription('Error generating description. Please try again.')
+      return
     }
-    setBody(rBody)
+    const description: string = await descriptionResponse.json()
+    setProgress((p) => p + 30)
+    setDescription(description)
+
+    const imageResponse = await imageFetch
+    if (imageResponse.status !== 200) {
+      setImage('/no-image.png')
+      setBody('Error generating image. Please try again')
+      setProgress(100)
+      setLoading(false)
+      return
+    }
+    const image: string = await imageResponse.json()
+    setProgress((p) => p + 25)
+    setImage(image)
+
+    const bodyResponse = await bodyFetch
+    if (bodyResponse.status !== 200) {
+      setBody('Error generating recipe. Please try again')
+      setProgress(100)
+      setLoading(false)
+      return
+    }
+
+    const body: RecipeBody = await bodyResponse.json()
+    setBody(body)
+
+    setProgress(100)
 
     setLoading(false)
 
@@ -226,9 +231,9 @@ export default function EatPage() {
     // save to db
     const newRecipe = await addRecipe({
       ingredients: String(ingredients),
-      title: rTitle,
-      description: rDesc,
-      recipeBody: rBody,
+      title: title,
+      description: description,
+      recipeBody: body,
       token: token,
       mealType: mealType,
     })
@@ -236,7 +241,7 @@ export default function EatPage() {
     if (newRecipe) {
       await saveImageToStorage({
         recipeId: newRecipe.id,
-        imageUrl: rImage,
+        imageUrl: image,
       })
       await updateRecipeImage({ recipeId: newRecipe.id, token: token })
       console.log('Saved recipe to db')
@@ -256,9 +261,30 @@ export default function EatPage() {
     setLoading(false)
   }
 
-  return (
-    <AnimatePresence>
-      {formView ? (
+  if (limitReached) {
+    return (
+      <div className="flex min-h-[calc(100vh-9rem)] flex-col items-center justify-center gap-4 text-center text-lg font-medium">
+        <Clock8 strokeWidth={1.2} size={42} />
+        <div>
+          <p>You can only generate 10 recipes per day.</p>
+          <p>Please try again in 24 hours.</p>
+        </div>
+        <Link
+          href={'/'}
+          className={cn(
+            buttonVariants(),
+            'gradient-button h-12 w-52 text-stone-800 shadow-lg'
+          )}
+        >
+          Back to home
+        </Link>
+      </div>
+    )
+  }
+
+  if (formView) {
+    return (
+      <AnimatePresence>
         <div className="flex min-h-[calc(100vh-4.1rem)] flex-col items-center justify-center gap-8 py-16 md:flex-row md:py-0">
           <motion.div layout>
             <Card className="w-80 md:w-72 lg:w-96">
@@ -368,11 +394,11 @@ export default function EatPage() {
                     ))}
                 </div>
               </CardContent>
-              {selection.length > 0 && (
-                <AnimatedIngredientItem className="w-full" key="hi">
+              {!isDesktop && selection.length > 0 && (
+                <AnimatedIngredientItem className="w-full">
                   <CardFooter className="-mt-2">
                     <Button
-                      className="gradient-button w-full text-stone-800 md:hidden"
+                      className="gradient-button w-full text-stone-800"
                       onClick={(e) => {
                         setRecipeView(true)
                         setFormView(false)
@@ -446,29 +472,29 @@ export default function EatPage() {
             Generate
           </Button>
         </div>
-      ) : (
-        // recipeView
-        <div className="flex flex-col items-center justify-center">
-          {recipeView && (
-            <>
-              <ProgressBar progress={progress} />
-              <RecipeSheet
-                title={title}
-                description={description}
-                body={body}
-                image={image}
-                regen={regenRecipe}
-                loading={loading}
-                recipeId={recipeRef.current!}
-                initialBookmark={false}
-                mealType={mealType}
-              />
-            </>
-          )}
-        </div>
+      </AnimatePresence>
+    )
+  }
+
+  return (
+    // recipeView
+    <div className="flex flex-col items-center justify-center">
+      {recipeView && (
+        <>
+          <ProgressBar progress={progress} />
+          <RecipeSheet
+            title={title}
+            description={description}
+            body={body}
+            image={image}
+            regen={regenRecipe}
+            loading={loading}
+            recipeId={recipeRef.current!}
+            initialBookmark={false}
+            mealType={mealType}
+          />
+        </>
       )}
-    </AnimatePresence>
+    </div>
   )
 }
-
-export { LunchIcon }
