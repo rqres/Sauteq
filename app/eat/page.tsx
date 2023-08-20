@@ -132,7 +132,7 @@ export default function EatPage() {
 
   const [progress, setProgress] = useState<number>(13)
 
-  const [isDesktop, setDesktop] = useState(window.innerWidth >= 768)
+  const [isDesktop, setDesktop] = useState(false)
 
   const updateMedia = () => {
     setDesktop(window.innerWidth >= 768)

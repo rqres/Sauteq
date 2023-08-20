@@ -1,27 +1,20 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
+import { bookmarkRecipe } from '@/utils/supabaseRequests'
 
+import { RecipeBody } from '@/types/recipe'
 
-import { RecipeBody } from '@/types/recipe';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu'
 
-
-
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu';
-
-
-
-import { GalleryItem } from '@/components/PreviewGallery';
-
-
-
-import { bookmarkRecipe } from '../actions';
-
-
-
-
+import { GalleryItem } from '@/components/PreviewGallery'
 
 interface FavoriteItemProps {
   recipe:
