@@ -9,6 +9,7 @@ import {
   getUserFavRecipeCount,
 } from '@/utils/supabaseRequests'
 import { auth, clerkClient } from '@clerk/nextjs'
+import { Loader } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
@@ -22,6 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 
 import FollowersSheet from '@/components/FollowersSheet'
 import FollowingSheet from '@/components/FollowingSheet'
@@ -78,7 +80,7 @@ export default async function ProfilePage({
             </CardDescription>
           </div>
           {currentUserId !== null && currentUserId !== user.id && (
-            <div className="col-span-2 row-span-1 self-center sm:col-span-1 sm:row-span-2 md:row-span-1">
+            <div className="col-span-3 row-span-1 -mr-9 place-self-end sm:col-span-1 sm:row-span-2 sm:mr-0 sm:place-self-auto sm:self-center md:row-span-1">
               <FollowButton
                 currentUserId={currentUserId}
                 followeeId={user.id}
@@ -90,20 +92,53 @@ export default async function ProfilePage({
             {userRecipeCount} recipe
             {userRecipeCount !== 1 && <span>s</span>}
           </div>
-          {/* @ts-expect-error Server Component */}
-          <FollowersSheet user={user.id}>
-            <div className="hidden cursor-pointer font-medium md:block">
-              {followerCount} follower
-              {followerCount !== 1 && <span>s</span>}
-            </div>
-          </FollowersSheet>
+          <Suspense
+            fallback={
+              <div
+                className={`hidden cursor-pointer font-medium md:block ${
+                  followerCount > 0 ? 'underline' : 'no-underline'
+                }`}
+              >
+                {followerCount} follower
+                {followerCount !== 1 && <span>s</span>}
+              </div>
+            }
+          >
+            {/* @ts-expect-error Server Component */}
+            <FollowersSheet user={user.id}>
+              <div
+                className={`hidden cursor-pointer font-medium md:block ${
+                  followerCount > 0 ? 'underline' : 'no-underline'
+                }`}
+              >
+                {followerCount} follower
+                {followerCount !== 1 && <span>s</span>}
+              </div>
+            </FollowersSheet>
+          </Suspense>
 
-          {/* @ts-expect-error Server Component */}
-          <FollowingSheet user={user.id}>
-            <div className="hidden cursor-pointer font-medium md:block">
-              {followingCount} following
-            </div>
-          </FollowingSheet>
+          <Suspense
+            fallback={
+              <div
+                className={`hidden cursor-pointer font-medium md:block ${
+                  followingCount > 0 ? 'underline' : 'no-underline'
+                }`}
+              >
+                {followingCount} following
+              </div>
+            }
+          >
+            {/* @ts-expect-error Server Component */}
+            <FollowingSheet user={user.id}>
+              <div
+                className={`hidden cursor-pointer font-medium md:block ${
+                  followingCount > 0 ? 'underline' : 'no-underline'
+                }`}
+              >
+                {followingCount} following
+              </div>
+            </FollowingSheet>
+          </Suspense>
 
           {!(
             currentUserId !== null &&
@@ -126,26 +161,57 @@ export default async function ProfilePage({
               {userRecipeCount !== 1 && <span>s</span>}
             </div>
 
-            {/* @ts-expect-error Server Component */}
-            <FollowersSheet user={user.id}>
-              <div className="cursor-pointer">
-                {followerCount} follower
-                {followerCount !== 1 && <span>s</span>}
-              </div>
-            </FollowersSheet>
+            <Suspense
+              fallback={
+                <div
+                  className={`cursor-pointer ${
+                    followerCount > 0 ? 'underline' : 'no-underline'
+                  }`}
+                >
+                  {followerCount} follower
+                  {followerCount !== 1 && <span>s</span>}
+                </div>
+              }
+            >
+              {/* @ts-expect-error Server Component */}
+              <FollowersSheet user={user.id}>
+                <div
+                  className={`cursor-pointer ${
+                    followerCount > 0 ? 'underline' : 'no-underline'
+                  }`}
+                >
+                  {followerCount} follower
+                  {followerCount !== 1 && <span>s</span>}
+                </div>
+              </FollowersSheet>
+            </Suspense>
 
-            {/* @ts-expect-error Server Component */}
-            <FollowingSheet user={user.id}>
-              <div className="cursor-pointer">{followingCount} following</div>
-            </FollowingSheet>
+            <Suspense
+              fallback={
+                <div
+                  className={`cursor-pointer ${
+                    followingCount > 0 ? 'underline' : 'no-underline'
+                  }`}
+                >
+                  {followingCount} following
+                </div>
+              }
+            >
+              {/* @ts-expect-error Server Component */}
+              <FollowingSheet user={user.id}>
+                <div
+                  className={`cursor-pointer ${
+                    followingCount > 0 ? 'underline' : 'no-underline'
+                  }`}
+                >
+                  {followingCount} following
+                </div>
+              </FollowingSheet>
+            </Suspense>
           </div>
         </CardHeader>
         <CardContent>
-          <Suspense
-            fallback={
-              <UserCardContentSkeleton numberOfSkeletons={userRecipeCount} />
-            }
-          >
+          <Suspense fallback={<UserCardContentSkeleton />}>
             {/* @ts-expect-error Server Component */}
             <UserCardContent userId={user.id} />
           </Suspense>
