@@ -1,19 +1,35 @@
-import '@/styles/globals.css'
+import '@/styles/globals.css';
 
-import { Metadata } from 'next'
 
-import { ClerkProvider } from '@clerk/nextjs'
 
-import { siteConfig } from '@/config/site'
+import { Metadata } from 'next';
 
-import { fontSans } from '@/lib/fonts'
-import { cn } from '@/lib/utils'
 
-import { Toaster } from '@/components/ui/toaster'
 
-import { SiteHeader } from '@/components/site-header'
-import { TailwindIndicator } from '@/components/tailwind-indicator'
-import { ThemeProvider } from '@/components/theme-provider'
+import { ClerkProvider } from '@clerk/nextjs';
+
+
+
+import { siteConfig } from '@/config/site';
+
+
+
+import { fontSans } from '@/lib/fonts';
+import { cn } from '@/lib/utils';
+
+
+
+import { Toaster } from '@/components/ui/toaster';
+
+
+
+import { SiteHeader } from '@/components/site-header';
+import { TailwindIndicator } from '@/components/tailwind-indicator';
+import { ThemeProvider } from '@/components/theme-provider';
+
+
+
+
 
 export const metadata: Metadata = {
   title: {
@@ -21,6 +37,17 @@ export const metadata: Metadata = {
     template: `%s - ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  keywords: [
+    'recipe',
+    'cooking',
+    'AI',
+    'artificial intelligence',
+    'generator',
+    'recipe generator',
+    'mouthwatering',
+    'delicious',
+    'easy cooking',
+  ],
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: 'white' },
     { media: '(prefers-color-scheme: dark)', color: 'black' },
