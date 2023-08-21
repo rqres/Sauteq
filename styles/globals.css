@@ -5,6 +5,7 @@
 .text-gradient {
   --start-color: oklch(93% 0.207 123.87);
   --end-color: oklch(75% 0.152 175.72);
+  /* #00c0a2 #ccfe46 */
 
   background: -webkit-linear-gradient(var(--start-color), var(--end-color));
   background-clip: text;
