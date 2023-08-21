@@ -31,6 +31,21 @@ export const metadata: Metadata = {
     shortcut: '/favicon.ico',
     apple: '/apple-touch-icon.png',
   },
+  openGraph: {
+    title: 'Sauteq',
+    description: 'Create mouthwatering recipes with the power of AI',
+    url: 'https://sauteq.com',
+    siteName: 'Sauteq',
+    images: [
+      {
+        url: 'https://sauteq.com/og.png',
+        width: 506,
+        height: 265,
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
 }
 
 interface RootLayoutProps {
