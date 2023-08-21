@@ -294,7 +294,7 @@ export default function RecipeMenubar({
                       : 'cursor-pointer'
                   }
                   ${
-                    !recipeId
+                    (!recipeId || loading)
                       ? 'cursor-wait hover:bg-transparent'
                       : 'cursor-pointer'
                   }`}
@@ -314,7 +314,7 @@ export default function RecipeMenubar({
                   {bookmarkLoading && (
                     <Loader size={12} className="animate-spin" />
                   )}
-                  {!recipeId && (
+                  {(!recipeId || loading) && (
                     <Loader size={12} className="animate-spin md:hidden" />
                   )}
                 </MenubarTrigger>

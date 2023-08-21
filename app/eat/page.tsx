@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 
@@ -230,7 +230,6 @@ export default function EatPage() {
         imageUrl: image,
       })
       await updateRecipeImage({ recipeId: newRecipe.id, token: token })
-      console.log('Saved recipe to db')
       setRecipeId(newRecipe.id)
     }
   }
