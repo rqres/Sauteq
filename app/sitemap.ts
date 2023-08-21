@@ -1,7 +1,7 @@
-import { getRecipes } from '@/utils/supabaseRequests'
+import { getAllRecipes } from '@/utils/supabaseRequests'
 
 export default async function sitemap() {
-  const allRecipes = await getRecipes()
+  const allRecipes = await getAllRecipes()
 
   const recipes = allRecipes
     .sort((a, b) => a.id - b.id)

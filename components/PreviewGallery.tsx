@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { getRecipe } from '@/utils/supabaseRequests'
+import { getAllRecipes, getRecipe } from '@/utils/supabaseRequests'
 
 import { cn } from '@/lib/utils'
 
@@ -51,9 +51,11 @@ export const GalleryItem = ({
 )
 
 export default async function PreviewGallery() {
-  const recipes = await Promise.all(
-    PreviewRecipes.map((id) => getRecipe({ recipeId: id }))
-  )
+  // const recipes = await Promise.all(
+  //   PreviewRecipes.map((id) => getRecipe({ recipeId: id }))
+  // )
+
+  const recipes = await getAllRecipes()
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

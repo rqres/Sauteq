@@ -8,12 +8,10 @@ import { RecipeBody } from '@/types/recipe'
 
 import supabaseClient from './supabaseClient'
 
-export async function getRecipes() {
+export async function getAllRecipes() {
   const supabase = supabaseClient()
 
-  const { data, error } = await supabase
-    .from('recipes')
-    .select('id,title,created_at')
+  const { data, error } = await supabase.from('recipes').select('*')
 
   if (error) {
     console.error(error)
