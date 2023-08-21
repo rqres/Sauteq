@@ -243,7 +243,7 @@ export default function EatPage() {
     setDescription('')
     flushCache()
     await generateRecipe()
-    setLoading(false)
+    // setLoading(false)
   }
 
   if (limitReached) {
