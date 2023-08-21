@@ -1,13 +1,6 @@
-'use client'
+'use client';
 
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 
 import Link from 'next/link'
 
@@ -47,6 +40,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { useToast } from '@/components/ui/use-toast'
 
 import { AnimatedIngredientItem } from '@/components/AnimatedIngredientItem'
 import RecipeSheet from '@/components/RecipeSheet'
@@ -134,6 +128,7 @@ export default function EatPage() {
   const [progress, setProgress] = useState<number>(13)
 
   const [isDesktop, setDesktop] = useState(false)
+  const { toast } = useToast()
 
   const updateMedia = () => {
     setDesktop(window.innerWidth >= 768)
@@ -144,7 +139,7 @@ export default function EatPage() {
     return () => window.removeEventListener('resize', updateMedia)
   })
 
-  const generateRecipe = useCallback(async () => {
+  const generateRecipe = async () => {
     window.scrollTo(0, 0)
     setLoading(true)
     selection.sort(function (a, b) {
@@ -197,9 +192,12 @@ export default function EatPage() {
 
     const bodyResponse = await bodyFetch
     if (bodyResponse.status !== 200) {
-      setBody('Error generating recipe. Please try again')
-      setProgress(100)
-      setLoading(false)
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Bad response from OpenAI.',
+        description: 'Attempting to regenerate.',
+      })
+      await regenRecipe()
       return
     }
 
@@ -235,7 +233,7 @@ export default function EatPage() {
       console.log('Saved recipe to db')
       setRecipeId(newRecipe.id)
     }
-  }, [getToken, isLoaded, mealType, selection, userId])
+  }
 
   const regenRecipe = async () => {
     setLoading(true)

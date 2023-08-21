@@ -56,7 +56,6 @@ export const POST = async (req: NextRequest) => {
   console.log('1. calling title...')
   // https://github.com/Nutlope/roomGPT/blob/main/app/generate/route.ts
   if (ratelimit) {
-    // TODO: check if logged in
     const { userId } = auth()
     if (!userId) {
       // for anon
