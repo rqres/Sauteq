@@ -155,7 +155,12 @@ export default function EatPage() {
         // rate limit
         setLimitReached(true)
       } else {
-        setTitle('Error generating title. Please try again.')
+        toast({
+          variant: 'destructive',
+          title: 'Uh oh! Bad response from OpenAI.',
+          description: 'Attempting to regenerate.',
+        })
+        await regenRecipe()
       }
       return
     }
@@ -171,7 +176,12 @@ export default function EatPage() {
       mealType
     )
     if (descriptionResponse.status !== 200) {
-      setDescription('Error generating description. Please try again.')
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Bad response from OpenAI.',
+        description: 'Attempting to regenerate.',
+      })
+      await regenRecipe()
       return
     }
     const description: string = await descriptionResponse.json()
@@ -181,9 +191,12 @@ export default function EatPage() {
     const imageResponse = await imageFetch
     if (imageResponse.status !== 200) {
       setImage('/no-image.png')
-      setBody('Error generating image. Please try again')
-      setProgress(100)
-      setLoading(false)
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Bad response from OpenAI.',
+        description: 'Attempting to regenerate.',
+      })
+      await regenRecipe()
       return
     }
     const image: string = await imageResponse.json()
