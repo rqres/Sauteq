@@ -1,5 +1,9 @@
-import { SSTConfig } from 'sst'
-import { Config, NextjsSite } from 'sst/constructs'
+import { SSTConfig } from 'sst';
+import { Config, NextjsSite } from 'sst/constructs';
+
+
+
+
 
 export default {
   config(_input) {
@@ -11,18 +15,10 @@ export default {
   stacks(app) {
     app.stack(function Site({ stack }) {
       const OPENAI_KEY = new Config.Secret(stack, 'OPENAI_KEY')
-      const UPSTASH_REDIS_REST_URL = new Config.Secret(
-        stack,
-        'UPSTASH_REDIS_REST_URL'
-      )
-      const UPSTASH_REDIS_REST_TOKEN = new Config.Secret(
-        stack,
-        'UPSTASH_REDIS_REST_TOKEN'
-      )
 
       const site = new NextjsSite(stack, 'site', {
         customDomain: 'sauteq.com',
-        bind: [OPENAI_KEY, UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN],
+        bind: [OPENAI_KEY],
         environment: {
           CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY!,
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
@@ -31,6 +27,10 @@ export default {
             process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
           NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
           NEXT_PUBLIC_DOMAIN_NAME: process.env.NEXT_PUBLIC_DOMAIN_NAME!,
+          NEXT_PUBLIC_UPSTASH_REDIS_REST_URL:
+            process.env.NEXT_PUBLIC_UPSTASH_REDIS_REST_URL!,
+          NEXT_PUBLIC_UPSTASH_REDIS_REST_TOKEN:
+            process.env.NEXT_PUBLIC_UPSTASH_REDIS_REST_TOKEN!,
         },
         timeout: '50 seconds',
         memorySize: '2048 MB',

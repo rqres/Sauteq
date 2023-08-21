@@ -13,20 +13,21 @@ jobs:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       NEXT_PUBLIC_DOMAIN_NAME: ${{ vars.NEXT_PUBLIC_DOMAIN_NAME }}
-
+      NEXT_PUBLIC_UPSTASH_REDIS_REST_URL: ${{ secrets.NEXT_PUBLIC_UPSTASH_REDIS_REST_URL }}
+      NEXT_PUBLIC_UPSTASH_REDIS_REST_TOKEN: ${{ secrets.NEXT_PUBLIC_UPSTASH_REDIS_REST_TOKEN }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: "18"
-      
-    - name: Install dependencies
-      run: npm ci
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    - name: Deploy
-      run: |
-        npx sst deploy --stage prod
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deploy
+        run: |
+          npx sst deploy --stage prod
