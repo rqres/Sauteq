@@ -2,11 +2,11 @@ import { forwardRef } from 'react'
 
 import Image from 'next/image'
 
+import { MotionLi, MotionSection, MotionSpan } from '@/utils/motion'
 import { Drumstick, EggFried } from 'lucide-react'
 
 import { RecipeBody } from '@/types/recipe'
 
-import { MotionLi, MotionSection, MotionSpan } from '@/lib/motion'
 import { cn } from '@/lib/utils'
 
 import {

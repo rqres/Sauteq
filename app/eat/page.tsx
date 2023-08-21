@@ -18,7 +18,7 @@ import {
   saveImageToStorage,
   updateRecipeImage,
 } from '@/utils/supabaseRequests'
-import { useAuth } from '@clerk/nextjs'
+import { SignInButton, useAuth } from '@clerk/nextjs'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Clock8, Drumstick, EggFried, X, Zap } from 'lucide-react'
 import ingredients from 'public/english_ingredients.json'
@@ -144,19 +144,6 @@ export default function EatPage() {
     return () => window.removeEventListener('resize', updateMedia)
   })
 
-  useEffect(() => {
-    const unloadCallback = (event: BeforeUnloadEvent) => {
-      event.preventDefault()
-      event.returnValue = ''
-      return ''
-    }
-
-    if (recipeId && (!isLoaded || !userId)) {
-      window.addEventListener('beforeunload', unloadCallback)
-    }
-    return () => window.removeEventListener('beforeunload', unloadCallback)
-  })
-
   const generateRecipe = useCallback(async () => {
     window.scrollTo(0, 0)
     setLoading(true)
@@ -266,19 +253,43 @@ export default function EatPage() {
     return (
       <div className="flex min-h-[calc(100vh-9rem)] flex-col items-center justify-center gap-4 text-center text-lg font-medium">
         <Clock8 strokeWidth={1.2} size={42} />
-        <div>
-          <p>You can only generate 20 recipes per day.</p>
-          <p>Please try again in 24 hours.</p>
-        </div>
-        <Link
-          href={'/'}
-          className={cn(
-            buttonVariants(),
-            'gradient-button h-12 w-52 text-stone-800 shadow-lg'
-          )}
-        >
-          Back to home
-        </Link>
+        {isLoaded && userId ? (
+          <>
+            <div>
+              <p>
+                As a logged in user, you can generate at most 40 recipes per
+                day.
+              </p>
+              <p>Please come back in 24 hours.</p>
+            </div>
+            <Link
+              href={'/'}
+              className={cn(
+                buttonVariants(),
+                'gradient-button h-12 w-52 text-stone-800 shadow-lg'
+              )}
+            >
+              Back to home
+            </Link>
+          </>
+        ) : (
+          <>
+            <div>
+              <p>You can only generate 20 recipes per day.</p>
+              <p>Sign up for a free account to generate more!</p>
+            </div>
+            <SignInButton>
+              <button
+                className={cn(
+                  buttonVariants(),
+                  'gradient-button h-12 w-52 text-stone-800 shadow-lg'
+                )}
+              >
+                Sign up
+              </button>
+            </SignInButton>
+          </>
+        )}
       </div>
     )
   }
