@@ -40,8 +40,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: 'https://sauteq.com/og.png',
-        width: 506,
-        height: 265,
+        width: 512,
+        height: 512,
       },
     ],
     locale: 'en_US',
