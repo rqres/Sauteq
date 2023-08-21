@@ -30,6 +30,7 @@ export const metadata: Metadata = {
     icon: ['/favicon-16x16.png', 'favicon-32x32.png'],
     shortcut: '/favicon.ico',
     apple: '/apple-touch-icon.png',
+    other: [{ rel: 'mask-icon', url: '/safari-pinned-tab.svg' }],
   },
   openGraph: {
     title: 'Sauteq',
