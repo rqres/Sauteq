@@ -11,7 +11,9 @@ import supabaseClient from './supabaseClient'
 export async function getRecipes() {
   const supabase = supabaseClient()
 
-  const { data, error } = await supabase.from('recipes').select('title')
+  const { data, error } = await supabase
+    .from('recipes')
+    .select('id,title,created_at')
 
   if (error) {
     console.error(error)

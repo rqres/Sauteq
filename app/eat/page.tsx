@@ -267,7 +267,7 @@ export default function EatPage() {
       <div className="flex min-h-[calc(100vh-9rem)] flex-col items-center justify-center gap-4 text-center text-lg font-medium">
         <Clock8 strokeWidth={1.2} size={42} />
         <div>
-          <p>You can only generate 10 recipes per day.</p>
+          <p>You can only generate 20 recipes per day.</p>
           <p>Please try again in 24 hours.</p>
         </div>
         <Link

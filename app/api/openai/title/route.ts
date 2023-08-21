@@ -10,11 +10,11 @@ const configuration = new Configuration({
   apiKey: Config.OPENAI_KEY,
 })
 
-// Ratelimiter allows 10 requests per 24 hours
+// Ratelimiter allows 20 requests per 24 hours
 const ratelimit = redis
   ? new Ratelimit({
       redis: redis,
-      limiter: Ratelimit.fixedWindow(10, '1440 m'),
+      limiter: Ratelimit.fixedWindow(20, '1440 m'),
       analytics: true,
     })
   : undefined
@@ -76,5 +76,15 @@ export const POST = async (req: NextRequest) => {
 
   console.log('>> finished 1.')
 
-  return NextResponse.json(textResponse)
+  const sanitizedTitle = sanitizeTitle(textResponse)
+
+  return NextResponse.json(sanitizedTitle)
 }
+
+/**
+ * Removes &, commas, fullstops, quotation marks and slashes
+ * @param unsafeTitle
+ * @returns sanitized title
+ */
+const sanitizeTitle = (unsafeTitle: string) =>
+  unsafeTitle.replace(/[&,.\'\"\/\\]/g, '')
