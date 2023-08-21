@@ -22,7 +22,7 @@ export default {
 
       const site = new NextjsSite(stack, 'site', {
         customDomain: 'sauteq.com',
-        bind: [OPENAI_KEY, UPSTASH_REDIS_REST_TOKEN, UPSTASH_REDIS_REST_URL],
+        bind: [OPENAI_KEY, UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN],
         environment: {
           CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY!,
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
