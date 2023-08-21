@@ -8,10 +8,30 @@ import { RecipeBody } from '@/types/recipe'
 
 import supabaseClient from './supabaseClient'
 
+const RECIPE_MASTER = 'user_2U7kZDUcrxAnHFDV5m2wgdTnJjI'
+
 export async function getAllRecipes() {
   const supabase = supabaseClient()
 
   const { data, error } = await supabase.from('recipes').select('*')
+
+  if (error) {
+    console.error(error)
+    return []
+  }
+
+  return data
+}
+
+export async function getPreviewRecipes({ limit }: { limit: number }) {
+  const supabase = supabaseClient()
+
+  const { data, error } = await supabase
+    .from('recipes')
+    .select('*')
+    .eq('preview', true)
+    .order('created_at', { ascending: false })
+    .limit(limit)
 
   if (error) {
     console.error(error)
@@ -198,7 +218,7 @@ export async function linkRecipeToUser({
   return data[0]
 }
 
-export async function toggleBookmark({
+async function toggleBookmark({
   recipeId,
   userId,
   token,
@@ -472,7 +492,44 @@ export const bookmarkRecipe = async (recipeId: number, isBookmark: boolean) => {
     token: token,
     toggle: !isBookmark,
   })
+
+  if (userId === RECIPE_MASTER) {
+    togglePreview({ recipeId, token, toggle: !isBookmark })
+  }
 }
+
+async function togglePreview({
+  recipeId,
+  token,
+  toggle,
+}: {
+  recipeId: number
+  token: string
+  toggle: boolean
+}) {
+  const supabase = supabaseClient(token)
+
+  if (toggle) {
+    const { error } = await supabase
+      .from('recipes')
+      .update({ preview: true })
+      .eq('recipeId', recipeId)
+
+    if (error) {
+      console.error(error)
+    }
+  } else {
+    const { error } = await supabase
+      .from('recipes')
+      .update({ preview: false })
+      .eq('recipeId', recipeId)
+
+    if (error) {
+      console.error(error)
+    }
+  }
+}
+
 export const flushCache = () => {
   revalidateTag('openai')
 }

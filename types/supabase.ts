@@ -63,6 +63,7 @@ export interface Database {
           image_url: string | null
           ingredients: string
           meal_type: 'breakfast' | 'lunch' | 'dinner' | 'any'
+          preview: boolean
           title: string
           user_id: string
         }
@@ -74,6 +75,7 @@ export interface Database {
           image_url?: string | null
           ingredients: string
           meal_type?: 'breakfast' | 'lunch' | 'dinner' | 'any'
+          preview?: boolean
           title?: string
           user_id?: string
         }
@@ -85,6 +87,7 @@ export interface Database {
           image_url?: string | null
           ingredients?: string
           meal_type?: 'breakfast' | 'lunch' | 'dinner' | 'any'
+          preview?: boolean
           title?: string
           user_id?: string
         }

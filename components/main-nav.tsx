@@ -4,8 +4,6 @@ import Link from 'next/link'
 
 import { NavItem } from '@/types/nav'
 
-import { siteConfig } from '@/config/site'
-
 import { cn } from '@/lib/utils'
 
 import { Icons } from '@/components/icons'
@@ -19,7 +17,7 @@ export function MainNav({ items }: MainNavProps) {
     <div className="flex gap-6 md:gap-10">
       <Link href="/" className="flex items-end space-x-2">
         <Icons.logo className="h-9 w-9" />
-        <span className="inline-block text-2xl font-bold">{siteConfig.name}</span>
+        <span className="inline-block text-2xl font-bold">Sauteq</span>
       </Link>
       {items?.length ? (
         <nav className="flex gap-6">
