@@ -287,7 +287,7 @@ export default function EatPage() {
       <AnimatePresence>
         <div className="flex min-h-[calc(100vh-4.1rem)] flex-col items-center justify-center gap-8 py-16 md:flex-row md:py-0">
           <motion.div layout>
-            <Card className="w-80 md:w-72 lg:w-96">
+            <Card className="w-80 lg:w-96">
               <CardHeader>
                 <CardTitle>Choose ingredients</CardTitle>
                 <CardDescription>What will you cook next?</CardDescription>
@@ -394,7 +394,7 @@ export default function EatPage() {
                     ))}
                 </div>
               </CardContent>
-              {!isDesktop && selection.length > 0 && (
+              {selection.length > 0 && (
                 <AnimatedIngredientItem className="w-full">
                   <CardFooter className="-mt-2">
                     <Button
@@ -458,19 +458,6 @@ export default function EatPage() {
               <p className="mt-4">& more</p>
             )}
           </div>
-          <Button
-            className={`gradient-button absolute bottom-1 right-1 hidden h-12 w-40 text-stone-800 transition-opacity ease-in-out md:bottom-14 md:right-40 md:block ${
-              selection.length > 0 ? 'opacity-100' : 'opacity-0'
-            }`}
-            onClick={(e) => {
-              setRecipeView(true)
-              setFormView(false)
-              e.preventDefault()
-              generateRecipe()
-            }}
-          >
-            Generate
-          </Button>
         </div>
       </AnimatePresence>
     )

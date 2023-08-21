@@ -1,16 +1,22 @@
-'use client'
+'use client';
 
-import { useRef, useState } from 'react'
+import { useRef, useState } from 'react';
 
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 
-import { bookmarkRecipe } from '@/utils/supabaseRequests'
+
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+
+
+
+import { bookmarkRecipe } from '@/utils/supabaseRequests';
 import { SignInButton } from '@clerk/nextjs'
+import { motion } from 'framer-motion'
 import {
   Bookmark,
   Facebook,
   Link as LinkIcon,
+  Loader,
   Mail,
   Printer,
   RefreshCcw,
@@ -83,6 +89,7 @@ export default function RecipeMenubar({
 }: RecipeMenubarProps) {
   const router = useRouter()
   const [isBookmark, setBookmark] = useState<boolean>(initialBookmark)
+  const [bookmarkLoading, setBookmarkLoading] = useState(false)
   const { toast } = useToast()
   const currentURL = `${
     process.env.NEXT_PUBLIC_DOMAIN_NAME
@@ -125,6 +132,35 @@ export default function RecipeMenubar({
         <CreatedByBadge username={creatorUsername} avatarSrc={creatorAvatar} />
       )}
       <div className="flex">
+        {!noRegen && (
+          <MenubarMenu>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <MenubarTrigger
+                    onClick={async () => {
+                      if (regen) {
+                        setBookmark(false)
+                        await regen()
+                      }
+                    }}
+                    className={`${
+                      loading
+                        ? 'animate-spin cursor-not-allowed hover:bg-transparent'
+                        : 'animate-none cursor-pointer'
+                    }`}
+                    disabled={loading}
+                  >
+                    <RefreshCcw />
+                  </MenubarTrigger>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Regenerate with same ingredients</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </MenubarMenu>
+        )}
         <MenubarMenu>
           <TooltipProvider>
             <Tooltip>
@@ -226,41 +262,14 @@ export default function RecipeMenubar({
             </Tooltip>
           </TooltipProvider>
         </MenubarMenu>
-        {!noRegen && (
-          <MenubarMenu>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <MenubarTrigger
-                    onClick={async () => {
-                      if (regen) {
-                        setBookmark(false)
-                        await regen()
-                      }
-                    }}
-                    className={`${
-                      loading
-                        ? 'animate-spin cursor-not-allowed hover:bg-transparent'
-                        : 'animate-none cursor-pointer'
-                    }`}
-                    disabled={loading}
-                  >
-                    <RefreshCcw />
-                  </MenubarTrigger>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Regenerate with same ingredients</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </MenubarMenu>
-        )}
+
         <MenubarMenu>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <MenubarTrigger
                   onClick={async () => {
+                    setBookmarkLoading(true)
                     const res = await bookmarkRecipe(recipeId, isBookmark)
                     if (res == -1) {
                       toast({
@@ -274,26 +283,40 @@ export default function RecipeMenubar({
                       })
                       return
                     }
+                    setBookmarkLoading(false)
                     setBookmark(!isBookmark)
                     router.refresh()
                   }}
-                  disabled={loading}
+                  disabled={loading || !recipeId}
                   className={`${
                     loading
                       ? 'cursor-not-allowed hover:bg-transparent'
                       : 'cursor-pointer'
+                  }
+                  ${
+                    !recipeId
+                      ? 'cursor-wait hover:bg-transparent'
+                      : 'cursor-pointer'
                   }`}
                 >
-                  <Bookmark
-                    className={`${
-                      isBookmark
-                        ? 'fill-black dark:fill-white'
-                        : 'fill-transparent'
-                    } transition`}
-                  />
+                  <motion.div layout>
+                    <Bookmark
+                      className={`${
+                        isBookmark
+                          ? 'fill-black dark:fill-white'
+                          : 'fill-transparent'
+                      } transition`}
+                    />
+                  </motion.div>
                   {bookmarkCount !== undefined &&
                     bookmarkCount !== 0 &&
                     bookmarkCount}
+                  {bookmarkLoading && (
+                    <Loader size={12} className="animate-spin" />
+                  )}
+                  {!recipeId && (
+                    <Loader size={12} className="animate-spin md:hidden" />
+                  )}
                 </MenubarTrigger>
               </TooltipTrigger>
               <TooltipContent>

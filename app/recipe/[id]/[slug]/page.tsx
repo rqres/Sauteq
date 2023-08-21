@@ -1,9 +1,11 @@
-import { notFound } from 'next/navigation';
+import { notFound } from 'next/navigation'
 
-
-
-import { getBookmark, getBookmarkCount, getRecipe } from '@/utils/supabaseRequests';
-import { auth, clerkClient } from '@clerk/nextjs';
+import {
+  getBookmark,
+  getBookmarkCount,
+  getRecipe,
+} from '@/utils/supabaseRequests'
+import { auth, clerkClient } from '@clerk/nextjs'
 import { User } from '@clerk/nextjs/dist/types/server'
 
 import RecipeSheet from '@/components/RecipeSheet'
