@@ -45,10 +45,8 @@ export default function FavoriteItem({ recipe }: FavoriteItemProps) {
         >
           <GalleryItem
             title={recipe?.title || ''}
-            description={recipe?.description || ''}
             imageSrc={recipe?.image_url || ''}
             key={recipe?.title}
-            noDescription
           />
         </Link>
       </ContextMenuTrigger>

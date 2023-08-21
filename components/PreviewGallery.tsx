@@ -1,32 +1,23 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { getAllRecipes, getRecipe } from '@/utils/supabaseRequests'
+import { getRecipe, getUserFavoriteRecipes } from '@/utils/supabaseRequests'
 
-import { cn } from '@/lib/utils'
+import { Card, CardHeader, CardTitle } from './ui/card'
 
-import { Card, CardDescription, CardHeader, CardTitle } from './ui/card'
+const RECIPE_MASTER = 'user_2U7kZDUcrxAnHFDV5m2wgdTnJjI'
 
-const PreviewRecipes = [194, 211, 209, 210]
+const PREVIEW_RECIPES = [211]
 
 export const GalleryItem = ({
   title,
-  description,
   imageSrc,
-  noDescription,
 }: {
   title: string
-  description: string
   imageSrc: string
-  noDescription?: boolean
 }) => (
   <Card className="h-full transition duration-200 ease-in-out hover:scale-105">
-    <CardHeader
-      className={cn(
-        'grid h-full grid-cols-4 items-center justify-center gap-4',
-        noDescription && 'flex flex-col justify-between text-center'
-      )}
-    >
+    <CardHeader className="flex h-full flex-col items-center justify-between gap-4 text-center">
       <CardTitle className="col-span-2">
         <span className="scroll-m-20  pb-2 text-xl font-semibold tracking-tight transition-colors first:mt-0 md:text-2xl">
           {title}
@@ -41,39 +32,34 @@ export const GalleryItem = ({
           className="rounded-xl shadow"
         />
       </div>
-      {!noDescription && (
-        <CardDescription className="col-span-4 text-sm md:text-base">
-          {description}
-        </CardDescription>
-      )}
     </CardHeader>
   </Card>
 )
 
 export default async function PreviewGallery() {
-  // const recipes = await Promise.all(
-  //   PreviewRecipes.map((id) => getRecipe({ recipeId: id }))
-  // )
+  const staticRecipes = await Promise.all(
+    PREVIEW_RECIPES.map((id) => getRecipe({ recipeId: id }))
+  )
 
-  const recipes = await getAllRecipes()
+  const recipes = await getUserFavoriteRecipes({ userId: RECIPE_MASTER })
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      {recipes.map((r) => (
-        <Link
-          href={`recipe/${r?.id}/${r?.title
-            .replace(/\s+/g, '-')
-            .toLowerCase()}`}
-          key={r?.id}
-        >
-          <GalleryItem
-            title={r?.title || ''}
-            description={r?.description || r?.body.description || ''}
-            imageSrc={r?.image_url || ''}
-            key={r?.title}
-          />
-        </Link>
-      ))}
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {recipes !== undefined &&
+        [...staticRecipes, ...recipes].map((r) => (
+          <Link
+            href={`recipe/${r?.id}/${r?.title
+              .replace(/\s+/g, '-')
+              .toLowerCase()}`}
+            key={r?.id}
+          >
+            <GalleryItem
+              title={r?.title || ''}
+              imageSrc={r?.image_url || ''}
+              key={r?.title}
+            />
+          </Link>
+        ))}
     </div>
   )
 }
