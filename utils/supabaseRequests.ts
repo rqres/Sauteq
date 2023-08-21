@@ -513,7 +513,7 @@ async function togglePreview({
     const { error } = await supabase
       .from('recipes')
       .update({ preview: true })
-      .eq('recipeId', recipeId)
+      .eq('id', recipeId)
 
     if (error) {
       console.error(error)
@@ -522,7 +522,7 @@ async function togglePreview({
     const { error } = await supabase
       .from('recipes')
       .update({ preview: false })
-      .eq('recipeId', recipeId)
+      .eq('id', recipeId)
 
     if (error) {
       console.error(error)
