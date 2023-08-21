@@ -1,26 +1,23 @@
-import { forwardRef } from 'react';
+import { forwardRef } from 'react'
 
+import Image from 'next/image'
 
+import { Drumstick, EggFried } from 'lucide-react'
 
-import Image from 'next/image';
+import { RecipeBody } from '@/types/recipe'
 
+import { MotionLi, MotionSection, MotionSpan } from '@/lib/motion'
+import { cn } from '@/lib/utils'
 
-
-import { Drumstick, EggFried } from 'lucide-react';
-
-
-
-import { RecipeBody } from '@/types/recipe';
-
-
-
-import { MotionLi, MotionSection, MotionSpan } from '@/lib/motion';
-import { cn } from '@/lib/utils';
-
-
-
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 
 import RecipeMenubar from './RecipeMenubar'
@@ -28,7 +25,7 @@ import { Icons } from './icons'
 import { CreateAnotherButton } from './ui/CreateAnotherButton'
 
 interface RecipeSheetProps {
-  recipeId: number
+  recipeId: number | null
   title: string
   description: string
   body: RecipeBody | string | null

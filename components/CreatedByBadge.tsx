@@ -27,7 +27,7 @@ export default function CreatedByBadge({
         <Link
           className={cn(
             badgeVariants({ variant: 'outline' }),
-            'gradient-button'
+            'gradient-button text-stone-800 dark:text-stone-800'
           )}
           href={`/${username}`}
         >

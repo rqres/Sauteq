@@ -128,7 +128,8 @@ export default function EatPage() {
     'breakfast' | 'lunch' | 'dinner' | 'any'
   >('any')
   const searchBoxRef = useRef<HTMLInputElement | null>(null)
-  const recipeRef = useRef<number | null>(null)
+
+  const [recipeId, setRecipeId] = useState<number | null>(null)
 
   const [progress, setProgress] = useState<number>(13)
 
@@ -150,7 +151,7 @@ export default function EatPage() {
       return ''
     }
 
-    if (recipeRef.current && (!isLoaded || !userId)) {
+    if (recipeId && (!isLoaded || !userId)) {
       window.addEventListener('beforeunload', unloadCallback)
     }
     return () => window.removeEventListener('beforeunload', unloadCallback)
@@ -245,7 +246,7 @@ export default function EatPage() {
       })
       await updateRecipeImage({ recipeId: newRecipe.id, token: token })
       console.log('Saved recipe to db')
-      recipeRef.current = newRecipe.id
+      setRecipeId(newRecipe.id)
     }
   }, [getToken, isLoaded, mealType, selection, userId])
 
@@ -476,7 +477,7 @@ export default function EatPage() {
             image={image}
             regen={regenRecipe}
             loading={loading}
-            recipeId={recipeRef.current!}
+            recipeId={recipeId}
             initialBookmark={false}
             mealType={mealType}
           />

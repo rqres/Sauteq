@@ -1,15 +1,11 @@
-'use client';
+'use client'
 
-import { useRef, useState } from 'react';
+import { useRef, useState } from 'react'
 
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
-
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-
-
-
-import { bookmarkRecipe } from '@/utils/supabaseRequests';
+import { bookmarkRecipe } from '@/utils/supabaseRequests'
 import { SignInButton } from '@clerk/nextjs'
 import { motion } from 'framer-motion'
 import {
@@ -55,7 +51,7 @@ import {
 import { useToast } from './ui/use-toast'
 
 interface RecipeMenubarProps {
-  recipeId: number
+  recipeId: number | null
   regen?: () => Promise<void>
   loading?: boolean
   noRegen?: boolean
@@ -269,6 +265,10 @@ export default function RecipeMenubar({
               <TooltipTrigger asChild>
                 <MenubarTrigger
                   onClick={async () => {
+                    if (!recipeId) {
+                      console.error('no recipe to bookmark')
+                      return
+                    }
                     setBookmarkLoading(true)
                     const res = await bookmarkRecipe(recipeId, isBookmark)
                     if (res == -1) {
