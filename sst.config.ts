@@ -11,9 +11,18 @@ export default {
   stacks(app) {
     app.stack(function Site({ stack }) {
       const OPENAI_KEY = new Config.Secret(stack, 'OPENAI_KEY')
+      const UPSTASH_REDIS_REST_URL = new Config.Secret(
+        stack,
+        'UPSTASH_REDIS_REST_URL'
+      )
+      const UPSTASH_REDIS_REST_TOKEN = new Config.Secret(
+        stack,
+        'UPSTASH_REDIS_REST_TOKEN'
+      )
+
       const site = new NextjsSite(stack, 'site', {
         customDomain: 'sauteq.com',
-        bind: [OPENAI_KEY],
+        bind: [OPENAI_KEY, UPSTASH_REDIS_REST_TOKEN, UPSTASH_REDIS_REST_URL],
         environment: {
           CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY!,
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
