@@ -25,9 +25,10 @@ export const metadata: Metadata = {
     { media: '(prefers-color-scheme: light)', color: 'white' },
     { media: '(prefers-color-scheme: dark)', color: 'black' },
   ],
+  manifest: '/site.webmanifest',
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
+    icon: ['/favicon-16x16.png', 'favicon-32x32.png'],
+    shortcut: '/favicon.ico',
     apple: '/apple-touch-icon.png',
   },
 }
@@ -49,9 +50,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <SiteHeader />
-            <main>
-              {children}
-            </main>
+            <main>{children}</main>
             <Toaster />
             <TailwindIndicator />
           </ThemeProvider>
