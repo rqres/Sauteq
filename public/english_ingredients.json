@@ -850,6 +850,7 @@
     { "UsdaId": 10357, "name": "WILD RICE" },
     { "UsdaId": 10358, "name": "XANTHAN GUM" },
     { "UsdaId": 10359, "name": "YAMS" },
-    { "UsdaId": 10361, "name": "YUZU" }
+    { "UsdaId": 10361, "name": "YUZU" },
+    { "UsdaId": 10362, "name": "CEREAL" }
   ]
 }
